@@ -77,3 +77,43 @@ export async function buatReservasiDB(pelangganNama: string, lapanganId: number,
   
   return result[0];
 }
+
+export async function getStatistikDashboard() {
+  const rsToday = await sql`SELECT count(*) as total FROM reservasi WHERE tanggal = CURRENT_DATE`;
+  const rsRevenue = await sql`
+    SELECT COALESCE(SUM(l.harga_per_jam), 0) as total 
+    FROM reservasi r 
+    JOIN lapangan l ON r.lapangan_id = l.id 
+    WHERE r.status != 'Dibatalkan' AND EXTRACT(MONTH FROM r.tanggal) = EXTRACT(MONTH FROM CURRENT_DATE)
+  `;
+  const rsUsers = await sql`SELECT count(*) as total FROM pelanggan`;
+  
+  return {
+    reservasiHariIni: rsToday[0].total,
+    pendapatanBulanan: rsRevenue[0].total,
+    memberAktif: rsUsers[0].total
+  };
+}
+
+export async function hapusReservasi(id: number) {
+  return await sql`DELETE FROM reservasi WHERE id = ${id}`;
+}
+
+export async function updateStatusReservasi(id: number, status: string) {
+  return await sql`UPDATE reservasi SET status = ${status} WHERE id = ${id}`;
+}
+
+export async function getDaftarPelanggan() {
+  return await sql`
+    SELECT p.id, p.nama, p.email, TO_CHAR(p.created_at, 'DD Mon YYYY') as tgl_daftar, 
+           COUNT(r.id) as total_booking
+    FROM pelanggan p
+    LEFT JOIN reservasi r ON p.id = r.pelanggan_id
+    GROUP BY p.id
+    ORDER BY p.created_at DESC
+  `;
+}
+
+export async function updateHargaLapangan(id: number, harga: number) {
+  return await sql`UPDATE lapangan SET harga_per_jam = ${harga} WHERE id = ${id}`;
+}

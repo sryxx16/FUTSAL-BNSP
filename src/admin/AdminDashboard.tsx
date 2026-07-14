@@ -17,7 +17,7 @@ export default function AdminDashboard() {
         <AdminHeader activeTab={activeTab} />
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-950">
-          {activeTab === 'dashboard' && <DashboardView />}
+          {activeTab === 'dashboard' && <DashboardView setActiveTab={setActiveTab} />}
           {activeTab === 'reservations' && <ReservationsView />}
           {activeTab === 'users' && <UsersView />}
           {activeTab === 'settings' && <SettingsView />}
