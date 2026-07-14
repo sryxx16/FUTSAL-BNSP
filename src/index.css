@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Neon/Dark Mode Theme Variables based on Blueprint */
+@layer base {
+  :root {
+    --background: #0f172a;
+    --foreground: #f8fafc;
+    --primary: #10b981;
+    --primary-foreground: #ffffff;
+  }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
