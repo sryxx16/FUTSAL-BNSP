@@ -46,9 +46,9 @@ export default function ReservationPage() {
     setStatus({ type: 'loading', message: 'Menyimpan reservasi ke Database Neon...' });
 
     try {
-      // Hardcode pelangganId = 1 untuk demo (Karna auth belum fully linked ke DB)
+      // Menggunakan nama asli yang diinput di form
       await buatReservasiDB(
-        1, 
+        formData.pelanggan_nama, 
         parseInt(formData.lapangan_id), 
         formData.tanggal, 
         formData.jam_mulai, 
@@ -56,8 +56,8 @@ export default function ReservationPage() {
       );
       
       setStatus({ type: 'success', message: 'Reservasi Berhasil Dibuat ke Database Neon!' });
-      // Reset jadwal fields
-      setFormData(prev => ({ ...prev, tanggal: '', jam_mulai: '', jam_selesai: '' }));
+      // Reset form
+      setFormData(prev => ({ ...prev, tanggal: '', jam_mulai: '', jam_selesai: '', pelanggan_nama: '' }));
     } catch (err: any) {
       setStatus({ 
         type: 'error', 

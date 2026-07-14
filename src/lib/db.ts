@@ -46,10 +46,27 @@ export async function cekKetersediaanDB(lapanganId: number, tanggal: string, jam
   return bentrok.length > 0;
 }
 
-export async function buatReservasiDB(pelangganId: number, lapanganId: number, tanggal: string, jamMulai: string, jamSelesai: string) {
+export async function buatReservasiDB(pelangganNama: string, lapanganId: number, tanggal: string, jamMulai: string, jamSelesai: string) {
   const bentrok = await cekKetersediaanDB(lapanganId, tanggal, jamMulai, jamSelesai);
   if (bentrok) {
     throw new Error('Jadwal bentrok dengan reservasi lain!');
+  }
+  
+  // Cari apakah user dengan nama tersebut sudah ada
+  const existingUser = await sql`SELECT id FROM pelanggan WHERE nama = ${pelangganNama} LIMIT 1`;
+  let pelangganId;
+  
+  if (existingUser.length > 0) {
+    pelangganId = existingUser[0].id;
+  } else {
+    // Buat akun guest secara on-the-fly
+    const emailGuest = pelangganNama.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random()*10000) + '@guest.com';
+    const newUser = await sql`
+      INSERT INTO pelanggan (nama, email, password) 
+      VALUES (${pelangganNama}, ${emailGuest}, 'guestpass')
+      RETURNING id
+    `;
+    pelangganId = newUser[0].id;
   }
   
   const result = await sql`
