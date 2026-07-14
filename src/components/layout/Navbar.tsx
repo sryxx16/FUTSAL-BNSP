@@ -35,8 +35,10 @@ export default function Navbar() {
             <Link to="/" className="text-slate-300 hover:text-emerald-400 transition-colors">Home</Link>
             <a href="/#fasilitas" className="text-slate-300 hover:text-emerald-400 transition-colors">Fasilitas</a>
             <a href="/#kontak" className="text-slate-300 hover:text-emerald-400 transition-colors">Kontak</a>
-            <div className="flex items-center space-x-4 pl-4 border-l border-slate-800">
               <Link to="/book" className="text-emerald-400 font-bold hover:text-emerald-300 transition-colors">Booking Lapangan</Link>
+              <Link to="/admin" className="px-5 py-2 rounded-full border border-slate-700 text-slate-300 hover:bg-slate-800 transition-all duration-300">
+                Admin Panel
+              </Link>
               <Link to="/login" className="px-5 py-2 rounded-full border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 hover:shadow-[0_0_15px_rgba(16,185,129,0.5)] transition-all duration-300">
                 Login / Register
               </Link>
@@ -70,7 +72,10 @@ export default function Navbar() {
                 <Link to="/book" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950 font-bold transition-colors">
                   Booking Lapangan
                 </Link>
-                <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full border border-slate-600 text-slate-300 hover:bg-slate-800 transition-colors">
+                <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full border border-slate-600 text-slate-300 hover:bg-slate-800 transition-colors">
+                  Admin Panel
+                </Link>
+                <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full border border-emerald-600 text-emerald-400 hover:bg-emerald-900 transition-colors">
                   Login / Register
                 </Link>
               </div>
