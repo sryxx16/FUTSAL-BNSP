@@ -1,62 +1,73 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { checkTimeOverlap } from '../utils/validation';
-import { mockLapangan, mockReservasi } from '../types/database';
-import { Calendar, Clock, User, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { getDaftarLapangan, buatReservasiDB } from '../lib/db';
+import { Calendar, Clock, User, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 
 export default function ReservationPage() {
+  const [lapanganList, setLapanganList] = useState<any[]>([]);
   const [formData, setFormData] = useState({
-    lapangan_id: 'F1',
+    lapangan_id: '',
     pelanggan_nama: '',
     tanggal: '',
     jam_mulai: '',
     jam_selesai: ''
   });
   
-  const [status, setStatus] = useState<{ type: 'idle' | 'error' | 'success', message: string }>({ type: 'idle', message: '' });
+  const [status, setStatus] = useState<{ type: 'idle' | 'loading' | 'error' | 'success', message: string }>({ type: 'idle', message: '' });
+
+  useEffect(() => {
+    async function loadLapangan() {
+      try {
+        const data = await getDaftarLapangan();
+        setLapanganList(data);
+        if (data.length > 0) {
+          setFormData(prev => ({ ...prev, lapangan_id: data[0].id.toString() }));
+        }
+      } catch (err) {
+        console.error("Gagal memuat lapangan:", err);
+      }
+    }
+    loadLapangan();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setStatus({ type: 'idle', message: '' }); // Reset status on change
+    if(status.type !== 'loading') setStatus({ type: 'idle', message: '' });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 1. Ambil jadwal yang sudah ada untuk lapangan dan tanggal yang sama
-    const existing = mockReservasi.filter(
-      r => r.lapangan_id === formData.lapangan_id && r.tanggal === formData.tanggal
-    );
-
-    // 2. Jalankan algoritma validasi overlap
-    const isOverlap = checkTimeOverlap(existing, formData.jam_mulai, formData.jam_selesai);
-
-    if (isOverlap) {
-      setStatus({ 
-        type: 'error', 
-        message: 'Jadwal Terisi! Waktu yang Anda pilih bentrok dengan reservasi lain.' 
-      });
-      return;
-    }
-
     if (formData.jam_mulai >= formData.jam_selesai) {
       setStatus({ type: 'error', message: 'Waktu mulai harus lebih awal dari waktu selesai.' });
       return;
     }
 
-    // 3. Jika aman, simpan (di memori statis)
-    setStatus({ type: 'success', message: 'Reservasi Berhasil Dibuat!' });
-    
-    // Simulasi penambahan data sementara ke state lokal (opsional untuk demo)
-    mockReservasi.push({
-      id: `R${Math.floor(Math.random() * 1000)}`,
-      ...formData
-    });
+    setStatus({ type: 'loading', message: 'Menyimpan reservasi ke Database Neon...' });
+
+    try {
+      // Hardcode pelangganId = 1 untuk demo (Karna auth belum fully linked ke DB)
+      await buatReservasiDB(
+        1, 
+        parseInt(formData.lapangan_id), 
+        formData.tanggal, 
+        formData.jam_mulai, 
+        formData.jam_selesai
+      );
+      
+      setStatus({ type: 'success', message: 'Reservasi Berhasil Dibuat ke Database Neon!' });
+      // Reset jadwal fields
+      setFormData(prev => ({ ...prev, tanggal: '', jam_mulai: '', jam_selesai: '' }));
+    } catch (err: any) {
+      setStatus({ 
+        type: 'error', 
+        message: err.message || 'Gagal menyimpan reservasi. Coba lagi.' 
+      });
+    }
   };
 
   return (
     <main className="pt-24 pb-12 min-h-screen relative overflow-hidden flex justify-center items-center">
-      {/* Background Glow */}
       <div className="absolute top-1/4 -right-1/4 w-[40rem] h-[40rem] bg-emerald-700/20 rounded-full blur-[120px] -z-10" />
       <div className="absolute bottom-0 -left-1/4 w-[30rem] h-[30rem] bg-emerald-900/30 rounded-full blur-[100px] -z-10" />
 
@@ -76,10 +87,14 @@ export default function ReservationPage() {
             <motion.div 
               initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
               className={`p-4 rounded-lg mb-6 flex items-center gap-3 border ${
-                status.type === 'error' ? 'bg-red-500/10 border-red-500/50 text-red-400' : 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400'
+                status.type === 'error' ? 'bg-red-500/10 border-red-500/50 text-red-400' 
+                : status.type === 'loading' ? 'bg-blue-500/10 border-blue-500/50 text-blue-400'
+                : 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400'
               }`}
             >
-              {status.type === 'error' ? <AlertCircle size={24} /> : <CheckCircle2 size={24} />}
+              {status.type === 'error' ? <AlertCircle size={24} /> 
+               : status.type === 'loading' ? <Loader2 size={24} className="animate-spin" />
+               : <CheckCircle2 size={24} />}
               <span className="font-medium">{status.message}</span>
             </motion.div>
           )}
@@ -94,7 +109,8 @@ export default function ReservationPage() {
                 required
                 className="w-full bg-slate-950/50 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
               >
-                {mockLapangan.map(lap => (
+                {lapanganList.length === 0 && <option>Memuat data lapangan...</option>}
+                {lapanganList.map(lap => (
                   <option key={lap.id} value={lap.id} className="bg-slate-900">
                     {lap.nama} - Rp {lap.harga_per_jam.toLocaleString('id-ID')}/jam
                   </option>
@@ -169,15 +185,12 @@ export default function ReservationPage() {
 
             <button 
               type="submit"
-              className="w-full mt-6 bg-emerald-500 text-slate-950 text-lg font-bold py-4 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] hover:bg-emerald-400 transition-all duration-300"
+              disabled={status.type === 'loading'}
+              className="w-full mt-6 bg-emerald-500 text-slate-950 text-lg font-bold py-4 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
             >
-              Konfirmasi Reservasi
+              {status.type === 'loading' ? 'Memproses...' : 'Konfirmasi Reservasi'}
             </button>
           </form>
-          
-          <div className="mt-6 text-center">
-             <p className="text-sm text-slate-500">Demo Testing: Coba booking lapangan F1 tanggal 2026-07-15 jam 19:00 - 21:00 untuk melihat error bentrok.</p>
-          </div>
         </div>
       </motion.div>
     </main>
