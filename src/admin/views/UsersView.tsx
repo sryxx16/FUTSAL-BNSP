@@ -1,4 +1,24 @@
+import { useEffect, useState } from 'react';
+import { getDaftarPelanggan } from '../../lib/db';
+
 export default function UsersView() {
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await getDaftarPelanggan();
+        setUsers(data);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -14,29 +34,25 @@ export default function UsersView() {
                 <th className="p-4 font-medium">Tgl Daftar</th>
                 <th className="p-4 font-medium text-center">Total Booking</th>
                 <th className="p-4 font-medium">Status</th>
-                <th className="p-4 font-medium text-center">Aksi</th>
               </tr>
             </thead>
             <tbody className="text-sm">
-              {[
-                { name: 'Budi Santoso', email: 'budi@example.com', join: '10 Jan 2026', total: 14, status: 'Aktif', statColor: 'text-emerald-400 bg-emerald-400/10 border border-emerald-500/30' },
-                { name: 'Andi Jaya', email: 'andi@example.com', join: '22 Feb 2026', total: 3, status: 'Aktif', statColor: 'text-emerald-400 bg-emerald-400/10 border border-emerald-500/30' },
-                { name: 'Rina Melati', email: 'rina@example.com', join: '05 Mar 2026', total: 0, status: 'Tidak Aktif', statColor: 'text-slate-400 bg-slate-400/10 border border-slate-500/30' },
-              ].map((row, i) => (
-                <tr key={i} className="border-b border-slate-800/50 hover:bg-slate-800/20 transition-colors">
+              {loading ? (
+                <tr><td colSpan={4} className="p-8 text-center text-slate-400">Memuat pelanggan...</td></tr>
+              ) : users.length === 0 ? (
+                <tr><td colSpan={4} className="p-8 text-center text-slate-400">Belum ada pelanggan</td></tr>
+              ) : users.map((row) => (
+                <tr key={row.id} className="border-b border-slate-800/50 hover:bg-slate-800/20 transition-colors">
                   <td className="p-4">
-                    <div className="font-medium text-white">{row.name}</div>
+                    <div className="font-medium text-white">{row.nama}</div>
                     <div className="text-xs text-slate-500">{row.email}</div>
                   </td>
-                  <td className="p-4 text-slate-400">{row.join}</td>
-                  <td className="p-4 text-center text-emerald-400 font-bold">{row.total}</td>
+                  <td className="p-4 text-slate-400">{row.tgl_daftar}</td>
+                  <td className="p-4 text-center text-emerald-400 font-bold">{row.total_booking}</td>
                   <td className="p-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${row.statColor}`}>
-                      {row.status}
+                    <span className="px-3 py-1 rounded-full text-xs font-bold text-emerald-400 bg-emerald-400/10 border border-emerald-500/30">
+                      Aktif
                     </span>
-                  </td>
-                  <td className="p-4 text-center">
-                    <button className="text-slate-400 hover:text-white transition-colors">Detail</button>
                   </td>
                 </tr>
               ))}
