@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Coffee, Droplet, Lock, Car } from 'lucide-react';
+import { Coffee, Wifi, Store, Car } from 'lucide-react';
 
 export default function FacilitiesSection() {
   return (
@@ -19,10 +19,10 @@ export default function FacilitiesSection() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: Droplet, title: "Kamar Mandi & Shower", desc: "Air panas & dingin dengan kebersihan terjaga." },
-              { icon: Coffee, title: "Cafe & Lounge", desc: "Tempat bersantai menikmati kopi & makanan ringan." },
-              { icon: Lock, title: "Loker Aman", desc: "Loker penyimpanan barang dengan sistem keamanan digital." },
-              { icon: Car, title: "Parkir Luas", desc: "Area parkir yang luas dan aman untuk mobil & motor." }
+              { icon: Wifi, title: "Wi-Fi Gratis", desc: "Akses internet berkecepatan tinggi di area tunggu." },
+              { icon: Coffee, title: "Kantin & Lounge", desc: "Tempat bersantai menikmati minuman & makanan ringan." },
+              { icon: Store, title: "Sewa Perlengkapan", desc: "Menyediakan penyewaan raket, bola, hingga sepatu." },
+              { icon: Car, title: "Area Parkir Luas", desc: "Kapasitas parkir besar yang aman untuk mobil & motor." }
             ].map((item, idx) => (
               <motion.div 
                 key={idx}
