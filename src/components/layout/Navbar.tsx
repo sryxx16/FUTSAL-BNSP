@@ -35,6 +35,7 @@ export default function Navbar() {
             <Link to="/" className="text-slate-300 hover:text-emerald-400 transition-colors">Home</Link>
             <a href="/#fasilitas" className="text-slate-300 hover:text-emerald-400 transition-colors">Fasilitas</a>
             <a href="/#kontak" className="text-slate-300 hover:text-emerald-400 transition-colors">Kontak</a>
+            <div className="flex items-center space-x-4 pl-4 border-l border-slate-800">
               <Link to="/book" className="text-emerald-400 font-bold hover:text-emerald-300 transition-colors">Booking Lapangan</Link>
               <Link to="/admin" className="px-5 py-2 rounded-full border border-slate-700 text-slate-300 hover:bg-slate-800 transition-all duration-300">
                 Admin Panel
