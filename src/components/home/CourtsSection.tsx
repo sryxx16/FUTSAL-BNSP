@@ -23,7 +23,7 @@ export default function CourtsSection() {
               className="group relative overflow-hidden rounded-3xl"
             >
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent z-10"></div>
-              <img src="/futsal_court.png" alt="Lapangan Futsal" className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700" />
+              <img src="/empty_futsal.png" alt="Lapangan Futsal" className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
                 <h3 className="text-3xl font-bold text-white mb-2">Futsal Pro Court</h3>
                 <p className="text-emerald-400 font-medium mb-4">Rp 150.000 / Jam</p>
@@ -39,7 +39,7 @@ export default function CourtsSection() {
               className="group relative overflow-hidden rounded-3xl"
             >
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent z-10"></div>
-              <img src="/badminton_court.png" alt="Lapangan Badminton" className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700" />
+              <img src="/empty_badminton.png" alt="Lapangan Badminton" className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
                 <h3 className="text-3xl font-bold text-white mb-2">Badminton BWF Standard</h3>
                 <p className="text-emerald-400 font-medium mb-4">Rp 50.000 / Jam</p>
