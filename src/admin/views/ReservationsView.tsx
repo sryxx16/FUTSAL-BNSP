@@ -1,18 +1,39 @@
 import { useEffect, useState } from 'react';
-import { getSemuaReservasi, hapusReservasi, updateStatusReservasi } from '../../lib/db';
+import { getSemuaReservasi, hapusReservasi, updateStatusReservasi, getDaftarLapangan, buatReservasiDB } from '../../lib/db';
+import { X, Loader2 } from 'lucide-react';
 
 export default function ReservationsView() {
   const [reservations, setReservations] = useState<any[]>([]);
+  const [lapanganList, setLapanganList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState('Semua Status');
   const [filterDate, setFilterDate] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
 
+  // Modal State
+  const [showModal, setShowModal] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    lapangan_id: '',
+    pelanggan_nama: '',
+    tanggal: '',
+    jam_mulai: '',
+    jam_selesai: ''
+  });
+
   const loadData = async () => {
     setLoading(true);
     try {
-      const data = await getSemuaReservasi();
-      setReservations(data);
+      const [resData, lapData] = await Promise.all([
+        getSemuaReservasi(),
+        getDaftarLapangan()
+      ]);
+      setReservations(resData);
+      setLapanganList(lapData);
+      
+      if (lapData.length > 0 && !formData.lapangan_id) {
+         setFormData(prev => ({ ...prev, lapangan_id: lapData[0].id.toString() }));
+      }
     } catch (error) {
       console.error("Gagal mengambil data:", error);
     } finally {
@@ -43,6 +64,34 @@ export default function ReservationsView() {
     }
   };
 
+  const handleCreateManual = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formData.jam_mulai >= formData.jam_selesai) {
+       alert('Waktu mulai harus lebih awal dari waktu selesai.');
+       return;
+    }
+    
+    setFormLoading(true);
+    try {
+      await buatReservasiDB(
+        formData.pelanggan_nama, 
+        parseInt(formData.lapangan_id), 
+        formData.tanggal, 
+        formData.jam_mulai, 
+        formData.jam_selesai
+      );
+      
+      alert('Reservasi manual berhasil ditambahkan!');
+      setShowModal(false);
+      setFormData(prev => ({ ...prev, pelanggan_nama: '', tanggal: '', jam_mulai: '', jam_selesai: '' }));
+      await loadData(); // Refresh table
+    } catch (err: any) {
+      alert(err.message || 'Gagal menyimpan reservasi');
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Selesai': return 'text-emerald-400 bg-emerald-400/10 border border-emerald-500/30';
@@ -68,7 +117,7 @@ export default function ReservationsView() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       <div className="flex flex-col sm:flex-row justify-between gap-4">
          <div className="flex gap-4">
             <select 
@@ -92,9 +141,12 @@ export default function ReservationsView() {
               <button onClick={() => setFilterDate('')} className="text-sm text-slate-400 hover:text-white">Clear Date</button>
             )}
          </div>
-         <a href="/book" target="_blank" className="bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded-lg hover:bg-emerald-400 transition-colors text-center inline-block">
+         <button 
+           onClick={() => setShowModal(true)}
+           className="bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded-lg hover:bg-emerald-400 transition-colors text-center inline-block"
+         >
            + Reservasi Manual
-         </a>
+         </button>
       </div>
       <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
@@ -161,6 +213,100 @@ export default function ReservationsView() {
            <span>Menampilkan {filtered.length} data</span>
         </div>
       </div>
+
+      {/* Modal Popup Reservasi Manual */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl relative">
+            <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-950/50">
+               <h3 className="text-xl font-bold text-white">Buat Reservasi Manual</h3>
+               <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-white transition-colors">
+                 <X size={24} />
+               </button>
+            </div>
+            
+            <form onSubmit={handleCreateManual} className="p-6 space-y-4">
+               <div>
+                  <label className="text-sm font-medium text-slate-300 block mb-1">Nama Pemesan</label>
+                  <input 
+                    type="text" required
+                    value={formData.pelanggan_nama}
+                    onChange={e => setFormData({...formData, pelanggan_nama: e.target.value})}
+                    placeholder="Masukkan nama lengkap"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
+                  />
+               </div>
+               
+               <div>
+                  <label className="text-sm font-medium text-slate-300 block mb-1">Pilih Lapangan</label>
+                  <select 
+                    required
+                    value={formData.lapangan_id}
+                    onChange={e => setFormData({...formData, lapangan_id: e.target.value})}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
+                  >
+                    {lapanganList.map(lap => (
+                      <option key={lap.id} value={lap.id}>
+                        {lap.nama} - Rp {lap.harga_per_jam.toLocaleString('id-ID')} / jam
+                      </option>
+                    ))}
+                  </select>
+               </div>
+               
+               <div>
+                  <label className="text-sm font-medium text-slate-300 block mb-1">Tanggal Main</label>
+                  <input 
+                    type="date" required
+                    value={formData.tanggal}
+                    onChange={e => setFormData({...formData, tanggal: e.target.value})}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
+                    style={{ colorScheme: 'dark' }}
+                  />
+               </div>
+
+               <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-slate-300 block mb-1">Jam Mulai</label>
+                    <input 
+                      type="time" required
+                      value={formData.jam_mulai}
+                      onChange={e => setFormData({...formData, jam_mulai: e.target.value})}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
+                      style={{ colorScheme: 'dark' }}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-300 block mb-1">Jam Selesai</label>
+                    <input 
+                      type="time" required
+                      value={formData.jam_selesai}
+                      onChange={e => setFormData({...formData, jam_selesai: e.target.value})}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
+                      style={{ colorScheme: 'dark' }}
+                    />
+                  </div>
+               </div>
+
+               <div className="pt-4 flex justify-end gap-3">
+                  <button 
+                    type="button" 
+                    onClick={() => setShowModal(false)}
+                    className="px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-colors"
+                  >
+                    Batal
+                  </button>
+                  <button 
+                    type="submit" 
+                    disabled={formLoading}
+                    className="bg-emerald-500 text-slate-950 font-bold px-6 py-2 rounded-lg hover:bg-emerald-400 transition-colors disabled:opacity-50 flex items-center gap-2"
+                  >
+                    {formLoading ? <><Loader2 size={18} className="animate-spin" /> Menyimpan...</> : 'Simpan Reservasi'}
+                  </button>
+               </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
