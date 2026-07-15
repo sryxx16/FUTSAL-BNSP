@@ -13,6 +13,22 @@ export async function getDaftarLapangan() {
   return result;
 }
 
+export async function getJadwalHariIni() {
+  const result = await sql`
+    SELECT 
+      l.id as lapangan_id,
+      l.nama as lapangan_nama,
+      r.jam_mulai, 
+      r.jam_selesai
+    FROM lapangan l
+    LEFT JOIN reservasi r ON l.id = r.lapangan_id 
+      AND r.tanggal = CURRENT_DATE 
+      AND r.status != 'Dibatalkan'
+    ORDER BY l.id ASC, r.jam_mulai ASC
+  `;
+  return result;
+}
+
 export async function getSemuaReservasi() {
   const result = await sql`
     SELECT 

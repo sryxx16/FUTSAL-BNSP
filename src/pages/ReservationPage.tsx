@@ -150,6 +150,7 @@ export default function ReservationPage() {
                   value={formData.tanggal}
                   onChange={handleChange}
                   required
+                  min={new Date().toISOString().split('T')[0]}
                   className="w-full bg-slate-950/50 border border-slate-700 rounded-lg pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
                   style={{ colorScheme: 'dark' }}
                 />

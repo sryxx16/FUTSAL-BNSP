@@ -2,6 +2,7 @@ import HeroSection from '../components/home/HeroSection';
 import FeaturesSection from '../components/home/FeaturesSection';
 import FacilitiesSection from '../components/home/FacilitiesSection';
 import CourtsSection from '../components/home/CourtsSection';
+import ScheduleSection from '../components/home/ScheduleSection';
 import ContactSection from '../components/home/ContactSection';
 
 export default function LandingPage() {
@@ -17,6 +18,7 @@ export default function LandingPage() {
       <FeaturesSection />
       <FacilitiesSection />
       <CourtsSection />
+      <ScheduleSection />
       <ContactSection />
     </main>
   );
