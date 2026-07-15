@@ -19,11 +19,35 @@ export default function UsersView() {
     loadData();
   }, []);
 
+  const handleExportCSV = () => {
+    if (users.length === 0) {
+      alert("Belum ada data pelanggan untuk diekspor!");
+      return;
+    }
+    const headers = ['Nama Lengkap', 'Email', 'Tanggal Daftar', 'Total Booking'];
+    const csvData = users.map(u => `"${u.nama}","${u.email}","${u.tgl_daftar}","${u.total_booking}"`);
+    const csvContent = [headers.join(','), ...csvData].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `Data_Pelanggan_SMSport_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
          <h2 className="text-2xl font-bold text-white">Manajemen Pelanggan</h2>
-         <button className="bg-slate-800 text-white font-bold px-4 py-2 rounded-lg border border-slate-700 hover:bg-slate-700 transition-colors">Ekspor Data</button>
+         <button 
+           onClick={handleExportCSV}
+           className="bg-slate-800 text-white font-bold px-4 py-2 rounded-lg border border-slate-700 hover:bg-slate-700 transition-colors"
+         >
+           Ekspor Data (CSV)
+         </button>
       </div>
       <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
