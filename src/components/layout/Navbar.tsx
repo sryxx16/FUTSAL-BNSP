@@ -58,10 +58,14 @@ export default function Navbar() {
                     </Link>
                   )}
                   <div className="flex items-center gap-3 ml-2 pl-4 border-l border-slate-700">
-                    <span className="text-sm text-slate-400 flex items-center gap-2">
+                    <Link 
+                      to={user.role === 'admin' ? '/admin' : '/my-bookings'}
+                      className="text-sm text-emerald-400 font-bold flex items-center gap-2 hover:text-emerald-300 transition-colors bg-emerald-500/10 px-3 py-1.5 rounded-full"
+                      title={user.role === 'admin' ? 'Buka Admin Panel' : 'Lihat Profil'}
+                    >
                       <User size={16} /> {user.nama.split(' ')[0]}
-                    </span>
-                    <button onClick={handleLogout} className="text-red-400 hover:text-red-300 transition-colors" title="Logout">
+                    </Link>
+                    <button onClick={handleLogout} className="text-red-400 hover:text-red-300 transition-colors p-1.5 hover:bg-red-500/10 rounded-full" title="Logout">
                       <LogOut size={18} />
                     </button>
                   </div>
