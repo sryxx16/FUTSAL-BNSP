@@ -18,7 +18,7 @@ export default function ScheduleSection() {
     async function loadSchedules() {
       try {
         const data = await getJadwalHariIni();
-        setSchedules(data);
+        setSchedules(data as ScheduleSlot[]);
       } catch (error) {
         console.error("Gagal memuat jadwal hari ini:", error);
       } finally {

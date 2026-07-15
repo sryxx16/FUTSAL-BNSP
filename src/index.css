@@ -16,3 +16,20 @@ body {
   background-color: var(--background);
   color: var(--foreground);
 }
+
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  /* Override Tailwind scroll and height for printing */
+  .h-screen, .min-h-screen {
+    height: auto !important;
+    min-height: auto !important;
+  }
+  
+  .overflow-hidden, .overflow-y-auto, .overflow-x-auto {
+    overflow: visible !important;
+  }
+}

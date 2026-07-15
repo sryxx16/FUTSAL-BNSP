@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getSemuaReservasi, hapusReservasi, updateStatusReservasi, getDaftarLapangan, buatReservasiDB } from '../../lib/db';
-import { X, Loader2 } from 'lucide-react';
+import { X, Loader2, Printer } from 'lucide-react';
 
 export default function ReservationsView() {
   const [reservations, setReservations] = useState<any[]>([]);
@@ -125,8 +125,13 @@ export default function ReservationsView() {
   });
 
   return (
-    <div className="space-y-6 relative">
-      <div className="flex flex-col sm:flex-row justify-between gap-4">
+    <div className="space-y-6 relative print:space-y-2">
+      <div className="hidden print:block text-center mb-6">
+        <h2 className="text-2xl font-bold text-black">Laporan Penggunaan Lapangan</h2>
+        <p className="text-gray-600">SM Sport Center - {new Date().toLocaleDateString('id-ID')}</p>
+      </div>
+
+      <div className="flex flex-col sm:flex-row justify-between gap-4 print:hidden">
          <div className="flex gap-4">
             <select 
               value={filterStatus}
@@ -149,25 +154,33 @@ export default function ReservationsView() {
               <button onClick={() => setFilterDate('')} className="text-sm text-slate-400 hover:text-white">Clear Date</button>
             )}
          </div>
-         <button 
-           onClick={() => setShowModal(true)}
-           className="bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded-lg hover:bg-emerald-400 transition-colors text-center inline-block"
-         >
-           + Reservasi Manual
-         </button>
+         <div className="flex gap-3">
+           <button 
+             onClick={() => window.print()}
+             className="bg-slate-800 text-white font-bold px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors flex items-center gap-2"
+           >
+             <Printer size={18} /> Cetak Laporan
+           </button>
+           <button 
+             onClick={() => setShowModal(true)}
+             className="bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded-lg hover:bg-emerald-400 transition-colors text-center inline-block"
+           >
+             + Reservasi Manual
+           </button>
+         </div>
       </div>
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[800px]">
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden print:bg-white print:border-none print:shadow-none">
+        <div className="overflow-x-auto print:overflow-visible">
+          <table className="w-full text-left border-collapse min-w-[800px] print:min-w-full print:text-black">
             <thead>
-              <tr className="bg-slate-950/50 text-slate-400 text-sm">
+              <tr className="bg-slate-950/50 text-slate-400 text-sm print:bg-gray-100 print:text-black print:border-b-2 print:border-gray-800">
                 <th className="p-4 font-medium">ID</th>
                 <th className="p-4 font-medium">Pelanggan</th>
                 <th className="p-4 font-medium">Lapangan</th>
                 <th className="p-4 font-medium">Waktu</th>
                 <th className="p-4 font-medium">Harga</th>
                 <th className="p-4 font-medium">Status</th>
-                <th className="p-4 font-medium text-center">Aksi</th>
+                <th className="p-4 font-medium text-center print:hidden">Aksi</th>
               </tr>
             </thead>
             <tbody className="text-sm">
@@ -176,16 +189,16 @@ export default function ReservationsView() {
               ) : filtered.length === 0 ? (
                 <tr><td colSpan={7} className="p-8 text-center text-slate-400">Tidak ada data yang sesuai filter</td></tr>
               ) : filtered.map((row) => (
-                <tr key={row.id} className="border-b border-slate-800/50 hover:bg-slate-800/20 transition-colors">
-                  <td className="p-4 text-slate-400">#{row.id}</td>
-                  <td className="p-4 text-white font-medium">{row.pelanggan_nama}</td>
-                  <td className="p-4 text-emerald-400">{row.lapangan_nama}</td>
-                  <td className="p-4 text-slate-300">
+                <tr key={row.id} className="border-b border-slate-800/50 hover:bg-slate-800/20 transition-colors print:border-gray-300 print:hover:bg-transparent">
+                  <td className="p-4 text-slate-400 print:text-black">#{row.id}</td>
+                  <td className="p-4 text-white font-medium print:text-black">{row.pelanggan_nama}</td>
+                  <td className="p-4 text-emerald-400 print:text-black">{row.lapangan_nama}</td>
+                  <td className="p-4 text-slate-300 print:text-black">
                     {formatTanggal(row.tanggal)}<br/>
-                    <span className="text-xs text-slate-500">{row.jam_mulai.substring(0,5)} - {row.jam_selesai.substring(0,5)}</span>
+                    <span className="text-xs text-slate-500 print:text-black">{row.jam_mulai.substring(0,5)} - {row.jam_selesai.substring(0,5)}</span>
                   </td>
-                  <td className="p-4 text-slate-300">{formatUang(hitungTotalHarga(row.jam_mulai, row.jam_selesai, row.harga_per_jam))}</td>
-                  <td className="p-4">
+                  <td className="p-4 text-slate-300 print:text-black">{formatUang(hitungTotalHarga(row.jam_mulai, row.jam_selesai, row.harga_per_jam))}</td>
+                  <td className="p-4 print:text-black">
                     {editingId === row.id ? (
                       <select 
                         autoFocus
@@ -208,7 +221,7 @@ export default function ReservationsView() {
                       </button>
                     )}
                   </td>
-                  <td className="p-4 text-center">
+                  <td className="p-4 text-center print:hidden">
                     <button onClick={() => setEditingId(row.id)} className="text-blue-400 hover:text-blue-300 mx-2 transition-colors font-medium">Edit</button>
                     <button onClick={() => handleDelete(row.id)} className="text-red-400 hover:text-red-300 mx-2 transition-colors font-medium">Hapus</button>
                   </td>
@@ -217,7 +230,7 @@ export default function ReservationsView() {
             </tbody>
           </table>
         </div>
-        <div className="p-4 border-t border-slate-800 flex justify-between items-center text-sm text-slate-400">
+        <div className="p-4 border-t border-slate-800 flex justify-between items-center text-sm text-slate-400 print:hidden">
            <span>Menampilkan {filtered.length} data</span>
         </div>
       </div>

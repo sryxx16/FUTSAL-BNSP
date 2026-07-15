@@ -8,7 +8,7 @@ interface AdminSidebarProps {
 
 export default function AdminSidebar({ activeTab, setActiveTab }: AdminSidebarProps) {
   return (
-    <aside className="w-64 bg-slate-900 border-r border-slate-800 hidden md:flex flex-col">
+    <aside className="print:hidden w-64 bg-slate-900 border-r border-slate-800 hidden md:flex flex-col">
       <div className="p-6 border-b border-slate-800">
         <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-600">
           Admin Panel

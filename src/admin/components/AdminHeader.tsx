@@ -14,7 +14,7 @@ export default function AdminHeader({ activeTab }: AdminHeaderProps) {
   };
 
   return (
-    <header className="h-20 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-8">
+    <header className="print:hidden h-20 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-8">
       <h1 className="text-xl font-bold text-white capitalize">{activeTab.replace('-', ' ')}</h1>
       
       <div className="flex items-center gap-6">
