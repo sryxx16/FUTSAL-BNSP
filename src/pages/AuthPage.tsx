@@ -1,26 +1,56 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, User, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { loginUser, registerUser } from '../lib/db';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
+  
+  const [formData, setFormData] = useState({
+    nama: '',
+    email: '',
+    password: ''
+  });
+  
+  const [status, setStatus] = useState<{ type: 'idle' | 'loading' | 'error', message: string }>({ type: 'idle', message: '' });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if(status.type !== 'loading') setStatus({ type: 'idle', message: '' });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate login/register logic for now
-    setTimeout(() => {
-      navigate('/');
-    }, 1000);
+    setStatus({ type: 'loading', message: 'Memproses...' });
+    
+    try {
+      let user;
+      if (isLogin) {
+        user = await loginUser(formData.email, formData.password);
+      } else {
+        user = await registerUser(formData.nama, formData.email, formData.password);
+      }
+      
+      // Simpan session
+      localStorage.setItem('sm_session', JSON.stringify(user));
+      
+      // Redirect
+      if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
+    } catch (err: any) {
+      setStatus({ type: 'error', message: err.message || 'Terjadi kesalahan.' });
+    }
   };
 
   return (
     <main className="min-h-screen bg-slate-950 flex flex-col md:flex-row relative overflow-hidden">
-      {/* Background Glow */}
       <div className="absolute top-[-20%] left-[-10%] w-[40rem] h-[40rem] bg-emerald-600/20 rounded-full blur-[120px] pointer-events-none" />
       
-      {/* Left / Top Section: Branding & Info */}
       <div className="md:w-1/2 p-8 md:p-16 flex flex-col justify-center relative z-10 border-b md:border-b-0 md:border-r border-slate-800 bg-slate-900/40">
         <div className="absolute top-8 left-8 md:top-12 md:left-12">
           <Link to="/" className="flex items-center gap-2 text-slate-400 hover:text-emerald-400 transition-colors group">
@@ -39,7 +69,6 @@ export default function AuthPage() {
                : "Buat akun baru untuk menikmati kemudahan booking lapangan futsal dan badminton tanpa antre. Cepat, aman, dan real-time!"}
            </p>
 
-           {/* Abstract Decorative Element */}
            <div className="hidden md:block w-full h-48 border border-slate-700/50 rounded-2xl relative overflow-hidden bg-slate-900/50 p-6 backdrop-blur-sm">
              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-bl-full"></div>
              <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-500/10 rounded-tr-full"></div>
@@ -56,28 +85,33 @@ export default function AuthPage() {
         </div>
       </div>
 
-      {/* Right / Bottom Section: Form */}
       <div className="md:w-1/2 p-8 md:p-16 flex items-center justify-center relative z-10">
         <div className="w-full max-w-md">
           <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 shadow-[0_0_40px_rgba(0,0,0,0.3)]">
             
-            {/* Toggle Buttons */}
             <div className="flex bg-slate-950 p-1 rounded-xl mb-8 border border-slate-800">
               <button 
                 type="button"
-                onClick={() => setIsLogin(true)}
+                onClick={() => { setIsLogin(true); setStatus({type:'idle', message:''}); }}
                 className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all duration-300 ${isLogin ? 'bg-emerald-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}`}
               >
                 Login
               </button>
               <button 
                 type="button"
-                onClick={() => setIsLogin(false)}
+                onClick={() => { setIsLogin(false); setStatus({type:'idle', message:''}); }}
                 className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all duration-300 ${!isLogin ? 'bg-emerald-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}`}
               >
                 Register
               </button>
             </div>
+
+            {status.type === 'error' && (
+              <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-lg flex items-center gap-3 text-red-400">
+                <AlertCircle size={20} />
+                <span className="text-sm font-medium">{status.message}</span>
+              </div>
+            )}
 
             <AnimatePresence mode="wait">
               <motion.form 
@@ -96,7 +130,10 @@ export default function AuthPage() {
                       <User className="absolute left-4 top-3.5 text-slate-500" size={20} />
                       <input 
                         type="text" 
-                        required
+                        name="nama"
+                        value={formData.nama}
+                        onChange={handleChange}
+                        required={!isLogin}
                         placeholder="John Doe"
                         className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors placeholder-slate-600"
                       />
@@ -110,6 +147,9 @@ export default function AuthPage() {
                     <Mail className="absolute left-4 top-3.5 text-slate-500" size={20} />
                     <input 
                       type="email" 
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
                       required
                       placeholder="hello@example.com"
                       className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors placeholder-slate-600"
@@ -120,12 +160,14 @@ export default function AuthPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <label className="text-sm font-medium text-slate-300">Password</label>
-                    {isLogin && <a href="#" className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors">Lupa Password?</a>}
                   </div>
                   <div className="relative">
                     <Lock className="absolute left-4 top-3.5 text-slate-500" size={20} />
                     <input 
                       type="password" 
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
                       required
                       placeholder="••••••••"
                       className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors placeholder-slate-600"
@@ -135,16 +177,15 @@ export default function AuthPage() {
 
                 <button 
                   type="submit"
-                  className="w-full mt-6 flex items-center justify-center gap-2 bg-emerald-500 text-slate-950 text-lg font-bold py-4 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] hover:bg-emerald-400 transition-all duration-300"
+                  disabled={status.type === 'loading'}
+                  className="w-full mt-6 flex items-center justify-center gap-2 bg-emerald-500 text-slate-950 text-lg font-bold py-4 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] hover:bg-emerald-400 transition-all duration-300 disabled:opacity-50"
                 >
-                  {isLogin ? 'Masuk Sekarang' : 'Daftar Akun'} <ArrowRight size={20} />
+                  {status.type === 'loading' ? <Loader2 className="animate-spin" size={20} /> : (isLogin ? 'Masuk Sekarang' : 'Daftar Akun')} 
+                  {status.type !== 'loading' && <ArrowRight size={20} />}
                 </button>
               </motion.form>
             </AnimatePresence>
 
-            <div className="mt-8 text-center">
-               <p className="text-sm text-slate-500">Demo Testing: Form ini masih statis. Klik tombol submit untuk simulasi kembali ke beranda.</p>
-            </div>
           </div>
         </div>
       </div>

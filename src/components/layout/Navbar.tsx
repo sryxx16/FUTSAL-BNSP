@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Menu, X, LogOut, History, User } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  
+  // Ambil sesi user
+  const sessionStr = localStorage.getItem('sm_session');
+  const user = sessionStr ? JSON.parse(sessionStr) : null;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,6 +19,12 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('sm_session');
+    setIsMobileMenuOpen(false);
+    navigate('/');
+  };
 
   return (
     <motion.nav
@@ -37,12 +48,33 @@ export default function Navbar() {
             <a href="/#kontak" className="text-slate-300 hover:text-emerald-400 transition-colors">Kontak</a>
             <div className="flex items-center space-x-4 pl-4 border-l border-slate-800">
               <Link to="/book" className="text-emerald-400 font-bold hover:text-emerald-300 transition-colors">Booking Lapangan</Link>
-              <Link to="/admin" className="px-5 py-2 rounded-full border border-slate-700 text-slate-300 hover:bg-slate-800 transition-all duration-300">
-                Admin Panel
-              </Link>
-              <Link to="/login" className="px-5 py-2 rounded-full border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 hover:shadow-[0_0_15px_rgba(16,185,129,0.5)] transition-all duration-300">
-                Login / Register
-              </Link>
+              
+              {user ? (
+                <>
+                  {user.role === 'admin' && (
+                    <Link to="/admin" className="px-4 py-2 rounded-full border border-slate-700 text-slate-300 hover:bg-slate-800 transition-all duration-300">
+                      Admin Panel
+                    </Link>
+                  )}
+                  {user.role === 'user' && (
+                    <Link to="/my-bookings" className="flex items-center gap-2 text-slate-300 hover:text-emerald-400 transition-colors">
+                      <History size={18} /> Riwayat
+                    </Link>
+                  )}
+                  <div className="flex items-center gap-3 ml-2 pl-4 border-l border-slate-700">
+                    <span className="text-sm text-slate-400 flex items-center gap-2">
+                      <User size={16} /> {user.nama.split(' ')[0]}
+                    </span>
+                    <button onClick={handleLogout} className="text-red-400 hover:text-red-300 transition-colors" title="Logout">
+                      <LogOut size={18} />
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <Link to="/login" className="px-5 py-2 rounded-full border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 hover:shadow-[0_0_15px_rgba(16,185,129,0.5)] transition-all duration-300">
+                  Login / Register
+                </Link>
+              )}
             </div>
           </div>
           <div className="md:hidden flex items-center">
@@ -73,12 +105,28 @@ export default function Navbar() {
                 <Link to="/book" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950 font-bold transition-colors">
                   Booking Lapangan
                 </Link>
-                <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full border border-slate-600 text-slate-300 hover:bg-slate-800 transition-colors">
-                  Admin Panel
-                </Link>
-                <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full border border-emerald-600 text-emerald-400 hover:bg-emerald-900 transition-colors">
-                  Login / Register
-                </Link>
+                
+                {user ? (
+                  <>
+                    {user.role === 'admin' && (
+                      <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full border border-slate-600 text-slate-300 hover:bg-slate-800 transition-colors">
+                        Admin Panel
+                      </Link>
+                    )}
+                    {user.role === 'user' && (
+                      <Link to="/my-bookings" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full border border-slate-600 text-slate-300 hover:bg-slate-800 transition-colors">
+                        Riwayat Pemesanan
+                      </Link>
+                    )}
+                    <button onClick={handleLogout} className="block w-full px-5 py-3 text-center rounded-full border border-red-500/50 text-red-400 hover:bg-red-500/10 transition-colors">
+                      Logout ({user.nama})
+                    </button>
+                  </>
+                ) : (
+                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full border border-emerald-600 text-emerald-400 hover:bg-emerald-900 transition-colors">
+                    Login / Register
+                  </Link>
+                )}
               </div>
             </div>
           </motion.div>

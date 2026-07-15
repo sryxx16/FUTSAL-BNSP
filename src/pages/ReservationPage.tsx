@@ -5,9 +5,12 @@ import { Calendar, Clock, User, AlertCircle, CheckCircle2, Loader2 } from 'lucid
 
 export default function ReservationPage() {
   const [lapanganList, setLapanganList] = useState<any[]>([]);
+  const sessionStr = localStorage.getItem('sm_session');
+  const user = sessionStr ? JSON.parse(sessionStr) : null;
+
   const [formData, setFormData] = useState({
     lapangan_id: '',
-    pelanggan_nama: '',
+    pelanggan_nama: user ? user.nama : '',
     tanggal: '',
     jam_mulai: '',
     jam_selesai: ''
@@ -128,8 +131,9 @@ export default function ReservationPage() {
                   value={formData.pelanggan_nama}
                   onChange={handleChange}
                   required
+                  readOnly={!!user}
                   placeholder="Masukkan nama lengkap"
-                  className="w-full bg-slate-950/50 border border-slate-700 rounded-lg pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors placeholder-slate-600"
+                  className={`w-full bg-slate-950/50 border border-slate-700 rounded-lg pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors placeholder-slate-600 ${user ? 'opacity-70 cursor-not-allowed' : ''}`}
                 />
               </div>
             </div>

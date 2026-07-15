@@ -4,6 +4,7 @@ import Footer from './components/layout/Footer';
 import LandingPage from './pages/LandingPage';
 import ReservationPage from './pages/ReservationPage';
 import AuthPage from './pages/AuthPage';
+import MyBookingsPage from './pages/MyBookingsPage';
 import AdminDashboard from './admin/AdminDashboard';
 
 // Komponen penolong untuk menyembunyikan Navbar/Footer di halaman tertentu
@@ -31,6 +32,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/book" element={<ReservationPage />} />
+          <Route path="/my-bookings" element={<MyBookingsPage />} />
           <Route path="/login" element={<AuthPage />} />
           <Route path="/admin/*" element={<AdminDashboard />} />
         </Routes>

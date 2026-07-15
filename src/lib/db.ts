@@ -117,3 +117,40 @@ export async function getDaftarPelanggan() {
 export async function updateHargaLapangan(id: number, harga: number) {
   return await sql`UPDATE lapangan SET harga_per_jam = ${harga} WHERE id = ${id}`;
 }
+
+// === AUTH & USERS === //
+
+export async function loginUser(email: string, password: string) {
+  const result = await sql`SELECT id, nama, email FROM pelanggan WHERE email = ${email} AND password = ${password}`;
+  if (result.length > 0) {
+    const user = result[0];
+    // Define admin based on specific email
+    const isAdmin = user.email === 'admin@smsport.com' || user.email === 'admin@futsal.com';
+    return { ...user, role: isAdmin ? 'admin' : 'user' };
+  }
+  throw new Error("Email atau password salah.");
+}
+
+export async function registerUser(nama: string, email: string, password: string) {
+  const check = await sql`SELECT id FROM pelanggan WHERE email = ${email}`;
+  if (check.length > 0) throw new Error("Email sudah terdaftar.");
+  
+  const result = await sql`
+    INSERT INTO pelanggan (nama, email, password) 
+    VALUES (${nama}, ${email}, ${password})
+    RETURNING id, nama, email
+  `;
+  const user = result[0];
+  const isAdmin = user.email === 'admin@smsport.com' || user.email === 'admin@futsal.com';
+  return { ...user, role: isAdmin ? 'admin' : 'user' };
+}
+
+export async function getRiwayatBooking(pelangganId: number) {
+  return await sql`
+    SELECT r.id, l.nama as lapangan_nama, r.tanggal, r.jam_mulai, r.jam_selesai, r.status, l.harga_per_jam
+    FROM reservasi r
+    JOIN lapangan l ON r.lapangan_id = l.id
+    WHERE r.pelanggan_id = ${pelangganId}
+    ORDER BY r.tanggal DESC, r.jam_mulai DESC
+  `;
+}

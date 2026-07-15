@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AdminSidebar from './components/AdminSidebar';
 import AdminHeader from './components/AdminHeader';
 import DashboardView from './views/DashboardView';
@@ -8,6 +9,19 @@ import SettingsView from './views/SettingsView';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const sessionStr = localStorage.getItem('sm_session');
+    if (!sessionStr) {
+      navigate('/login');
+      return;
+    }
+    const user = JSON.parse(sessionStr);
+    if (user.role !== 'admin') {
+      navigate('/');
+    }
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-slate-950 flex text-slate-50 font-sans w-full">
