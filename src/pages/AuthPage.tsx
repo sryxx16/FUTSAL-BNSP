@@ -14,7 +14,7 @@ export default function AuthPage() {
     password: ''
   });
   
-  const [status, setStatus] = useState<{ type: 'idle' | 'loading' | 'error', message: string }>({ type: 'idle', message: '' });
+  const [status, setStatus] = useState<{ type: 'idle' | 'loading' | 'error' | 'success', message: string }>({ type: 'idle', message: '' });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
