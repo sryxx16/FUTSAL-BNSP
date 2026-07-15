@@ -38,12 +38,12 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex-shrink-0 flex items-center">
-            <Link to="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-600">
+            <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-600">
               SM Sport
             </Link>
           </div>
           <div className="hidden md:flex space-x-8 items-center">
-            <Link to="/" className="text-slate-300 hover:text-emerald-400 transition-colors">Home</Link>
+            <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-slate-300 hover:text-emerald-400 transition-colors">Home</Link>
             <a href="/#fasilitas" className="text-slate-300 hover:text-emerald-400 transition-colors">Fasilitas</a>
             <a href="/#kontak" className="text-slate-300 hover:text-emerald-400 transition-colors">Kontak</a>
             <div className="flex items-center space-x-4 pl-4 border-l border-slate-800">
@@ -98,7 +98,7 @@ export default function Navbar() {
             className="md:hidden bg-slate-900 border-b border-slate-800 overflow-hidden"
           >
             <div className="px-4 pt-2 pb-6 space-y-2">
-              <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-md">Home</Link>
+              <Link to="/" onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="block px-3 py-2 text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-md">Home</Link>
               <a href="/#fasilitas" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-md">Fasilitas</a>
               <a href="/#kontak" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-md">Kontak</a>
               <div className="mt-6 pt-6 border-t border-slate-800 space-y-3">

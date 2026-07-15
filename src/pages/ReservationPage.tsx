@@ -19,6 +19,8 @@ export default function ReservationPage() {
   const [status, setStatus] = useState<{ type: 'idle' | 'loading' | 'error' | 'success', message: string }>({ type: 'idle', message: '' });
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    
     async function loadLapangan() {
       try {
         const data = await getDaftarLapangan();

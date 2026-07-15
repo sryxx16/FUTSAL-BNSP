@@ -47,8 +47,8 @@ Proyek ini dibangun untuk memenuhi instrumen penilaian **FR.IA.04A Uji Kompetens
 ### 2. Implementasi UI & Source Code (Output 3)
 - [x] Membuat definisi tipe data strict dengan TypeScript (`src/types/database.ts`).
 - [x] Membuat logika client-side validation pencegah *double booking* (`src/utils/validation.ts`).
-- [ ] Integrasi SDK `@neondatabase/serverless` ke dalam komponen React.
-- [ ] Pembuatan visual antarmuka interaktif dengan komponen animasi Framer Motion.
+- [x] Integrasi SDK `@neondatabase/serverless` ke dalam komponen React.
+- [x] Pembuatan visual antarmuka interaktif dengan komponen animasi Framer Motion.
 
 ### 3. Pembuatan Dokumen Kode Program (Output 4)
 - [ ] Menyusun deskripsi fungsi komponen, struktur database PostgreSQL, dan penjelasan modul interaksi state.
@@ -87,7 +87,7 @@ Proyek ini dibangun untuk memenuhi instrumen penilaian **FR.IA.04A Uji Kompetens
 ## 📂 BUKTI FISIK YANG HARUS DIKUMPULKAN KE ASESOR
 1. `[ ]` Dokumen Analisis Skalabilitas Perangkat Lunak
 2. `[x]` ERD dan SQL Script (PostgreSQL)
-3. `[🔄]` User Interface Screenshots & Source Code (.tsx)
+3. `[x]` User Interface Screenshots & Source Code (.tsx)
 4. `[ ]` Dokumentasi Kode Program
 5. `[ ]` Laporan Debugging Sistem Reservasi
 6. `[ ]` Hasil Profiling Program (React Profiler)

@@ -6,7 +6,12 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <span className="text-2xl font-bold text-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.3)]">SM Sport Center</span>
+            <span 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="text-2xl font-bold text-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.3)] cursor-pointer hover:text-emerald-400 transition-colors"
+            >
+              SM Sport Center
+            </span>
             <p className="mt-4 text-slate-400 leading-relaxed">
               Fasilitas olahraga premium untuk menunjang performa dan semangat juara Anda.
             </p>
