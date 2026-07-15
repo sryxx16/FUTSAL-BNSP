@@ -51,11 +51,7 @@ export default function Navbar() {
               
               {user ? (
                 <>
-                  {user.role === 'admin' && (
-                    <Link to="/admin" className="px-4 py-2 rounded-full border border-slate-700 text-slate-300 hover:bg-slate-800 transition-all duration-300">
-                      Admin Panel
-                    </Link>
-                  )}
+                  {/* Admin panel link dihapus dari Navbar sesuai permintaan */}
                   {user.role === 'user' && (
                     <Link to="/my-bookings" className="flex items-center gap-2 text-slate-300 hover:text-emerald-400 transition-colors">
                       <History size={18} /> Riwayat
@@ -108,11 +104,7 @@ export default function Navbar() {
                 
                 {user ? (
                   <>
-                    {user.role === 'admin' && (
-                      <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full border border-slate-600 text-slate-300 hover:bg-slate-800 transition-colors">
-                        Admin Panel
-                      </Link>
-                    )}
+                    {/* Admin panel link dihapus dari Navbar sesuai permintaan */}
                     {user.role === 'user' && (
                       <Link to="/my-bookings" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full border border-slate-600 text-slate-300 hover:bg-slate-800 transition-colors">
                         Riwayat Pemesanan
