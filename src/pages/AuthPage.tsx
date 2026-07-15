@@ -26,21 +26,23 @@ export default function AuthPage() {
     setStatus({ type: 'loading', message: 'Memproses...' });
     
     try {
-      let user;
       if (isLogin) {
-        user = await loginUser(formData.email, formData.password);
+        const user = await loginUser(formData.email, formData.password);
+        // Simpan session
+        localStorage.setItem('sm_session', JSON.stringify(user));
+        
+        // Redirect
+        if (user.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
       } else {
-        user = await registerUser(formData.nama, formData.email, formData.password);
-      }
-      
-      // Simpan session
-      localStorage.setItem('sm_session', JSON.stringify(user));
-      
-      // Redirect
-      if (user.role === 'admin') {
-        navigate('/admin');
-      } else {
-        navigate('/');
+        await registerUser(formData.nama, formData.email, formData.password);
+        // Jangan auto-login. Ubah ke form login dan tampilkan pesan sukses.
+        setStatus({ type: 'success', message: 'Registrasi berhasil! Silakan login.' });
+        setIsLogin(true);
+        setFormData(prev => ({ ...prev, password: '' })); // Kosongkan password demi keamanan
       }
     } catch (err: any) {
       setStatus({ type: 'error', message: err.message || 'Terjadi kesalahan.' });
@@ -106,9 +108,13 @@ export default function AuthPage() {
               </button>
             </div>
 
-            {status.type === 'error' && (
-              <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-lg flex items-center gap-3 text-red-400">
-                <AlertCircle size={20} />
+            {status.type !== 'idle' && (
+              <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
+                status.type === 'error' ? 'bg-red-500/10 border border-red-500/50 text-red-400' : 
+                status.type === 'success' ? 'bg-emerald-500/10 border border-emerald-500/50 text-emerald-400' : 
+                'bg-blue-500/10 border border-blue-500/50 text-blue-400'
+              }`}>
+                {status.type === 'error' ? <AlertCircle size={20} /> : <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center"><div className="w-2 h-3 border-b-2 border-r-2 border-slate-950 transform rotate-45 mb-1" /></div>}
                 <span className="text-sm font-medium">{status.message}</span>
               </div>
             )}
