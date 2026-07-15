@@ -110,6 +110,14 @@ export default function ReservationsView() {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(harga);
   };
 
+  const hitungTotalHarga = (jamMulai: string, jamSelesai: string, hargaPerJam: number) => {
+    if (!jamMulai || !jamSelesai) return hargaPerJam;
+    const [h1, m1] = jamMulai.split(':').map(Number);
+    const [h2, m2] = jamSelesai.split(':').map(Number);
+    const totalMenit = (h2 * 60 + m2) - (h1 * 60 + m1);
+    return (totalMenit / 60) * hargaPerJam;
+  };
+
   const filtered = reservations.filter(r => {
     if (filterStatus !== 'Semua Status' && r.status !== filterStatus) return false;
     if (filterDate && new Date(r.tanggal).toISOString().split('T')[0] !== filterDate) return false;
@@ -176,7 +184,7 @@ export default function ReservationsView() {
                     {formatTanggal(row.tanggal)}<br/>
                     <span className="text-xs text-slate-500">{row.jam_mulai.substring(0,5)} - {row.jam_selesai.substring(0,5)}</span>
                   </td>
-                  <td className="p-4 text-slate-300">{formatUang(row.harga_per_jam)}</td>
+                  <td className="p-4 text-slate-300">{formatUang(hitungTotalHarga(row.jam_mulai, row.jam_selesai, row.harga_per_jam))}</td>
                   <td className="p-4">
                     {editingId === row.id ? (
                       <select 

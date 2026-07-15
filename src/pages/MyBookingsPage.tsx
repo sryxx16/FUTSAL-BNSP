@@ -45,6 +45,14 @@ export default function MyBookingsPage() {
     return new Date(date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
+  const hitungTotalHarga = (jamMulai: string, jamSelesai: string, hargaPerJam: number) => {
+    if (!jamMulai || !jamSelesai) return hargaPerJam;
+    const [h1, m1] = jamMulai.split(':').map(Number);
+    const [h2, m2] = jamSelesai.split(':').map(Number);
+    const totalMenit = (h2 * 60 + m2) - (h1 * 60 + m1);
+    return (totalMenit / 60) * hargaPerJam;
+  };
+
   return (
     <main className="pt-24 pb-12 min-h-screen relative overflow-hidden bg-slate-950">
       <div className="absolute top-[-10%] right-[-5%] w-[30rem] h-[30rem] bg-emerald-700/10 rounded-full blur-[100px] pointer-events-none" />
@@ -107,7 +115,7 @@ export default function MyBookingsPage() {
                   <div className="text-right w-full sm:w-auto mt-2 sm:mt-0">
                     <p className="text-sm text-slate-500 mb-1">Total Biaya</p>
                     <p className="text-emerald-400 font-bold text-lg">
-                      Rp {booking.harga_per_jam.toLocaleString('id-ID')}
+                      Rp {hitungTotalHarga(booking.jam_mulai, booking.jam_selesai, booking.harga_per_jam).toLocaleString('id-ID')}
                     </p>
                   </div>
                 </motion.div>

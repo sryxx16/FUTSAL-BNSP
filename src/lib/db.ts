@@ -97,7 +97,7 @@ export async function buatReservasiDB(pelangganNama: string, lapanganId: number,
 export async function getStatistikDashboard() {
   const rsToday = await sql`SELECT count(*) as total FROM reservasi WHERE tanggal = CURRENT_DATE`;
   const rsRevenue = await sql`
-    SELECT COALESCE(SUM(l.harga_per_jam), 0) as total 
+    SELECT COALESCE(SUM(l.harga_per_jam * (EXTRACT(EPOCH FROM (r.jam_selesai - r.jam_mulai)) / 3600)), 0) as total 
     FROM reservasi r 
     JOIN lapangan l ON r.lapangan_id = l.id 
     WHERE r.status != 'Dibatalkan' AND EXTRACT(MONTH FROM r.tanggal) = EXTRACT(MONTH FROM CURRENT_DATE)
