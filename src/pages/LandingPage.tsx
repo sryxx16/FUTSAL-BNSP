@@ -15,10 +15,10 @@ export default function LandingPage() {
       </div>
 
       <HeroSection />
+      <ScheduleSection />
       <FeaturesSection />
       <FacilitiesSection />
       <CourtsSection />
-      <ScheduleSection />
       <ContactSection />
     </main>
   );
