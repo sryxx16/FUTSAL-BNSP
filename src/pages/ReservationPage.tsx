@@ -37,6 +37,11 @@ export default function ReservationPage() {
     loadLapangan();
   }, []);
 
+  const timeSlots = [];
+  for (let i = 8; i <= 23; i++) {
+    timeSlots.push(`${i.toString().padStart(2, '0')}:00`);
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if(status.type !== 'loading') setStatus({ type: 'idle', message: '' });
@@ -170,34 +175,38 @@ export default function ReservationPage() {
                 <label className="text-sm font-medium text-slate-300">Jam Mulai</label>
                 <div className="relative">
                   <Clock className="absolute left-4 top-3.5 text-slate-500" size={20} />
-                  <input 
-                    type="time" 
+                  <select 
                     name="jam_mulai"
                     value={formData.jam_mulai}
                     onChange={handleChange}
                     required
-                    min="08:00"
-                    max="23:00"
-                    className="w-full bg-slate-950/50 border border-slate-700 rounded-lg pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
-                    style={{ colorScheme: 'dark' }}
-                  />
+                    className="w-full bg-slate-950/50 border border-slate-700 rounded-lg pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors appearance-none"
+                  >
+                    <option value="" disabled>Pilih Jam Mulai</option>
+                    {timeSlots.map(time => (
+                      <option key={`mulai-${time}`} value={time} className="bg-slate-900">{time}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-300">Jam Selesai</label>
                 <div className="relative">
                   <Clock className="absolute left-4 top-3.5 text-slate-500" size={20} />
-                  <input 
-                    type="time" 
+                  <select 
                     name="jam_selesai"
                     value={formData.jam_selesai}
                     onChange={handleChange}
                     required
-                    min="08:00"
-                    max="23:00"
-                    className="w-full bg-slate-950/50 border border-slate-700 rounded-lg pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
-                    style={{ colorScheme: 'dark' }}
-                  />
+                    className="w-full bg-slate-950/50 border border-slate-700 rounded-lg pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors appearance-none"
+                  >
+                    <option value="" disabled>Pilih Jam Selesai</option>
+                    {timeSlots.map(time => (
+                      <option key={`selesai-${time}`} value={time} className="bg-slate-900" disabled={formData.jam_mulai ? time <= formData.jam_mulai : false}>
+                        {time}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
