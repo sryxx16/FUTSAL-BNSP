@@ -11,7 +11,6 @@ export default function CheckoutPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [payStatus, setPayStatus] = useState<'idle' | 'loading' | 'success'>('idle');
-  const [inputNominal, setInputNominal] = useState<string>('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -39,20 +38,14 @@ export default function CheckoutPage() {
   };
 
   const handleBayar = async () => {
-    const nominal = Number(inputNominal);
     const dp = hitungTotalHarga(data.jam_mulai, data.jam_selesai, data.harga_per_jam) / 2;
-    
-    if (nominal < dp) {
-      alert("Nominal yang Anda masukkan kurang dari jumlah DP yang diwajibkan (50%)!");
-      return;
-    }
 
     setPayStatus('loading');
     try {
       // Simulasi delay gateway 2 detik
       await new Promise(resolve => setTimeout(resolve, 2000));
       if (id) {
-        await bayarDPReservasi(parseInt(id), nominal);
+        await bayarDPReservasi(parseInt(id), dp);
       }
       setPayStatus('success');
       setTimeout(() => {
@@ -123,25 +116,11 @@ export default function CheckoutPage() {
             <p className="text-sm text-slate-400 text-center flex items-center gap-2 mb-6">
               <Clock size={16} className="text-yellow-500" /> Selesaikan pembayaran dalam 20 menit
             </p>
-
-            <div className="w-full">
-              <label className="text-sm font-medium text-slate-300 block mb-2">Masukkan Nominal Transfer Anda</label>
-              <div className="relative">
-                <span className="absolute left-4 top-4 text-slate-400">Rp</span>
-                <input 
-                  type="number"
-                  value={inputNominal}
-                  onChange={(e) => setInputNominal(e.target.value)}
-                  placeholder="Contoh: 100000"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-12 pr-4 py-4 text-white font-bold text-lg focus:outline-none focus:border-emerald-500 transition-colors"
-                />
-              </div>
-            </div>
           </div>
 
           <button 
             onClick={handleBayar}
-            disabled={payStatus !== 'idle' || !inputNominal}
+            disabled={payStatus !== 'idle'}
             className={`w-full py-4 rounded-xl font-bold text-lg flex justify-center items-center gap-2 transition-all duration-300 ${
               payStatus === 'success' 
                 ? 'bg-emerald-500 text-slate-950' 
