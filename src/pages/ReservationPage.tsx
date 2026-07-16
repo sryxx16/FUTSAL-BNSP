@@ -50,6 +50,11 @@ export default function ReservationPage() {
       return;
     }
 
+    if (formData.jam_mulai < "08:00" || formData.jam_selesai > "23:00") {
+      setStatus({ type: 'error', message: 'Jam operasional kami hanya dari 08:00 hingga 23:00.' });
+      return;
+    }
+
     setStatus({ type: 'loading', message: 'Menyimpan reservasi ke Database Neon...' });
 
     try {
