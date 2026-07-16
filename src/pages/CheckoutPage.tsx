@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { getReservasiById, bayarDPReservasi } from '../lib/db';
-import { QrCode, CheckCircle, Loader2, ArrowLeft, Clock } from 'lucide-react';
+import { CheckCircle, Loader2, ArrowLeft, Clock } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function CheckoutPage() {
   const { id } = useParams();
@@ -110,8 +111,14 @@ export default function CheckoutPage() {
           </div>
 
           <div className="flex flex-col items-center mb-6">
-            <div className="w-48 h-48 bg-white p-2 rounded-2xl mb-4 flex items-center justify-center overflow-hidden shadow-inner">
-              <img src="/qris-demo.png" alt="QRIS" className="w-full h-full object-contain mix-blend-multiply" />
+            <div className="bg-white p-4 rounded-2xl mb-4 flex flex-col items-center justify-center shadow-lg relative">
+              <QRCodeSVG 
+                value={window.location.href} 
+                size={200}
+                level="H"
+                includeMargin={true}
+              />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png" alt="QRIS" className="h-6 absolute bg-white px-2 rounded-lg" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
             </div>
             <p className="text-sm text-slate-400 text-center flex items-center gap-2 mb-6">
               <Clock size={16} className="text-yellow-500" /> Selesaikan pembayaran dalam 20 menit
