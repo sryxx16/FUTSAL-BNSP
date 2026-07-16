@@ -54,7 +54,7 @@ export default function CheckoutPage() {
     } catch (err) {
       console.error(err);
       setPayStatus('idle');
-      alert("Gagal melakukan simulasi pembayaran");
+      alert("Gagal melakukan pembayaran");
     }
   };
 
@@ -81,8 +81,8 @@ export default function CheckoutPage() {
   return (
     <main className="pt-24 pb-12 min-h-screen bg-slate-950 flex justify-center items-center px-4 relative overflow-hidden">
       <div className="absolute top-1/4 -right-1/4 w-[40rem] h-[40rem] bg-emerald-700/10 rounded-full blur-[120px] pointer-events-none" />
-      
-      <motion.div 
+
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl relative z-10"
@@ -98,15 +98,15 @@ export default function CheckoutPage() {
           <div className="bg-slate-950 rounded-xl p-4 mb-6 border border-slate-800">
             <p className="text-sm text-slate-400 mb-1">Total Biaya Sewa:</p>
             <p className="text-lg text-white font-medium mb-4 line-through decoration-red-500">Rp {total.toLocaleString('id-ID')}</p>
-            
+
             <p className="text-sm text-emerald-400 font-bold mb-1">DP yang harus dibayar (50%):</p>
             <p className="text-3xl font-bold text-emerald-400">Rp {dp.toLocaleString('id-ID')}</p>
           </div>
 
           <div className="flex flex-col items-center mb-6">
             <div className="bg-white p-4 rounded-2xl mb-4 flex flex-col items-center justify-center shadow-lg relative">
-              <QRCodeSVG 
-                value={window.location.href} 
+              <QRCodeSVG
+                value={window.location.href}
                 size={200}
                 level="H"
                 includeMargin={true}
@@ -118,19 +118,18 @@ export default function CheckoutPage() {
             </p>
           </div>
 
-          <button 
+          <button
             onClick={handleBayar}
             disabled={payStatus !== 'idle'}
-            className={`w-full py-4 rounded-xl font-bold text-lg flex justify-center items-center gap-2 transition-all duration-300 ${
-              payStatus === 'success' 
-                ? 'bg-emerald-500 text-slate-950' 
-                : payStatus === 'loading'
+            className={`w-full py-4 rounded-xl font-bold text-lg flex justify-center items-center gap-2 transition-all duration-300 ${payStatus === 'success'
+              ? 'bg-emerald-500 text-slate-950'
+              : payStatus === 'loading'
                 ? 'bg-emerald-500/50 text-slate-950 cursor-wait'
                 : 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]'
-            }`}
+              }`}
           >
             {payStatus === 'idle' && (
-              <>Simulasi Bayar QRIS Sekarang</>
+              <> Bayar QRIS Sekarang</>
             )}
             {payStatus === 'loading' && (
               <><Loader2 className="animate-spin" size={24} /> Memverifikasi Bank...</>
