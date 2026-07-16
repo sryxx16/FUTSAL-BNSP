@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, LogOut, History, User } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   
-  // Ambil sesi user
-  const sessionStr = localStorage.getItem('sm_session');
-  const user = sessionStr ? JSON.parse(sessionStr) : null;
+  // Ambil sesi user tiap kali pindah halaman
+  useEffect(() => {
+    const sessionStr = localStorage.getItem('sm_session');
+    setUser(sessionStr ? JSON.parse(sessionStr) : null);
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,7 +67,7 @@ export default function Navbar() {
                       className="text-sm text-emerald-400 font-bold flex items-center gap-2 hover:text-emerald-300 transition-colors bg-emerald-500/10 px-3 py-1.5 rounded-full"
                       title={user.role === 'admin' ? 'Buka Admin Panel' : 'Lihat Profil'}
                     >
-                      <User size={16} /> {user.nama.split(' ')[0]}
+                      <User size={16} /> {user.role === 'admin' ? 'ADMIN' : user.nama.split(' ')[0]}
                     </Link>
                     <button onClick={handleLogout} className="text-red-400 hover:text-red-300 transition-colors p-1.5 hover:bg-red-500/10 rounded-full" title="Logout">
                       <LogOut size={18} />
