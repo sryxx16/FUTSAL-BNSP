@@ -110,8 +110,8 @@ export default function CheckoutPage() {
           </div>
 
           <div className="flex flex-col items-center mb-6">
-            <div className="w-48 h-48 bg-white p-4 rounded-2xl mb-4 flex items-center justify-center">
-              <QrCode size={160} className="text-slate-900" />
+            <div className="w-48 h-48 bg-white p-2 rounded-2xl mb-4 flex items-center justify-center overflow-hidden shadow-inner">
+              <img src="/qris-demo.png" alt="QRIS" className="w-full h-full object-contain mix-blend-multiply" />
             </div>
             <p className="text-sm text-slate-400 text-center flex items-center gap-2 mb-6">
               <Clock size={16} className="text-yellow-500" /> Selesaikan pembayaran dalam 20 menit
