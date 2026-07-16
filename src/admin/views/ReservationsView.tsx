@@ -95,7 +95,8 @@ export default function ReservationsView() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Selesai': return 'text-emerald-400 bg-emerald-400/10 border border-emerald-500/30';
-      case 'Menunggu': return 'text-yellow-400 bg-yellow-400/10 border border-yellow-500/30';
+      case 'Sudah DP 50%': return 'text-blue-400 bg-blue-400/10 border border-blue-500/30';
+      case 'Menunggu Pembayaran': return 'text-yellow-400 bg-yellow-400/10 border border-yellow-500/30';
       case 'Dibatalkan': return 'text-red-400 bg-red-400/10 border border-red-500/30';
       default: return 'text-slate-400 bg-slate-400/10 border border-slate-500/30';
     }

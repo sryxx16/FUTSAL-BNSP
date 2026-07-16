@@ -13,10 +13,7 @@ export async function autoCancelExpiredBookings() {
     UPDATE reservasi 
     SET status = 'Dibatalkan' 
     WHERE status = 'Menunggu Pembayaran' 
-    AND (
-      (tanggal < CURRENT_DATE) OR 
-      (tanggal = CURRENT_DATE AND (jam_mulai - INTERVAL '20 minutes') < CURRENT_TIME)
-    )
+    AND (created_at + INTERVAL '20 minutes') < CURRENT_TIMESTAMP
   `;
 }
 
@@ -144,8 +141,8 @@ export async function getReservasiById(id: number) {
   return result[0];
 }
 
-export async function bayarDPReservasi(id: number) {
-  return await sql`UPDATE reservasi SET status = 'Menunggu' WHERE id = ${id}`;
+export async function bayarDPReservasi(id: number, nominal: number) {
+  return await sql`UPDATE reservasi SET status = 'Sudah DP 50%', nominal_dp = ${nominal} WHERE id = ${id}`;
 }
 
 export async function getDaftarPelanggan() {

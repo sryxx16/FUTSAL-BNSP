@@ -10,6 +10,7 @@ export default function CheckoutPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [payStatus, setPayStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+  const [inputNominal, setInputNominal] = useState<string>('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -37,12 +38,20 @@ export default function CheckoutPage() {
   };
 
   const handleBayar = async () => {
+    const nominal = Number(inputNominal);
+    const dp = hitungTotalHarga(data.jam_mulai, data.jam_selesai, data.harga_per_jam) / 2;
+    
+    if (nominal < dp) {
+      alert("Nominal yang Anda masukkan kurang dari jumlah DP yang diwajibkan (50%)!");
+      return;
+    }
+
     setPayStatus('loading');
     try {
       // Simulasi delay gateway 2 detik
       await new Promise(resolve => setTimeout(resolve, 2000));
       if (id) {
-        await bayarDPReservasi(parseInt(id));
+        await bayarDPReservasi(parseInt(id), nominal);
       }
       setPayStatus('success');
       setTimeout(() => {
@@ -100,21 +109,32 @@ export default function CheckoutPage() {
             <p className="text-3xl font-bold text-emerald-400">Rp {dp.toLocaleString('id-ID')}</p>
           </div>
 
-          <div className="flex flex-col items-center mb-8">
-            <div className="w-48 h-48 bg-white p-4 rounded-2xl mb-4 relative flex items-center justify-center">
+          <div className="flex flex-col items-center mb-6">
+            <div className="w-48 h-48 bg-white p-4 rounded-2xl mb-4 flex items-center justify-center">
               <QrCode size={160} className="text-slate-900" />
-              <div className="absolute inset-0 bg-white/20 backdrop-blur-[1px] flex items-center justify-center rounded-2xl pointer-events-none">
-                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png" alt="QRIS" className="h-8 absolute top-4 bg-white px-2 rounded" />
-              </div>
             </div>
-            <p className="text-sm text-slate-400 text-center flex items-center gap-2">
+            <p className="text-sm text-slate-400 text-center flex items-center gap-2 mb-6">
               <Clock size={16} className="text-yellow-500" /> Selesaikan pembayaran dalam 20 menit
             </p>
+
+            <div className="w-full">
+              <label className="text-sm font-medium text-slate-300 block mb-2">Masukkan Nominal Transfer Anda</label>
+              <div className="relative">
+                <span className="absolute left-4 top-4 text-slate-400">Rp</span>
+                <input 
+                  type="number"
+                  value={inputNominal}
+                  onChange={(e) => setInputNominal(e.target.value)}
+                  placeholder="Contoh: 100000"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-12 pr-4 py-4 text-white font-bold text-lg focus:outline-none focus:border-emerald-500 transition-colors"
+                />
+              </div>
+            </div>
           </div>
 
           <button 
             onClick={handleBayar}
-            disabled={payStatus !== 'idle'}
+            disabled={payStatus !== 'idle' || !inputNominal}
             className={`w-full py-4 rounded-xl font-bold text-lg flex justify-center items-center gap-2 transition-all duration-300 ${
               payStatus === 'success' 
                 ? 'bg-emerald-500 text-slate-950' 
