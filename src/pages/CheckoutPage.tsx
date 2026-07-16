@@ -111,7 +111,6 @@ export default function CheckoutPage() {
                 level="H"
                 includeMargin={true}
               />
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png" alt="QRIS" className="h-6 absolute bg-white px-2 rounded-lg" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
             </div>
             <p className="text-sm text-slate-400 text-center flex items-center gap-2 mb-6">
               <Clock size={16} className="text-yellow-500" /> Selesaikan pembayaran dalam 20 menit
