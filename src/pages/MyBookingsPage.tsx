@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { getRiwayatBooking } from '../lib/db';
-import { Calendar, Clock, History, Loader2, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, History, Loader2, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function MyBookingsPage() {
@@ -34,7 +34,7 @@ export default function MyBookingsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Selesai': return 'text-emerald-400 bg-emerald-400/10 border-emerald-500/30';
-      case 'Menunggu': return 'text-yellow-400 bg-yellow-400/10 border-yellow-500/30';
+      case 'Menunggu Pembayaran': return 'text-yellow-400 bg-yellow-400/10 border-yellow-500/30';
       case 'Dibatalkan': return 'text-red-400 bg-red-400/10 border-red-500/30';
       default: return 'text-slate-400 bg-slate-400/10 border-slate-500/30';
     }
@@ -114,9 +114,17 @@ export default function MyBookingsPage() {
                   </div>
                   <div className="text-right w-full sm:w-auto mt-2 sm:mt-0">
                     <p className="text-sm text-slate-500 mb-1">Total Biaya</p>
-                    <p className="text-emerald-400 font-bold text-lg">
+                    <p className="text-emerald-400 font-bold text-lg mb-2">
                       Rp {hitungTotalHarga(booking.jam_mulai, booking.jam_selesai, booking.harga_per_jam).toLocaleString('id-ID')}
                     </p>
+                    {booking.status === 'Menunggu Pembayaran' && (
+                      <button 
+                        onClick={() => navigate(`/checkout/${booking.id}`)}
+                        className="bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded-lg text-sm hover:bg-emerald-400 transition-colors flex items-center gap-2 justify-center w-full"
+                      >
+                        Bayar DP <ArrowRight size={16} />
+                      </button>
+                    )}
                   </div>
                 </motion.div>
               ))}

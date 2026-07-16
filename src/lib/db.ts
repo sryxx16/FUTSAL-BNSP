@@ -8,12 +8,25 @@ if (!dbUrl) {
 
 const sql = neon(dbUrl);
 
+export async function autoCancelExpiredBookings() {
+  await sql`
+    UPDATE reservasi 
+    SET status = 'Dibatalkan' 
+    WHERE status = 'Menunggu Pembayaran' 
+    AND (
+      (tanggal < CURRENT_DATE) OR 
+      (tanggal = CURRENT_DATE AND (jam_mulai - INTERVAL '20 minutes') < CURRENT_TIME)
+    )
+  `;
+}
+
 export async function getDaftarLapangan() {
   const result = await sql`SELECT * FROM lapangan ORDER BY id ASC`;
   return result;
 }
 
 export async function getJadwalHariIni() {
+  await autoCancelExpiredBookings();
   const result = await sql`
     SELECT 
       l.id as lapangan_id,
@@ -30,6 +43,7 @@ export async function getJadwalHariIni() {
 }
 
 export async function getSemuaReservasi() {
+  await autoCancelExpiredBookings();
   const result = await sql`
     SELECT 
       r.id, 
@@ -87,7 +101,7 @@ export async function buatReservasiDB(pelangganNama: string, lapanganId: number,
   
   const result = await sql`
     INSERT INTO reservasi (pelanggan_id, lapangan_id, tanggal, jam_mulai, jam_selesai, status)
-    VALUES (${pelangganId}, ${lapanganId}, ${tanggal}::date, ${jamMulai}::time, ${jamSelesai}::time, 'Menunggu')
+    VALUES (${pelangganId}, ${lapanganId}, ${tanggal}::date, ${jamMulai}::time, ${jamSelesai}::time, 'Menunggu Pembayaran')
     RETURNING *
   `;
   
@@ -117,6 +131,21 @@ export async function hapusReservasi(id: number) {
 
 export async function updateStatusReservasi(id: number, status: string) {
   return await sql`UPDATE reservasi SET status = ${status} WHERE id = ${id}`;
+}
+
+export async function getReservasiById(id: number) {
+  const result = await sql`
+    SELECT r.*, l.nama as lapangan_nama, l.harga_per_jam, p.nama as pelanggan_nama 
+    FROM reservasi r 
+    JOIN lapangan l ON r.lapangan_id = l.id 
+    JOIN pelanggan p ON r.pelanggan_id = p.id
+    WHERE r.id = ${id}
+  `;
+  return result[0];
+}
+
+export async function bayarDPReservasi(id: number) {
+  return await sql`UPDATE reservasi SET status = 'Menunggu' WHERE id = ${id}`;
 }
 
 export async function getDaftarPelanggan() {

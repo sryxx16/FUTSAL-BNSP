@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { getDaftarLapangan, buatReservasiDB } from '../lib/db';
 import { Calendar, Clock, User, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function ReservationPage() {
+  const navigate = useNavigate();
   const [lapanganList, setLapanganList] = useState<any[]>([]);
   const sessionStr = localStorage.getItem('sm_session');
   const user = sessionStr ? JSON.parse(sessionStr) : null;
@@ -52,7 +54,7 @@ export default function ReservationPage() {
 
     try {
       // Menggunakan nama asli yang diinput di form
-      await buatReservasiDB(
+      const result = await buatReservasiDB(
         formData.pelanggan_nama, 
         parseInt(formData.lapangan_id), 
         formData.tanggal, 
@@ -61,8 +63,9 @@ export default function ReservationPage() {
       );
       
       setStatus({ type: 'success', message: 'Reservasi Berhasil Dibuat ke Database Neon!' });
-      // Reset form
-      setFormData(prev => ({ ...prev, tanggal: '', jam_mulai: '', jam_selesai: '', pelanggan_nama: '' }));
+      setTimeout(() => {
+        navigate(`/checkout/${result.id}`);
+      }, 2000);
     } catch (err: any) {
       setStatus({ 
         type: 'error', 
@@ -168,6 +171,8 @@ export default function ReservationPage() {
                     value={formData.jam_mulai}
                     onChange={handleChange}
                     required
+                    min="08:00"
+                    max="23:00"
                     className="w-full bg-slate-950/50 border border-slate-700 rounded-lg pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
                     style={{ colorScheme: 'dark' }}
                   />
@@ -183,6 +188,8 @@ export default function ReservationPage() {
                     value={formData.jam_selesai}
                     onChange={handleChange}
                     required
+                    min="08:00"
+                    max="23:00"
                     className="w-full bg-slate-950/50 border border-slate-700 rounded-lg pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
                     style={{ colorScheme: 'dark' }}
                   />
