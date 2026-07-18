@@ -41,6 +41,7 @@ erDiagram
         time jam_mulai
         time jam_selesai
         varchar status
+        decimal nominal_dp
         timestamp created_at
     }
 ```
@@ -81,7 +82,8 @@ CREATE TABLE IF NOT EXISTS reservasi (
   tanggal DATE NOT NULL,
   jam_mulai TIME NOT NULL,
   jam_selesai TIME NOT NULL,
-  status VARCHAR(50) NOT NULL DEFAULT 'Menunggu',
+  status VARCHAR(50) NOT NULL DEFAULT 'Menunggu Pembayaran',
+  nominal_dp DECIMAL(10,2) DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -91,11 +93,11 @@ CREATE TABLE IF NOT EXISTS reservasi (
 
 -- A. Memasukkan data master Lapangan (2 Futsal, 3 Badminton)
 INSERT INTO lapangan (nama, jenis, harga_per_jam) VALUES
-('Futsal Pro Court 1', 'Futsal', 120000),
-('Futsal Pro Court 2', 'Futsal', 120000),
-('Badminton BWF Standard 1', 'Badminton', 50000),
-('Badminton BWF Standard 2', 'Badminton', 50000),
-('Badminton BWF Standard 3', 'Badminton', 50000)
+('Lapangan Futsal 1', 'Futsal', 150000),
+('Lapangan Futsal 2', 'Futsal', 150000),
+('Lapangan Badminton 1', 'Badminton', 50000),
+('Lapangan Badminton 2', 'Badminton', 50000),
+('Lapangan Badminton 3', 'Badminton', 50000)
 ON CONFLICT DO NOTHING;
 
 -- B. Memasukkan akun Administrator

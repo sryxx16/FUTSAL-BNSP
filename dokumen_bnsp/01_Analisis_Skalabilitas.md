@@ -49,3 +49,5 @@ Untuk memastikan sistem tetap *scalable* saat jumlah pesanan mencapai puluhan ri
    Membuat kombinasi *index* (_Composite Index_) pada kolom `(lapangan_id, tanggal)` di tabel `reservasi`. Hal ini akan mencegah _Full Table Scan_ karena *database* dapat langsung melompat ke blok data spesifik lapangan dan hari tertentu saat memvalidasi bentrok jadwal.
 2. **Pendekatan Connection Pooling:** 
    Karena aplikasi menggunakan fungsi berbasis *serverless* (Edge/Serverless Functions Vercel), maka wajib menerapkan mekanisme koneksi *Pooling* (misalnya pgbouncer) atau *HTTP-based pooling* seperti yang disediakan oleh arsitektur Neon, agar *database* tidak tumbang (_connection limit reached_) saat diakses ribuan klien serentak.
+3. **Cron Job & Polling Terdistribusi (Auto-Cancel & Notifikasi):**
+   Fitur Auto-Cancel 20 Menit dan Polling Notifikasi 30 Detik memicu kueri yang sangat intens. Dengan menggunakan arsitektur serverless, fungsi-fungsi ini diisolasi per request sehingga meminimalisir beban *CPU blocking* di sisi server utama.

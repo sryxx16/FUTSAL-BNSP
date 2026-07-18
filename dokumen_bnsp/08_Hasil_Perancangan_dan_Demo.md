@@ -23,6 +23,8 @@ Agar Asesor dapat meninjau hasil pengembangan secara langsung tanpa harus menjal
 ### Instruksi untuk Asesor (Saat Demonstrasi)
 1. **Untuk menguji peran Pelanggan:** Silakan klik menu "Login / Register" di pojok kanan atas, pilih *tab* *Register*, dan daftarkan email sembarang. Anda akan dapat menggunakan fitur pemesanan dan riwayat pribadi.
 2. **Untuk menguji peran Admin:** Lakukan registrasi menggunakan akun *master email* yaitu `admin@smsport.com`. Sistem akan langsung membaca Anda sebagai Manajer, dan tombol Dasbor Rahasia Admin akan terbuka di menu Navigasi Anda.
+3. **Untuk menguji Fitur Pembayaran:** Setelah melakukan reservasi sebagai pelanggan, lakukan Checkout. Sistem akan mengeluarkan QRIS secara dinamis beserta potongan Harga DP 50%.
+4. **Untuk menguji Auto-Cancel:** Abaikan pembayaran selama 20 menit, dan sistem cron database akan otomatis membatalkan reservasi tersebut (mengubah status ke "Dibatalkan").
 
 ---
 *Dokumen ini merupakan bagian terpadu dari portofolio uji kompetensi.*

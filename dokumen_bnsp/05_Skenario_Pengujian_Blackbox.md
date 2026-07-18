@@ -54,3 +54,6 @@
 | ADM-02 | Filter data reservasi | 1. Login Admin -> Dasbor -> Reservasi <br> 2. Ubah *dropdown* status menjadi "Selesai" | Tabel secara instan (*real-time*) menyaring dan hanya menampilkan reservasi berstatus "Selesai". | [ ] Pass |
 | ADM-03 | Cetak Laporan PDF | 1. Buka menu Reservasi <br> 2. Klik tombol "Cetak Laporan" | Muncul jendela Print Preview bawaan OS. Layout tampil bersih: latar putih, *sidebar* hitam hilang, teks berwarna hitam. | [ ] Pass |
 | ADM-04 | Edit Harga Lapangan (Settings) | 1. Buka menu Pengaturan <br> 2. Ubah harga Futsal A menjadi 200.000 <br> 3. Simpan | Harga di database berubah. Saat pengguna melakukan *booking*, harga baru diterapkan. | [ ] Pass |
+| ADM-05 | Laporan Keuangan | 1. Buka Dasbor Admin <br> 2. Cek Total Pendapatan | Sistem menampilkan agregasi pendapatan Harian dan Bulanan. | [ ] Pass |
+| ADM-06 | LTV Pelanggan (CRUD) | 1. Buka menu Data Pelanggan <br> 2. Klik ikon detail pelanggan | Modal akan menampilkan rincian total booking dan Total Uang Dihabiskan (LTV). | [ ] Pass |
+| ADM-07 | Notifikasi Real-time | 1. Pesan lapangan sebagai pelanggan <br> 2. Di layar Admin, tunggu 30 detik | Ikon lonceng otomatis memunculkan angka merah, klik untuk melihat rincian pemesanan tertunda. | [ ] Pass |
