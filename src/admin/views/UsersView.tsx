@@ -112,6 +112,22 @@ export default function UsersView() {
     }
   };
 
+  // Hitung total pengeluaran
+  const totalSpent = userBookings.reduce((sum, b) => {
+    if (b.status === 'Selesai' || b.status === 'Sudah DP 50%') {
+      // Hitung durasi jam
+      const start = new Date(`1970-01-01T${b.jam_mulai}Z`).getTime();
+      const end = new Date(`1970-01-01T${b.jam_selesai}Z`).getTime();
+      const hours = (end - start) / (1000 * 60 * 60);
+      return sum + (b.harga_per_jam * hours);
+    }
+    return sum;
+  }, 0);
+
+  const formatUang = (harga: number) => {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(harga);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -235,7 +251,18 @@ export default function UsersView() {
             <h3 className="text-xl font-bold text-white mb-2">
               Detail Riwayat: {selectedUser.nama}
             </h3>
-            <p className="text-sm text-slate-400 mb-6">{selectedUser.email} &bull; Bergabung sejak {selectedUser.tgl_daftar}</p>
+            <p className="text-sm text-slate-400 mb-4">{selectedUser.email} &bull; Bergabung sejak {selectedUser.tgl_daftar}</p>
+            
+            <div className="bg-slate-950/50 rounded-xl p-4 mb-6 border border-slate-800 flex justify-between items-center">
+              <div>
+                <p className="text-xs text-slate-400 mb-1">Total Reservasi (Sukses)</p>
+                <p className="text-lg font-bold text-white">{userBookings.filter(b => b.status === 'Selesai' || b.status === 'Sudah DP 50%').length} Kali</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-slate-400 mb-1">Total Uang Dihabiskan (LTV)</p>
+                <p className="text-xl font-bold text-emerald-400">{formatUang(totalSpent)}</p>
+              </div>
+            </div>
             
             <div className="flex-1 overflow-y-auto pr-2">
               <table className="w-full text-left border-collapse">
@@ -244,19 +271,23 @@ export default function UsersView() {
                     <th className="p-3 font-medium">Tanggal</th>
                     <th className="p-3 font-medium">Lapangan</th>
                     <th className="p-3 font-medium">Jam</th>
+                    <th className="p-3 font-medium">Biaya</th>
                     <th className="p-3 font-medium">Status</th>
                   </tr>
                 </thead>
                 <tbody className="text-sm">
                   {loadingBookings ? (
-                    <tr><td colSpan={4} className="p-4 text-center text-slate-400">Memuat riwayat...</td></tr>
+                    <tr><td colSpan={5} className="p-4 text-center text-slate-400">Memuat riwayat...</td></tr>
                   ) : userBookings.length === 0 ? (
-                    <tr><td colSpan={4} className="p-4 text-center text-slate-400">Belum ada riwayat booking</td></tr>
+                    <tr><td colSpan={5} className="p-4 text-center text-slate-400">Belum ada riwayat booking</td></tr>
                   ) : userBookings.map((b) => (
                     <tr key={b.id} className="border-b border-slate-800/50 hover:bg-slate-800/20">
                       <td className="p-3 text-slate-300">{new Date(b.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
                       <td className="p-3 text-emerald-400">{b.lapangan_nama}</td>
                       <td className="p-3 text-slate-300">{b.jam_mulai.substring(0,5)} - {b.jam_selesai.substring(0,5)}</td>
+                      <td className="p-3 text-emerald-400 font-bold">
+                        {formatUang(b.harga_per_jam * ((new Date(`1970-01-01T${b.jam_selesai}Z`).getTime() - new Date(`1970-01-01T${b.jam_mulai}Z`).getTime()) / (1000*60*60)))}
+                      </td>
                       <td className="p-3">
                         <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${
                           b.status === 'Selesai' ? 'text-emerald-400 bg-emerald-400/10' :
