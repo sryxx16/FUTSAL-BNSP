@@ -60,7 +60,7 @@ export default function ReservationPage() {
       return;
     }
 
-    setStatus({ type: 'loading', message: 'Menyimpan reservasi ke Database Neon...' });
+    setStatus({ type: 'loading', message: 'Memproses reservasi Anda...' });
 
     try {
       // Menggunakan nama asli yang diinput di form
@@ -72,7 +72,7 @@ export default function ReservationPage() {
         formData.jam_selesai
       );
       
-      setStatus({ type: 'success', message: 'Reservasi Berhasil Dibuat ke Database Neon!' });
+      setStatus({ type: 'success', message: 'Reservasi berhasil dibuat!' });
       setTimeout(() => {
         navigate(`/checkout/${result.id}`);
       }, 2000);
