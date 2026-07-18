@@ -297,25 +297,33 @@ export default function ReservationsView() {
                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium text-slate-300 block mb-1">Jam Mulai</label>
-                    <input 
-                      type="time" required
-                      min="08:00" max="23:00"
+                    <select 
+                      required
                       value={formData.jam_mulai}
                       onChange={e => setFormData({...formData, jam_mulai: e.target.value})}
                       className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
-                      style={{ colorScheme: 'dark' }}
-                    />
+                    >
+                      <option value="">Pilih Jam</option>
+                      {Array.from({length: 16}).map((_, i) => {
+                        const hour = (i + 8).toString().padStart(2, '0');
+                        return <option key={hour} value={`${hour}:00`}>{hour}:00</option>
+                      })}
+                    </select>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-slate-300 block mb-1">Jam Selesai</label>
-                    <input 
-                      type="time" required
-                      min="08:00" max="23:00"
+                    <select 
+                      required
                       value={formData.jam_selesai}
                       onChange={e => setFormData({...formData, jam_selesai: e.target.value})}
                       className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
-                      style={{ colorScheme: 'dark' }}
-                    />
+                    >
+                      <option value="">Pilih Jam</option>
+                      {Array.from({length: 16}).map((_, i) => {
+                        const hour = (i + 8).toString().padStart(2, '0');
+                        return <option key={hour} value={`${hour}:00`}>{hour}:00</option>
+                      })}
+                    </select>
                   </div>
                </div>
 
