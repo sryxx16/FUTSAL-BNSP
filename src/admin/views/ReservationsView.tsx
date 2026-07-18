@@ -71,6 +71,14 @@ export default function ReservationsView() {
        return;
     }
     
+    const startHour = parseInt(formData.jam_mulai.split(':')[0]);
+    const endHour = parseInt(formData.jam_selesai.split(':')[0]);
+    
+    if (startHour < 8 || endHour > 23 || (endHour === 23 && parseInt(formData.jam_selesai.split(':')[1]) > 0)) {
+       alert('Maaf, jam operasional kami adalah 08:00 - 23:00');
+       return;
+    }
+    
     setFormLoading(true);
     try {
       await buatReservasiDB(
@@ -291,6 +299,7 @@ export default function ReservationsView() {
                     <label className="text-sm font-medium text-slate-300 block mb-1">Jam Mulai</label>
                     <input 
                       type="time" required
+                      min="08:00" max="23:00"
                       value={formData.jam_mulai}
                       onChange={e => setFormData({...formData, jam_mulai: e.target.value})}
                       className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
@@ -301,6 +310,7 @@ export default function ReservationsView() {
                     <label className="text-sm font-medium text-slate-300 block mb-1">Jam Selesai</label>
                     <input 
                       type="time" required
+                      min="08:00" max="23:00"
                       value={formData.jam_selesai}
                       onChange={e => setFormData({...formData, jam_selesai: e.target.value})}
                       className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
