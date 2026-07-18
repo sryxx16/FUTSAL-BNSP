@@ -95,6 +95,26 @@ export default function CheckoutPage() {
         </div>
 
         <div className="p-8">
+          {/* Detail Reservasi */}
+          <div className="bg-slate-950 rounded-xl p-4 mb-4 border border-slate-800">
+            <h3 className="text-emerald-400 font-bold mb-3 border-b border-slate-800 pb-2">Detail Reservasi</h3>
+            <div className="grid grid-cols-2 gap-y-2 text-sm">
+              <span className="text-slate-400">Atas Nama</span>
+              <span className="text-white font-medium">{data.pelanggan_nama}</span>
+              
+              <span className="text-slate-400">Lapangan</span>
+              <span className="text-white font-medium">{data.lapangan_nama}</span>
+              
+              <span className="text-slate-400">Tanggal Main</span>
+              <span className="text-white font-medium">
+                {new Date(data.tanggal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+              </span>
+              
+              <span className="text-slate-400">Waktu</span>
+              <span className="text-white font-medium">{data.jam_mulai.slice(0,5)} - {data.jam_selesai.slice(0,5)} WIB</span>
+            </div>
+          </div>
+
           <div className="bg-slate-950 rounded-xl p-4 mb-6 border border-slate-800">
             <p className="text-sm text-slate-400 mb-1">Total Biaya Sewa:</p>
             <p className="text-lg text-white font-medium mb-4 line-through decoration-red-500">Rp {total.toLocaleString('id-ID')}</p>
