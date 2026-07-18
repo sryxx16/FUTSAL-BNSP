@@ -148,9 +148,10 @@ export default function ReservationsView() {
               className="bg-slate-900 border border-slate-800 rounded-lg px-4 py-2 text-slate-300 focus:outline-none focus:border-emerald-500"
             >
               <option>Semua Status</option>
-              <option>Menunggu</option>
-              <option>Selesai</option>
-              <option>Dibatalkan</option>
+              <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
+              <option value="Sudah DP 50%">Sudah DP 50%</option>
+              <option value="Selesai">Selesai</option>
+              <option value="Dibatalkan">Dibatalkan</option>
             </select>
             <input 
               type="date" 
