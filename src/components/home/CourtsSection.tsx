@@ -17,11 +17,11 @@ export default function CourtsSection() {
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { id: 1, name: 'Futsal Pro Court', price: 'Rp 150.000 / Jam', img: '/empty_futsal.png', link: 'Futsal' },
-              { id: 2, name: 'Badminton BWF Standard', price: 'Rp 50.000 / Jam', img: '/empty_badminton.png', link: 'Badminton' },
-              { id: 3, name: 'Mini Soccer Premium', price: 'Rp 250.000 / Jam', img: '/empty_futsal.png', link: 'Mini Soccer' },
-              { id: 4, name: 'Basketball Indoor Arena', price: 'Rp 120.000 / Jam', img: '/empty_futsal.png', link: 'Basketball' },
-              { id: 5, name: 'Tennis Hard Court', price: 'Rp 100.000 / Jam', img: '/empty_badminton.png', link: 'Tennis' },
+              { id: 1, name: 'Lapangan Futsal 1', price: 'Rp 150.000 / Jam', img: '/empty_futsal.png', link: 'Futsal' },
+              { id: 2, name: 'Lapangan Futsal 2', price: 'Rp 150.000 / Jam', img: '/empty_futsal.png', link: 'Futsal' },
+              { id: 3, name: 'Lapangan Badminton 1', price: 'Rp 50.000 / Jam', img: '/empty_badminton.png', link: 'Badminton' },
+              { id: 4, name: 'Lapangan Badminton 2', price: 'Rp 50.000 / Jam', img: '/empty_badminton.png', link: 'Badminton' },
+              { id: 5, name: 'Lapangan Badminton 3', price: 'Rp 50.000 / Jam', img: '/empty_badminton.png', link: 'Badminton' },
             ].map((court, i) => (
               <motion.div
                 key={court.id}
