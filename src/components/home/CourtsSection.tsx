@@ -19,9 +19,9 @@ export default function CourtsSection() {
             {[
               { id: 1, name: 'Lapangan Futsal 1', price: 'Rp 150.000 / Jam', img: '/futsal_new.jpg', link: 'Futsal' },
               { id: 2, name: 'Lapangan Futsal 2', price: 'Rp 150.000 / Jam', img: '/futsal_new.jpg', link: 'Futsal' },
-              { id: 3, name: 'Lapangan Badminton 1', price: 'Rp 50.000 / Jam', img: '/empty_badminton.png', link: 'Badminton' },
-              { id: 4, name: 'Lapangan Badminton 2', price: 'Rp 50.000 / Jam', img: '/empty_badminton.png', link: 'Badminton' },
-              { id: 5, name: 'Lapangan Badminton 3', price: 'Rp 50.000 / Jam', img: '/empty_badminton.png', link: 'Badminton' },
+              { id: 3, name: 'Lapangan Badminton 1', price: 'Rp 50.000 / Jam', img: '/badminton_new.jpg', link: 'Badminton' },
+              { id: 4, name: 'Lapangan Badminton 2', price: 'Rp 50.000 / Jam', img: '/badminton_new.jpg', link: 'Badminton' },
+              { id: 5, name: 'Lapangan Badminton 3', price: 'Rp 50.000 / Jam', img: '/badminton_new.jpg', link: 'Badminton' },
             ].map((court, i) => (
               <motion.div
                 key={court.id}
