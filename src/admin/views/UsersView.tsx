@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getDaftarPelanggan, tambahPelangganAdmin, updatePelanggan, hapusPelanggan } from '../../lib/db';
-import { Plus, Edit2, Trash2, X } from 'lucide-react';
+import { getDaftarPelanggan, tambahPelangganAdmin, updatePelanggan, hapusPelanggan, getRiwayatBooking } from '../../lib/db';
+import { Plus, Edit2, Trash2, X, Eye } from 'lucide-react';
 
 export default function UsersView() {
   const [users, setUsers] = useState<any[]>([]);
@@ -11,6 +11,12 @@ export default function UsersView() {
   const [modalMode, setModalMode] = useState<'tambah' | 'edit'>('tambah');
   const [formData, setFormData] = useState({ id: 0, nama: '', email: '' });
   const [processing, setProcessing] = useState(false);
+  
+  // Detail Modal states
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [userBookings, setUserBookings] = useState<any[]>([]);
+  const [loadingBookings, setLoadingBookings] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
@@ -57,6 +63,21 @@ export default function UsersView() {
     setModalMode('edit');
     setFormData({ id: u.id, nama: u.nama, email: u.email });
     setIsModalOpen(true);
+  };
+
+  const openDetailModal = async (u: any) => {
+    setSelectedUser(u);
+    setIsDetailModalOpen(true);
+    setLoadingBookings(true);
+    try {
+      const bookings = await getRiwayatBooking(u.id);
+      setUserBookings(bookings);
+    } catch (e) {
+      console.error(e);
+      alert('Gagal mengambil riwayat booking');
+    } finally {
+      setLoadingBookings(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -137,6 +158,9 @@ export default function UsersView() {
                   <td className="p-4 text-center text-emerald-400 font-bold">{row.total_booking}</td>
                   <td className="p-4">
                     <div className="flex items-center gap-2">
+                      <button onClick={() => openDetailModal(row)} className="p-2 bg-purple-500/10 text-purple-400 rounded-lg hover:bg-purple-500/20 transition-colors" title="Lihat Detail Riwayat">
+                        <Eye size={16} />
+                      </button>
                       <button onClick={() => openEditModal(row)} className="p-2 bg-blue-500/10 text-blue-400 rounded-lg hover:bg-blue-500/20 transition-colors" title="Edit">
                         <Edit2 size={16} />
                       </button>
@@ -194,6 +218,60 @@ export default function UsersView() {
                 {processing ? 'Menyimpan...' : 'Simpan Data'}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Detail Riwayat */}
+      {isDetailModalOpen && selectedUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl w-full max-w-2xl shadow-2xl relative max-h-[90vh] flex flex-col">
+            <button 
+              onClick={() => setIsDetailModalOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white"
+            >
+              <X size={24} />
+            </button>
+            <h3 className="text-xl font-bold text-white mb-2">
+              Detail Riwayat: {selectedUser.nama}
+            </h3>
+            <p className="text-sm text-slate-400 mb-6">{selectedUser.email} &bull; Bergabung sejak {selectedUser.tgl_daftar}</p>
+            
+            <div className="flex-1 overflow-y-auto pr-2">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-950/50 text-slate-400 text-sm">
+                    <th className="p-3 font-medium">Tanggal</th>
+                    <th className="p-3 font-medium">Lapangan</th>
+                    <th className="p-3 font-medium">Jam</th>
+                    <th className="p-3 font-medium">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm">
+                  {loadingBookings ? (
+                    <tr><td colSpan={4} className="p-4 text-center text-slate-400">Memuat riwayat...</td></tr>
+                  ) : userBookings.length === 0 ? (
+                    <tr><td colSpan={4} className="p-4 text-center text-slate-400">Belum ada riwayat booking</td></tr>
+                  ) : userBookings.map((b) => (
+                    <tr key={b.id} className="border-b border-slate-800/50 hover:bg-slate-800/20">
+                      <td className="p-3 text-slate-300">{new Date(b.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                      <td className="p-3 text-emerald-400">{b.lapangan_nama}</td>
+                      <td className="p-3 text-slate-300">{b.jam_mulai.substring(0,5)} - {b.jam_selesai.substring(0,5)}</td>
+                      <td className="p-3">
+                        <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${
+                          b.status === 'Selesai' ? 'text-emerald-400 bg-emerald-400/10' :
+                          b.status === 'Sudah DP 50%' ? 'text-blue-400 bg-blue-400/10' :
+                          b.status === 'Dibatalkan' ? 'text-red-400 bg-red-400/10' :
+                          'text-yellow-400 bg-yellow-400/10'
+                        }`}>
+                          {b.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
