@@ -35,11 +35,14 @@
 
 ---
 
-## 4. Modul Riwayat & Tagihan Pemesanan
+## 4. Modul Riwayat, Pembayaran DP & Tagihan
 
 | ID Test | Skenario Pengujian | Langkah-Langkah | Hasil yang Diharapkan (Expected Result) | Status |
 |---|---|---|---|---|
 | RIW-01 | Kalkulasi otomatis harga x durasi | 1. Buka halaman "Riwayat Pemesanan" <br> 2. Cek tagihan lapangan Futsal (Base = Rp 150.000) yang disewa selama 2 jam | Kolom Total Biaya otomatis menampilkan angka Rp 300.000. | [ ] Pass |
+| RIW-02 | Pembayaran DP via QRIS Dinamis | 1. Buka Riwayat, klik tombol Checkout/Bayar pada reservasi baru <br> 2. Pindai QR Code menggunakan kamera HP <br> 3. Klik "Bayar QRIS Sekarang" | Status pesanan otomatis berubah menjadi "Sudah DP 50%" dengan badge biru. | [ ] Pass |
+| RIW-03 | Auto-Cancel Reservasi (Batas Waktu) | 1. Buat reservasi baru <br> 2. Diamkan selama lebih dari 20 menit tanpa membayar DP <br> 3. Refresh halaman | Status reservasi otomatis dibatalkan ("Dibatalkan") oleh sistem untuk membuka kembali slot jam tersebut. | [ ] Pass |
+| RIW-04 | Batas Jam Operasional | 1. Buka form booking <br> 2. Coba pilih Jam Mulai sebelum 08:00 atau Jam Selesai setelah 23:00 | Sistem akan menolak karena di luar batas jam operasional yang ditetapkan. | [ ] Pass |
 
 ---
 
