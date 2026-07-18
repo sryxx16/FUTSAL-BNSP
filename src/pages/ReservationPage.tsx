@@ -12,7 +12,7 @@ export default function ReservationPage() {
 
   const [formData, setFormData] = useState({
     lapangan_id: '',
-    pelanggan_nama: user ? user.nama : '',
+    pelanggan_nama: user ? (user.role === 'admin' ? 'ADMIN' : user.nama) : '',
     tanggal: '',
     jam_mulai: '',
     jam_selesai: ''
@@ -146,9 +146,9 @@ export default function ReservationPage() {
                   value={formData.pelanggan_nama}
                   onChange={handleChange}
                   required
-                  readOnly={!!user}
+                  readOnly={!!user && user.role !== 'admin'}
                   placeholder="Masukkan nama lengkap"
-                  className={`w-full bg-slate-950/50 border border-slate-700 rounded-lg pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors placeholder-slate-600 ${user ? 'opacity-70 cursor-not-allowed' : ''}`}
+                  className={`w-full bg-slate-950/50 border border-slate-700 rounded-lg pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors placeholder-slate-600 ${!!user && user.role !== 'admin' ? 'opacity-70 cursor-not-allowed' : ''}`}
                 />
               </div>
             </div>
