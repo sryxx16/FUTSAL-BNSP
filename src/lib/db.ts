@@ -196,3 +196,53 @@ export async function getRiwayatBooking(pelangganId: number) {
     ORDER BY r.tanggal DESC, r.jam_mulai DESC
   `;
 }
+
+// === ADMIN CRUD & LAPORAN === //
+
+export async function tambahPelangganAdmin(nama: string, email: string) {
+  // Check if exists
+  const check = await sql`SELECT id FROM pelanggan WHERE email = ${email}`;
+  if (check.length > 0) throw new Error("Email sudah terdaftar.");
+  
+  return await sql`
+    INSERT INTO pelanggan (nama, email, password) 
+    VALUES (${nama}, ${email}, 'default123')
+    RETURNING id
+  `;
+}
+
+export async function updatePelanggan(id: number, nama: string, email: string) {
+  return await sql`UPDATE pelanggan SET nama = ${nama}, email = ${email} WHERE id = ${id}`;
+}
+
+export async function hapusPelanggan(id: number) {
+  return await sql`DELETE FROM pelanggan WHERE id = ${id}`;
+}
+
+export async function getLaporanPendapatan() {
+  const harian = await sql`
+    SELECT TO_CHAR(tanggal, 'YYYY-MM-DD') as tgl, 
+           COUNT(r.id) as total_booking,
+           COALESCE(SUM(l.harga_per_jam * (EXTRACT(EPOCH FROM (r.jam_selesai - r.jam_mulai)) / 3600)), 0) as total_pendapatan
+    FROM reservasi r
+    JOIN lapangan l ON r.lapangan_id = l.id
+    WHERE r.status != 'Dibatalkan'
+    GROUP BY tanggal
+    ORDER BY tanggal DESC
+    LIMIT 14
+  `;
+  
+  const bulanan = await sql`
+    SELECT TO_CHAR(tanggal, 'YYYY-MM') as bln, 
+           COUNT(r.id) as total_booking,
+           COALESCE(SUM(l.harga_per_jam * (EXTRACT(EPOCH FROM (r.jam_selesai - r.jam_mulai)) / 3600)), 0) as total_pendapatan
+    FROM reservasi r
+    JOIN lapangan l ON r.lapangan_id = l.id
+    WHERE r.status != 'Dibatalkan'
+    GROUP BY TO_CHAR(tanggal, 'YYYY-MM')
+    ORDER BY bln DESC
+    LIMIT 12
+  `;
+  
+  return { harian, bulanan };
+}

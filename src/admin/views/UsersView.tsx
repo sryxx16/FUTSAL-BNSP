@@ -1,21 +1,30 @@
 import { useEffect, useState } from 'react';
-import { getDaftarPelanggan } from '../../lib/db';
+import { getDaftarPelanggan, tambahPelangganAdmin, updatePelanggan, hapusPelanggan } from '../../lib/db';
+import { Plus, Edit2, Trash2, X } from 'lucide-react';
 
 export default function UsersView() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Modal states
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<'tambah' | 'edit'>('tambah');
+  const [formData, setFormData] = useState({ id: 0, nama: '', email: '' });
+  const [processing, setProcessing] = useState(false);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const data = await getDaftarPelanggan();
+      setUsers(data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await getDaftarPelanggan();
-        setUsers(data);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    }
     loadData();
   }, []);
 
@@ -38,26 +47,79 @@ export default function UsersView() {
     document.body.removeChild(link);
   };
 
+  const openTambahModal = () => {
+    setModalMode('tambah');
+    setFormData({ id: 0, nama: '', email: '' });
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (u: any) => {
+    setModalMode('edit');
+    setFormData({ id: u.id, nama: u.nama, email: u.email });
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setProcessing(true);
+    try {
+      if (modalMode === 'tambah') {
+        await tambahPelangganAdmin(formData.nama, formData.email);
+        alert('Berhasil menambah pelanggan baru!');
+      } else {
+        await updatePelanggan(formData.id, formData.nama, formData.email);
+        alert('Berhasil memperbarui data pelanggan!');
+      }
+      setIsModalOpen(false);
+      loadData();
+    } catch (err: any) {
+      alert(err.message || 'Terjadi kesalahan');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleDelete = async (id: number, nama: string) => {
+    if (confirm(`Apakah Anda yakin ingin menghapus pelanggan ${nama}? Semua riwayat reservasinya juga akan ikut terhapus.`)) {
+      try {
+        await hapusPelanggan(id);
+        alert('Pelanggan berhasil dihapus!');
+        loadData();
+      } catch (err) {
+        alert('Gagal menghapus pelanggan.');
+      }
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
          <h2 className="text-2xl font-bold text-white">Manajemen Pelanggan</h2>
-         <button 
-           onClick={handleExportCSV}
-           className="bg-slate-800 text-white font-bold px-4 py-2 rounded-lg border border-slate-700 hover:bg-slate-700 transition-colors"
-         >
-           Ekspor Data (CSV)
-         </button>
+         <div className="flex items-center gap-3">
+           <button 
+             onClick={handleExportCSV}
+             className="bg-slate-800 text-white font-bold px-4 py-2 rounded-lg border border-slate-700 hover:bg-slate-700 transition-colors"
+           >
+             Ekspor (CSV)
+           </button>
+           <button 
+             onClick={openTambahModal}
+             className="bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded-lg hover:bg-emerald-400 transition-colors flex items-center gap-2"
+           >
+             <Plus size={18} /> Tambah Pelanggan
+           </button>
+         </div>
       </div>
+      
       <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[600px]">
+          <table className="w-full text-left border-collapse min-w-[700px]">
             <thead>
               <tr className="bg-slate-950/50 text-slate-400 text-sm">
                 <th className="p-4 font-medium">Nama / Email</th>
                 <th className="p-4 font-medium">Tgl Daftar</th>
                 <th className="p-4 font-medium text-center">Total Booking</th>
-                <th className="p-4 font-medium">Status</th>
+                <th className="p-4 font-medium">Aksi</th>
               </tr>
             </thead>
             <tbody className="text-sm">
@@ -74,9 +136,14 @@ export default function UsersView() {
                   <td className="p-4 text-slate-400">{row.tgl_daftar}</td>
                   <td className="p-4 text-center text-emerald-400 font-bold">{row.total_booking}</td>
                   <td className="p-4">
-                    <span className="px-3 py-1 rounded-full text-xs font-bold text-emerald-400 bg-emerald-400/10 border border-emerald-500/30">
-                      Aktif
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => openEditModal(row)} className="p-2 bg-blue-500/10 text-blue-400 rounded-lg hover:bg-blue-500/20 transition-colors" title="Edit">
+                        <Edit2 size={16} />
+                      </button>
+                      <button onClick={() => handleDelete(row.id, row.nama)} className="p-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors" title="Hapus">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -84,6 +151,52 @@ export default function UsersView() {
           </table>
         </div>
       </div>
+
+      {/* Modal CRUD Pelanggan */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl w-full max-w-md shadow-2xl relative">
+            <button 
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white"
+            >
+              <X size={24} />
+            </button>
+            <h3 className="text-xl font-bold text-white mb-6">
+              {modalMode === 'tambah' ? 'Tambah Pelanggan Baru' : 'Edit Pelanggan'}
+            </h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-400 mb-1">Nama Lengkap</label>
+                <input 
+                  type="text" 
+                  value={formData.nama}
+                  onChange={e => setFormData({...formData, nama: e.target.value})}
+                  required
+                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-400 mb-1">Alamat Email</label>
+                <input 
+                  type="email" 
+                  value={formData.email}
+                  onChange={e => setFormData({...formData, email: e.target.value})}
+                  required
+                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              <button 
+                type="submit" 
+                disabled={processing}
+                className="w-full bg-emerald-500 text-slate-950 font-bold py-3 rounded-lg hover:bg-emerald-400 transition-colors mt-4 disabled:opacity-50"
+              >
+                {processing ? 'Menyimpan...' : 'Simpan Data'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

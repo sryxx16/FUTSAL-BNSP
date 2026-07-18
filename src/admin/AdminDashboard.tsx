@@ -5,6 +5,7 @@ import AdminHeader from './components/AdminHeader';
 import DashboardView from './views/DashboardView';
 import ReservationsView from './views/ReservationsView';
 import UsersView from './views/UsersView';
+import ReportsView from './views/ReportsView';
 import SettingsView from './views/SettingsView';
 
 export default function AdminDashboard() {
@@ -34,6 +35,7 @@ export default function AdminDashboard() {
           {activeTab === 'dashboard' && <DashboardView setActiveTab={setActiveTab} />}
           {activeTab === 'reservations' && <ReservationsView />}
           {activeTab === 'users' && <UsersView />}
+          {activeTab === 'reports' && <ReportsView />}
           {activeTab === 'settings' && <SettingsView />}
         </main>
       </div>

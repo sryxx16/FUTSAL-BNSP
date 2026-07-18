@@ -1,4 +1,4 @@
-import { LayoutDashboard, CalendarDays, Users, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, Users, Settings, LogOut, BarChart3 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface AdminSidebarProps {
@@ -19,6 +19,7 @@ export default function AdminSidebar({ activeTab, setActiveTab }: AdminSidebarPr
           { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
           { id: 'reservations', icon: CalendarDays, label: 'Data Reservasi' },
           { id: 'users', icon: Users, label: 'Pelanggan' },
+          { id: 'reports', icon: BarChart3, label: 'Laporan Keuangan' },
           { id: 'settings', icon: Settings, label: 'Pengaturan' },
         ].map((item) => (
           <button
