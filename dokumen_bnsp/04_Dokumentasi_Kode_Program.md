@@ -37,5 +37,11 @@ File `src/lib/db.ts` bertindak sebagai lapisan jembatan (*controller*) antara an
 2. **`buatReservasiDB(pelangganNama, lapanganId, tanggal, jamMulai, jamSelesai)`**: 
    Merupakan fungsi transaksional yang paling krusial. Sebelum mengeksekusi `INSERT`, ia memanggil fungsi `cekKetersediaanDB()`. Jika ditemukan bentrokan, ia akan melempar *Error Exception* dan memblokir injeksi data.
 
-3. **`getStatistikDashboard()`**: 
-   Fungsi agregasi untuk Dasbor Admin. Menjalankan *query* hitung cepat (`COUNT`, `SUM`) guna mendapatkan matrik pendapatan bulanan dan jumlah *booking* hari ini.
+3. **`getStatistikDashboard()` & `getLaporanPendapatan()`**: 
+   Fungsi agregasi untuk Dasbor Admin. Menjalankan *query* hitung cepat (`COUNT`, `SUM`, `GROUP BY`) guna mendapatkan matrik pendapatan bulanan, harian, dan jumlah *booking*. Fungsi ini menghitung *Total Revenue* murni secara asinkron tanpa memerlukan tabel laporan khusus.
+
+4. **`hapusReservasi(id)` & *Auto-Cancel System***:
+   Fitur lanjutan di mana sistem akan secara otomatis mengubah status reservasi menjadi "Dibatalkan" jika pelanggan tidak membayar DP QRIS dalam kurun waktu 20 menit (dievaluasi melalui parameter `created_at` pada PostgreSQL).
+
+5. **`tambahPelangganAdmin()` & `getRiwayatBooking(pelangganId)`**:
+   Mendukung fitur CRUD lengkap di Admin Panel. Memanfaatkan relasi *One-to-Many* untuk merangkum dan menghitung nilai LTV (*Lifetime Value* / Total Uang Dihabiskan) per pelanggan.

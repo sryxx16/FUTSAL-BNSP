@@ -18,6 +18,8 @@ Tabel berikut menunjukkan uji teknis satu-per-satu fungsionalitas (modul) secara
 | 3 | **Modul Proteksi *Route*** | Mengakses URL `/admin` secara paksa namun status belum *login*. | Sistem menendang pengguna keluar dan otomatis me-_redirect_ ke halaman Beranda/Login. | Sesuai Harapan | **PASS** ✔️ |
 | 4 | **Modul Pemesanan (Normal)** | Membuat reservasi lapangan Futsal di tanggal 25 Desember jam 09:00 - 11:00. | Data sukses tersimpan di Neon DB dan muncul di Riwayat Pengguna (*My Bookings*). | Sesuai Harapan | **PASS** ✔️ |
 | 5 | **Modul Pemesanan (Bentrok)**| Membuat reservasi lapangan Futsal di tanggal 25 Desember jam 10:00 - 12:00. | Sistem menolak proses *submit*, mengeluarkan pesan *error* "Jadwal Bentrok". *Database* tetap steril. | Sesuai Harapan | **PASS** ✔️ |
+| 6 | **Modul Auto-Cancel**| Menunggu 20 menit tanpa membayar DP QRIS. | Sistem membatalkan pesanan secara otomatis (*Cron Job / Database Evaluation*). | Sesuai Harapan | **PASS** ✔️ |
+| 7 | **Modul CRUD Pelanggan**| Admin menambahkan, mengedit, dan melihat detail profil pelanggan (LTV). | Data tersimpan, *Total Spent* terkalkulasi otomatis berdasarkan riwayat booking. | Sesuai Harapan | **PASS** ✔️ |
 
 ---
 

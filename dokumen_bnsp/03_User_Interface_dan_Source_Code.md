@@ -25,6 +25,12 @@
 ### E. Halaman Riwayat Pemesanan (My Bookings)
 *(Tempatkan screenshot `/my-bookings` di sini. Memperlihatkan riwayat transaksi untuk pengguna yang sedang login).*
 
+### F. Halaman Laporan Keuangan (Admin)
+*(Tempatkan screenshot Dasbor Laporan Keuangan di sini. Memperlihatkan rekap pendapatan Harian dan Bulanan tanpa tabel database baru, beserta fitur Cetak PDF).*
+
+### G. Modal Manajemen Pelanggan Lanjut (CRUD & LTV)
+*(Tempatkan screenshot Modal Detail Pelanggan di Admin Panel. Memperlihatkan tabel riwayat booking pelanggan berserta indikator perhitungan LTV / Total Pengeluaran Uang pelanggan tersebut).*
+
 ---
 
 ## 2. Implementasi Source Code Utama (Tautan)
