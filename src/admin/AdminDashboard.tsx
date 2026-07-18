@@ -29,7 +29,7 @@ export default function AdminDashboard() {
       <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <AdminHeader activeTab={activeTab} />
+        <AdminHeader activeTab={activeTab} setActiveTab={setActiveTab} />
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-950">
           {activeTab === 'dashboard' && <DashboardView setActiveTab={setActiveTab} />}
