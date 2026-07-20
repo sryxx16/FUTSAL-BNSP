@@ -82,7 +82,7 @@ export default function ReservationsView() {
     
     setFormLoading(true);
     try {
-      await buatReservasiDB(
+      const result = await buatReservasiDB(
         formData.pelanggan_nama, 
         parseInt(formData.lapangan_id), 
         formData.tanggal, 
@@ -90,12 +90,17 @@ export default function ReservationsView() {
         formData.jam_selesai
       );
       
+      if (!result.success) {
+        alert(result.error || 'Gagal menyimpan reservasi');
+        return;
+      }
+      
       alert('Reservasi manual berhasil ditambahkan!');
       setShowModal(false);
       setFormData(prev => ({ ...prev, pelanggan_nama: '', tanggal: '', jam_mulai: '', jam_selesai: '' }));
       await loadData(); // Refresh table
     } catch (err: any) {
-      alert(err.message || 'Gagal menyimpan reservasi');
+      alert('Gagal menyimpan reservasi. Terjadi kesalahan sistem.');
     } finally {
       setFormLoading(false);
     }

@@ -80,7 +80,7 @@ export async function cekKetersediaanDB(lapanganId: number, tanggal: string, jam
 export async function buatReservasiDB(pelangganNama: string, lapanganId: number, tanggal: string, jamMulai: string, jamSelesai: string) {
   const bentrok = await cekKetersediaanDB(lapanganId, tanggal, jamMulai, jamSelesai);
   if (bentrok) {
-    throw new Error('Jadwal bentrok dengan reservasi lain!');
+    return { success: false, error: 'Jadwal bentrok dengan reservasi lain!' };
   }
   
   // Cari apakah user dengan nama tersebut sudah ada
@@ -117,7 +117,7 @@ export async function buatReservasiDB(pelangganNama: string, lapanganId: number,
     RETURNING id, user_id as pelanggan_id, court_id as lapangan_id, date as tanggal, start_time as jam_mulai, end_time as jam_selesai, status, dp_amount as nominal_dp, created_at
   `;
   
-  return result[0];
+  return { success: true, data: result[0] };
 }
 
 export async function getStatistikDashboard() {

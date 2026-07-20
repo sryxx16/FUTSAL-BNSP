@@ -79,9 +79,14 @@ export default function ReservationPage() {
         formData.jam_selesai
       );
       
+      if (!result.success) {
+        setStatus({ type: 'error', message: result.error || 'Gagal menyimpan reservasi. Coba lagi.' });
+        return;
+      }
+      
       setStatus({ type: 'success', message: 'Reservasi berhasil dibuat!' });
       setTimeout(() => {
-        router.push(`/checkout/${result.id}`);
+        router.push(`/checkout/${result.data.id}`);
       }, 2000);
     } catch (err: any) {
       setStatus({ 
