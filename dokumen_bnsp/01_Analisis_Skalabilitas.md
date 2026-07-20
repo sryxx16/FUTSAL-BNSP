@@ -31,9 +31,11 @@ flowchart LR
         UC5([Melihat Riwayat Transaksi Pribadi])
         
         UC6([Mengelola Data Reservasi Pelanggan])
-        UC7([Memantau Dasbor & Notifikasi Real-time])
-        UC8([Melihat Data Pelanggan LTV])
-        UC9([Mencetak Laporan Keuangan PDF])
+        UC7([Memantau Dashboard & Notifikasi])
+        UC8([Mengelola Data Pelanggan])
+        UC9([Mencetak Laporan Keuangan])
+        UC10([Mengelola Harga Lapangan])
+        UC11([Logout / Keluar Sistem])
     end
 
     %% Relasi Aktor Pelanggan
@@ -49,6 +51,8 @@ flowchart LR
     UC7 --- Admin
     UC8 --- Admin
     UC9 --- Admin
+    UC10 --- Admin
+    UC11 --- Admin
 ```
 
 ### C. Kebutuhan Fungsional (Functional Requirements)
