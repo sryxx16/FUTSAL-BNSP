@@ -1,29 +1,17 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { getDaftarLapangan, updateHargaLapangan, getSettings, updateSettings } from '../../lib/db';
+import { getDaftarLapangan, updateHargaLapangan } from '../../lib/db';
 
 export default function SettingsView() {
   const [lapangan, setLapangan] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [contactSettings, setContactSettings] = useState({
-    contact_address: '',
-    contact_phone: '',
-    contact_email: ''
-  });
 
   useEffect(() => {
     async function loadData() {
       try {
         const data = await getDaftarLapangan();
         setLapangan(data);
-        
-        const settings = await getSettings();
-        setContactSettings({
-          contact_address: settings.contact_address || '',
-          contact_phone: settings.contact_phone || '',
-          contact_email: settings.contact_email || ''
-        });
       } catch (e) {
         console.error(e);
       } finally {
@@ -40,11 +28,10 @@ export default function SettingsView() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      // Update all prices and settings
-      await Promise.all([
-        ...lapangan.map(lap => updateHargaLapangan(lap.id, lap.harga_per_jam)),
-        updateSettings(contactSettings)
-      ]);
+      // Update all prices
+      await Promise.all(
+        lapangan.map(lap => updateHargaLapangan(lap.id, lap.harga_per_jam))
+      );
       alert('Semua perubahan berhasil disimpan ke Database!');
     } catch (e) {
       alert('Gagal menyimpan perubahan.');
@@ -96,52 +83,6 @@ export default function SettingsView() {
          </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8">
-         <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-4">Informasi Kontak (Website)</h3>
-         <div className="space-y-6">
-            {loading ? (
-              <p className="text-slate-500">Memuat data...</p>
-            ) : (
-              <div className="space-y-4">
-                 <div>
-                   <label className="text-sm font-medium text-slate-500 block mb-2">Alamat Lengkap</label>
-                   <textarea 
-                     value={contactSettings.contact_address} 
-                     onChange={e => setContactSettings({...contactSettings, contact_address: e.target.value})}
-                     className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:border-emerald-500 transition-colors h-24"
-                   />
-                 </div>
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                   <div>
-                     <label className="text-sm font-medium text-slate-500 block mb-2">Nomor Telepon</label>
-                     <input 
-                       type="text" 
-                       value={contactSettings.contact_phone} 
-                       onChange={e => setContactSettings({...contactSettings, contact_phone: e.target.value})}
-                       className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:border-emerald-500 transition-colors"
-                     />
-                   </div>
-                   <div>
-                     <label className="text-sm font-medium text-slate-500 block mb-2">Email Kontak</label>
-                     <input 
-                       type="email" 
-                       value={contactSettings.contact_email} 
-                       onChange={e => setContactSettings({...contactSettings, contact_email: e.target.value})}
-                       className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:border-emerald-500 transition-colors"
-                     />
-                   </div>
-                 </div>
-              </div>
-            )}
-            <button 
-              onClick={handleSave} 
-              disabled={saving}
-              className="bg-emerald-500 text-slate-950 font-bold px-6 py-3 rounded-lg hover:bg-emerald-400 transition-colors shadow-[0_0_15px_rgba(16,185,129,0.2)] disabled:opacity-50"
-            >
-              {saving ? 'Menyimpan...' : 'Simpan Semua Pengaturan'}
-            </button>
-         </div>
-      </div>
 
       <div className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8">
          <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-4">Profil Admin</h3>

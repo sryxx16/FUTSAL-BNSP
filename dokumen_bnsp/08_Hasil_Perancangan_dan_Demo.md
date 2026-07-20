@@ -8,7 +8,7 @@
 ## 1. Kesimpulan Akhir
 Seluruh tahapan Analisis, Perancangan Database, Pemrograman UI/UX, Debugging, hingga Pengujian Telah **SELESAI** dikerjakan dan memenuhi seluruh unit kompetensi sertifikasi BNSP. 
 
-Sistem dibangun menggunakan ekosistem pengembangan modern *(React, TypeScript, Tailwind, Neon PostgreSQL)* yang menjamin performa cepat, aman dari serangan injeksi dasar, dan sangat ramah pengguna (*mobile-responsive*).
+Sistem dibangun menggunakan ekosistem pengembangan modern *(Next.js, TypeScript, Tailwind, Neon PostgreSQL)* yang menjamin performa cepat, aman dari serangan injeksi dasar, dan sangat ramah pengguna (*mobile-responsive*).
 
 ## 2. Bukti Live Demonstrasi (Link Aplikasi)
 Agar Asesor dapat meninjau hasil pengembangan secara langsung tanpa harus menjalankan aplikasi di komputer lokal (localhost), proyek ini telah di-*deploy* ke publik melalui *platform cloud* Vercel.

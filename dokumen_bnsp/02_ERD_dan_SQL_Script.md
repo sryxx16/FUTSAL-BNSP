@@ -1,66 +1,76 @@
-# Dokumen 2: ERD dan SQL Script
+# Studi Kasus Analis Program - Sistem Reservasi Lapangan SM Sport Center
 
-**Mata Uji Kompetensi:** 
-- J.620100.020.02 Menggunakan SQL
-- J.620100.021.02 Menerapkan Akses Basis Data
-**Proyek:** Sistem Reservasi Lapangan Olahraga SM Sport Center
+**Sistem Reservasi SM Sport Center**
+**Unit Kompetensi:** J.620100.020.02 Menggunakan SQL
 
----
+| Keterangan | Detail |
+|---|---|
+| **Skema Sertifikasi (KKNI/Okupasi/Klaster)** | Analis Program |
+| **Nomor** | SKM-2019-62010-002 |
+| **TUK** | Sewaktu/Tempat Kerja/Mandiri** |
+| **Nama Asesor** | Irmawati Carolina |
+| **Nama Asesi** | Surya Daffa Fauzi Khoerudin |
 
-## 1. Entity Relationship Diagram (ERD)
+### PERMASALAHAN
+SM Sport Center memiliki 2 lapangan futsal dan 3 lapangan badminton. Saat ini proses reservasi masih dilakukan melalui telepon dan WhatsApp sehingga sering terjadi:
+a. Jadwal bentrok (double booking)
+b. Kesalahan pencatatan transaksi
+c. Sulit membuat laporan penggunaan lapangan
+d. Sulit mengetahui lapangan yang masih tersedia 
+Manajemen menginginkan sistem reservasi SM Sport Center berbasis web yang dapat digunakan pelanggan dan admin.
 
-Desain basis data terdiri dari tiga tabel utama dengan relasi sebagai berikut:
-- **Tabel `pelanggan`** memiliki relasi *One-to-Many* (1:N) terhadap tabel `reservasi` (Seorang pelanggan dapat membuat banyak reservasi).
-- **Tabel `lapangan`** memiliki relasi *One-to-Many* (1:N) terhadap tabel `reservasi` (Satu lapangan dapat memiliki banyak reservasi).
+<br>
 
-```mermaid
-erDiagram
-    USERS ||--o{ BOOKINGS : "membuat"
-    COURT ||--o{ BOOKINGS : "dipesan dalam"
-    SETTINGS {
-        varchar key PK
-        text value
-    }
-
-    USERS {
-        serial id PK
-        varchar name
-        varchar email
-        varchar phone
-        varchar password
-        timestamp created_at
-    }
-
-    COURT {
-        serial id PK
-        varchar name
-        varchar type
-        decimal price_per_hour
-    }
-
-    BOOKINGS {
-        serial id PK
-        int user_id FK
-        int court_id FK
-        date date
-        time start_time
-        time end_time
-        varchar status
-        decimal dp_amount
-        decimal total_price
-        timestamp created_at
-    }
-```
+**Program Studi Teknologi Informasi Fakultas Teknik dan Informatika**
+**Universitas Bina Sarana Informatika**
+**Jakarta**
+**2026**
 
 ---
 
-## 2. Implementasi SQL Script
+## 1. ERD (ENTITY RELATIONSHIP DIAGRAM)
 
-Skrip SQL (_Data Definition Language_ dan _Data Manipulation Language_) yang digunakan untuk merancang skema *database* PostgreSQL melalui koneksi _Cloud_ (Neon DB):
+*(Diagram ERD)*
+
+### 1. Tabel Users (Pelanggan)
+| Nama Atribut | Tipe Data | Batasan (Constraint) | Keterangan |
+|---|---|---|---|
+| id | INT (SERIAL) | Primary Key (PK) | Kode unik identitas otomatis untuk setiap pengguna. |
+| name | VARCHAR(100) | NOT NULL | Nama lengkap pengguna. |
+| email | VARCHAR(100) | UNIQUE, NOT NULL | Alamat surel unik untuk autentikasi login dan komunikasi. |
+| phone | VARCHAR(20) | DEFAULT '' | Nomor telepon atau kontak WhatsApp pengguna. |
+| password | VARCHAR(255) | NOT NULL | Kata sandi akun yang telah diamankan (ter-hash). |
+| created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Catatan waktu otomatis saat akun pertama kali didaftarkan. |
+
+### 2. Tabel Court (Lapangan Olahraga)
+| Nama Atribut | Tipe Data | Batasan (Constraint) | Keterangan |
+|---|---|---|---|
+| id | INT (SERIAL) | Primary Key (PK) | Kode unik identitas otomatis untuk data lapangan. |
+| name | VARCHAR(100) | NOT NULL | Nama identitas lapangan (misal: Futsal A, Badminton 1). |
+| type | VARCHAR(50) | NOT NULL | Jenis cabang olahraga lapangan (Futsal / Badminton). |
+| price_per_hour | DECIMAL(10,2) | NOT NULL | Nominal tarif sewa lapangan per jam. |
+
+### 3. Tabel Bookings (Transaksi Reservasi)
+| Nama Atribut | Tipe Data | Batasan (Constraint) | Keterangan |
+|---|---|---|---|
+| id | INT (SERIAL) | Primary Key (PK) | Kode unik nomor transaksi reservasi otomatis. |
+| user_id | INTEGER | Foreign Key (FK) REFERENCES users(id) ON DELETE CASCADE | Relasi ke tabel pengguna yang melakukan penyewaan. |
+| court_id | INTEGER | Foreign Key (FK) REFERENCES court(id) ON DELETE CASCADE | Relasi ke tabel lapangan yang dipilih untuk dipesan. |
+| date | DATE | NOT NULL | Tanggal jadwal pelaksanaan reservasi lapangan. |
+| start_time | TIME | NOT NULL | Jam operasional dimulainya penyewaan lapangan. |
+| end_time | TIME | NOT NULL | Jam operasional selesainya penyewaan lapangan. |
+| status | VARCHAR(50) | NOT NULL, DEFAULT 'Menunggu Pembayaran' | Status transaksi (Menunggu Pembayaran / Terjadwal / Dibatalkan). |
+| dp_amount | DECIMAL(10,2) | DEFAULT 0 | Nominal uang muka yang dibayarkan (Opsi DP 50%). |
+| total_price | DECIMAL(10,2) | DEFAULT 0 | Total kalkulasi biaya sewa yang harus dilunasi pelanggan. |
+| created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Catatan waktu saat pesanan pertama kali dibuat di sistem. |
+
+---
+
+## 2. SQL SCRIPT
 
 ```sql
 -- ==========================================
--- DDL: PEMBUATAN TABEL DAN STRUKTUR DATABASE
+-- DATABASE SCRIPT: SISTEM RESERVASI LAPANGAN
 -- ==========================================
 
 -- 1. Membuat tabel Users
@@ -73,7 +83,7 @@ CREATE TABLE IF NOT EXISTS users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Membuat tabel Court
+-- 2. Membuat tabel Court (Lapangan)
 CREATE TABLE IF NOT EXISTS court (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -81,7 +91,7 @@ CREATE TABLE IF NOT EXISTS court (
   price_per_hour DECIMAL(10,2) NOT NULL
 );
 
--- 3. Membuat tabel Bookings
+-- 3. Membuat tabel Bookings (Reservasi)
 CREATE TABLE IF NOT EXISTS bookings (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -97,13 +107,7 @@ CREATE TABLE IF NOT EXISTS bookings (
   CONSTRAINT chk_valid_dp CHECK (dp_amount >= 0 AND dp_amount <= total_price)
 );
 
--- 4. Membuat tabel Settings (Pengaturan Sistem)
-CREATE TABLE IF NOT EXISTS settings (
-  key VARCHAR(50) PRIMARY KEY,
-  value TEXT NOT NULL
-);
-
--- 5. Membuat Index untuk Optimalisasi Pencarian (Performa Tinggi)
+-- 4. Membuat Index untuk Optimalisasi Pencarian (Performa Tinggi)
 CREATE INDEX IF NOT EXISTS bookings_user_id_idx ON bookings(user_id);
 CREATE INDEX IF NOT EXISTS bookings_court_id_idx ON bookings(court_id);
 CREATE UNIQUE INDEX IF NOT EXISTS users_email_idx ON users(email);
@@ -137,11 +141,4 @@ INSERT INTO bookings (user_id, court_id, date, start_time, end_time, status, tot
 (2, 1, CURRENT_DATE + INTERVAL '1 day', '19:00:00', '21:00:00', 'Sudah DP 50%', 300000),
 (3, 3, CURRENT_DATE + INTERVAL '2 days', '15:00:00', '17:00:00', 'Menunggu Pembayaran', 100000)
 ON CONFLICT DO NOTHING;
-
--- E. Memasukkan data awal Settings (Kontak)
-INSERT INTO settings (key, value) VALUES
-('contact_address', 'Jl. Merdeka No. 123, Jakarta Selatan'),
-('contact_phone', '+62 812-3456-7890'),
-('contact_email', 'info@smsport.com')
-ON CONFLICT (key) DO NOTHING;
 ```

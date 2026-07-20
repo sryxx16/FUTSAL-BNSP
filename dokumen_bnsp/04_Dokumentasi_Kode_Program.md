@@ -1,51 +1,126 @@
-# Dokumen 4: Dokumentasi Kode Program
+# Dokumen Kode Program
 
-**Mata Uji Kompetensi:** J.620100.023.02 Membuat Dokumen Kode Program
-**Proyek:** Sistem Reservasi Lapangan Olahraga SM Sport Center
+**Sistem Reservasi SM Sport Center**
+**Unit Kompetensi:** J.620100.023.02 Membuat Dokumen Kode Program
 
----
-
-## 1. Struktur Database PostgreSQL
-Sistem terhubung dengan *serverless database* PostgreSQL (Neon) yang terdiri dari 4 entitas utama:
-- **`pelanggan`**: Menyimpan kredensial (`nama`, `email`, `password`) sebagai identitas aktor.
-- **`lapangan`**: Data master (`nama`, `jenis`, `harga_per_jam`) yang nilainya bersifat konstan namun dapat di-_update_ harga sewanya oleh admin.
-- **`reservasi`**: Merupakan *pivot table* (transaksi) yang mengikat `pelanggan` dan `lapangan` berdasarkan rentang waktu (`tanggal`, `jam_mulai`, `jam_selesai`) dan memiliki status (Menunggu / Selesai / Dibatalkan).
-- **`settings`**: Tabel konfigurasi dinamis yang menyimpan pengaturan sistem seperti informasi kontak dengan pola _key-value pair_.
-
----
-
-## 2. Penjelasan Modul Interaksi (State Management)
-Arsitektur Front-end pada proyek ini memanfaatkan **React Functional Components** dengan *Hooks*.
-
-### A. Manajemen *State* Lokal (`useState`)
-Digunakan secara ekstensif pada form pengisian reservasi (`ReservationPage.tsx`). Variabel `formData` mengikat nilai *input user* (tanggal, jam, id lapangan) menggunakan pendekatan *Controlled Components*, sehingga setiap ketikan *user* terekam secara *real-time*.
-
-### B. Manajemen Siklus Hidup (`useEffect`)
-Digunakan untuk mengambil data (_fetching_) dari *database* secara asinkron (misalnya di modul `MyBookingsPage.tsx`). Fungsi *fetch* akan dieksekusi secara otomatis saat komponen pertama kali di-_render_ (ditandai dengan array dependensi kosong `[]`).
-
-### C. Manajemen Sesi Pengguna
-Autentikasi dikelola melalui `localStorage` di *browser*. Objek *session* memuat ID pengguna dan level akses (`role: admin | user`). Modul navigasi (Navbar) akan membaca `localStorage` ini guna merender UI secara dinamis (menyembunyikan tombol panel admin bagi pengguna biasa).
+| Keterangan | Detail |
+|---|---|
+| **Skema Sertifikasi (KKNI/Okupasi/Klaster)** | Analis Program |
+| **Nomor** | SKM-2019-62010-002 |
+| **TUK** | Sewaktu/Tempat Kerja/Mandiri** |
+| **Nama Asesor** | Irmawati Carolina |
+| **Nama Asesi** | Surya Daffa Fauzi Khoerudin |
 
 ---
 
-## 3. Deskripsi Fungsi Utama (Backend Controller - `db.ts`)
+## 1. Penjelasan Modul
+Sistem Reservasi SM Sport Center dibangun menggunakan arsitektur modern berbasis Next.js (App Router) dan modul koneksi langsung ke *Serverless* PostgreSQL (Neon). Agar kode program mudah dipelihara (*maintainable*) dan mudah dikembangkan (*scalable*), sistem dibagi ke dalam beberapa modul utama.
 
-File `src/lib/db.ts` bertindak sebagai lapisan jembatan (*controller*) antara antarmuka React dengan PostgreSQL.
+### a. Modul Autentikasi dan Manajemen Pengguna (Auth & User Module)
+**Lokasi Direktori:** `src/pages/AuthPage.tsx` & `src/lib/db.ts`
+**Fungsi Modul:** Menangani proses pendaftaran akun, verifikasi login, serta pengelolaan sesi lokal. Modul ini juga bertugas memisahkan hak akses (*role-based access control*) antara antarmuka Admin dengan Pelanggan biasa, di mana email `admin@smsport.com` akan otomatis diberikan antarmuka khusus Dasbor Admin.
 
-1. **`loginUser(email, password)`**: 
-   Mengeksekusi *query* `SELECT` ke tabel pelanggan. Modul ini bertanggung jawab memberikan atribut `role='admin'` jika email yang *login* cocok dengan *email master* perusahaan (`admin@smsport.com`).
-   
-2. **`buatReservasiDB(pelangganNama, lapanganId, tanggal, jamMulai, jamSelesai)`**: 
-   Merupakan fungsi transaksional yang krusial. Sebelum mengeksekusi `INSERT`, ia memanggil `cekKetersediaanDB()`. Jika bentrok, fungsi ini mengembalikan objek format JSON `{ success: false, error: '...' }` alih-alih melempar *Error Exception*, demi keamanan dan kompatibilitas pada lingkungan *Next.js Server Actions*.
+### b. Modul Manajemen Lapangan (Court Management Module)
+**Lokasi Direktori:** `src/admin/views/SettingsView.tsx` & `src/lib/db.ts`
+**Fungsi Modul:** Bertanggung jawab atas pengelolaan data master fasilitas lapangan (Futsal & Badminton). Melalui modul ini, Admin dapat mengubah harga sewa per jam (*price per hour*) secara dinamis tanpa perlu mengubah baris kode, dan menyimpannya langsung ke dalam *database*.
 
-3. **`getStatistikDashboard()` & `getLaporanPendapatan()`**: 
-   Fungsi agregasi untuk Dasbor Admin. Menjalankan *query* hitung cepat (`COUNT`, `SUM`, `GROUP BY`) guna mendapatkan matrik pendapatan bulanan, harian, dan jumlah *booking*. Fungsi ini menghitung *Total Revenue* murni secara asinkron tanpa memerlukan tabel laporan khusus.
+### c. Modul Reservasi dan Penjadwalan (Booking & Scheduling Module)
+**Lokasi Direktori:** `src/components/home/ScheduleSection.tsx` & `src/lib/db.ts`
+**Fungsi Modul:** Merupakan modul inti (*core module*) yang menangani alur pemesanan lapangan. Modul ini menampilkan Papan Jadwal (*Live Schedule*) ketersediaan lapangan secara langsung (*real-time*), serta melakukan validasi bentrok jadwal (*overlap validation*) sebelum data reservasi disimpan ke dalam *database*.
 
-4. **`hapusReservasi(id)` & *Auto-Cancel System***:
-   Fitur lanjutan di mana sistem akan secara otomatis mengubah status reservasi menjadi "Dibatalkan" jika pelanggan tidak membayar DP QRIS dalam kurun waktu 20 menit (dievaluasi melalui parameter `created_at` pada PostgreSQL).
+### d. Modul Pembayaran dan Konfirmasi (Payment & Confirmation Module)
+**Lokasi Direktori:** `src/components/home/BookingModal.tsx` & `src/lib/db.ts`
+**Fungsi Modul:** Mengelola transaksi pembayaran DP (Uang Muka) sistem. Modul ini memfasilitasi pelanggan dengan menampilkan kode QR (QRIS Dinamis) dengan nominal bayar sebesar 50% dari total harga. Sistem otomatis mengunci status pesanan menjadi "Sudah DP 50%" setelah proses verifikasi internal.
 
-5. **`tambahPelangganAdmin()` & `getRiwayatBooking(pelangganId)`**:
-   Mendukung fitur CRUD lengkap di Admin Panel. Memanfaatkan relasi *One-to-Many* untuk merangkum dan menghitung nilai LTV (*Lifetime Value* / Total Uang Dihabiskan) per pelanggan.
+### e. Modul Otomatisasi & Laporan (Cron Job & Reporting Module)
+**Lokasi Direktori:** `src/admin/views/DashboardView.tsx` & `src/lib/db.ts`
+**Fungsi Modul:** Menangani fungsi pembatalan otomatis (*auto-cancel*) bagi pesanan berstatus "Menunggu Pembayaran" yang tidak dilunasi DP-nya dalam waktu 20 menit. Modul ini juga bertugas memproses agregasi data hitung cepat (*COUNT, SUM*) untuk Dasbor Admin dan menyediakan fitur Cetak Laporan PDF.
 
-6. **`getSettings()` & `updateSettings(key, value)`**:
-   Fungsi untuk menarik dan memperbarui nilai pada tabel `settings`. Digunakan pada *landing page* (menampilkan info kontak dinamis) dan di panel Admin.
+---
+
+## 2. Deskripsi Fungsi
+
+### 1. `cekKetersediaanDB()`
+**Modul:** Modul Reservasi (`src/lib/db.ts`)
+**Tujuan:** Mencegah terjadinya pemesanan ganda (*double booking*) pada lapangan, tanggal, dan rentang jam yang sama.
+**Parameter Input:**
+- `courtId` (Integer) - ID Lapangan yang ingin dipesan.
+- `tanggal` (Date) - Tanggal penggunaan lapangan.
+- `jamMulai` (Time) - Jam mulai bermain.
+- `jamSelesai` (Time) - Jam selesai bermain.
+**Nilai Kembalian:** Boolean (`true` jika jadwal bentrok/sudah terisi, `false` jika jadwal kosong/tersedia).
+**Deskripsi Logika:** Fungsi melakukan kueri ke tabel `bookings` untuk mencari pesanan aktif (status 'Sudah DP 50%' atau 'Menunggu Pembayaran') pada `court_id` dan `date` yang sama, dengan rentang waktu yang saling bertindihan (*overlapping*) dengan jam *input* pelanggan.
+
+### 2. `createReservasi()`
+**Modul:** Modul Reservasi (`src/lib/db.ts`)
+**Tujuan:** Membuat dan menyimpan rekor pesanan baru ke *database* setelah melewati tahap validasi waktu.
+**Parameter Input:**
+- `pelangganId` (Integer) - ID Pelanggan yang menyewa.
+- `lapanganId` (Integer) - ID Lapangan yang dipilih.
+- `tanggal` (Date) - Tanggal bermain.
+- `jamMulai` (Time) - Jam mulai pemesanan.
+- `jamSelesai` (Time) - Jam selesai pemesanan.
+- `totalHarga` (Integer) - Total biaya keseluruhan.
+**Nilai Kembalian:** Object JSON (`{ success: true, bookingId: number }`) atau pesan *error*.
+**Deskripsi Logika:**
+1. Memanggil fungsi `cekKetersediaanDB()`. Jika bernilai `true`, sistem melemparkan pesan error "Jadwal sudah terisi".
+2. Menyimpan data ke tabel `bookings` dengan status awal 'Menunggu Pembayaran' dan parameter uang muka (`dp_amount`) di-set 0.
+
+### 3. `autoCancelExpiredBookings()`
+**Modul:** Modul Otomatisasi (`src/lib/db.ts`)
+**Tujuan:** Membatalkan pesanan yang belum dibayar (*expired*) untuk membebaskan kembali jadwal lapangan yang terkunci.
+**Parameter Input:** Tidak ada.
+**Nilai Kembalian:** Tidak ada (*Void*).
+**Deskripsi Logika:** Fungsi mencari seluruh baris di tabel `bookings` dengan syarat `status == 'Menunggu Pembayaran'` DAN selisih waktu `created_at` lebih dari 20 Menit dari Waktu Sekarang. Sistem lalu melakukan eksekusi *bulk update* untuk mengubah statusnya menjadi 'Dibatalkan'. Fungsi ini di-*trigger* secara dinamis (*pseudo-cron*) setiap kali ada penarikan data jadwal terbaru.
+
+### 4. `konfirmasiPembayaran()`
+**Modul:** Modul Pembayaran (`src/lib/db.ts`)
+**Tujuan:** Memproses penyelesaian transaksi pembayaran QRIS (DP 50%) dari pelanggan.
+**Parameter Input:**
+- `bookingId` (Integer) - ID Pesanan yang akan dibayar DP-nya.
+- `dpAmount` (Integer) - Nominal uang muka yang disetorkan.
+**Nilai Kembalian:** Boolean (`true` jika eksekusi database berhasil).
+**Deskripsi Logika:** Sistem melakukan eksekusi kueri `UPDATE` pada tabel `bookings`. Kolom `dp_amount` diisi dengan nominal uang muka, lalu atribut `status` diubah secara mutlak dari 'Menunggu Pembayaran' menjadi 'Sudah DP 50%'.
+
+### 5. `getStatistikDashboard()`
+**Modul:** Modul Laporan (`src/lib/db.ts`)
+**Tujuan:** Mengumpulkan dan mengagregasi perhitungan total secara *real-time* untuk disajikan pada halaman Dasbor Admin.
+**Parameter Input:** Tidak ada.
+**Nilai Kembalian:** Object agregasi statistik (total pendapatan Harian, Bulanan, dan daftar lapangan terpopuler).
+**Deskripsi Logika:** Fungsi mengeksekusi kueri agregasi `SUM(total_price)` dengan filter tanggal berjalan (`CURRENT_DATE`) untuk omzet harian, dan melakukan kalkulasi rentang bulan untuk omzet bulanan. Seluruh proses matematika dihitung langsung oleh *database engine* untuk meringankan beban server aplikasi.
+
+---
+
+## 3. Struktur Database
+
+### 1. Tabel Users (Pelanggan)
+| Nama Atribut | Tipe Data | Batasan (Constraint) | Keterangan |
+|---|---|---|---|
+| `id` | SERIAL (INT) | Primary Key (PK) | Kode unik identitas otomatis untuk setiap pengguna. |
+| `name` | VARCHAR(100) | NOT NULL | Nama lengkap pengguna. |
+| `email` | VARCHAR(100) | UNIQUE, NOT NULL | Alamat surel unik untuk autentikasi login dan komunikasi. |
+| `phone` | VARCHAR(20) | DEFAULT '' | Nomor telepon atau kontak WhatsApp pengguna. |
+| `password` | VARCHAR(255) | NOT NULL | Kata sandi akun yang telah diamankan (ter-hash). |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Catatan waktu otomatis saat akun pertama kali didaftarkan. |
+
+### 2. Tabel Court (Lapangan Olahraga)
+| Nama Atribut | Tipe Data | Batasan (Constraint) | Keterangan |
+|---|---|---|---|
+| `id` | SERIAL (INT) | Primary Key (PK) | Kode unik identitas otomatis untuk data lapangan. |
+| `name` | VARCHAR(100) | NOT NULL | Nama identitas lapangan (misal: Futsal A, Badminton 1). |
+| `type` | VARCHAR(50) | NOT NULL | Jenis cabang olahraga lapangan (Futsal / Badminton). |
+| `price_per_hour` | DECIMAL(10,2) | NOT NULL | Nominal tarif sewa lapangan per jam. |
+
+### 3. Tabel Bookings (Transaksi Reservasi)
+| Nama Atribut | Tipe Data | Batasan (Constraint) | Keterangan |
+|---|---|---|---|
+| `id` | SERIAL (INT) | Primary Key (PK) | Kode unik nomor transaksi reservasi otomatis. |
+| `user_id` | INTEGER | Foreign Key (FK) REFERENCES users(id) ON DELETE CASCADE | Relasi ke tabel pengguna yang melakukan penyewaan. |
+| `court_id` | INTEGER | Foreign Key (FK) REFERENCES court(id) ON DELETE CASCADE | Relasi ke tabel lapangan yang dipilih untuk dipesan. |
+| `date` | DATE | NOT NULL | Tanggal jadwal pelaksanaan reservasi lapangan. |
+| `start_time` | TIME | NOT NULL | Jam operasional dimulainya penyewaan lapangan. |
+| `end_time` | TIME | NOT NULL | Jam operasional selesainya penyewaan lapangan. |
+| `status` | VARCHAR(50) | NOT NULL, DEFAULT 'Menunggu Pembayaran' | Status transaksi (Menunggu Pembayaran / Sudah DP 50% / Selesai / Dibatalkan). |
+| `dp_amount` | DECIMAL(10,2) | DEFAULT 0 | Nominal uang muka yang dibayarkan (Opsi DP 50%). |
+| `total_price` | DECIMAL(10,2) | DEFAULT 0 | Total kalkulasi biaya sewa yang harus dilunasi pelanggan. |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Catatan waktu saat pesanan pertama kali dibuat di sistem. |
