@@ -31,6 +31,12 @@ export default function CheckoutPage() {
     loadData();
   }, [id]);
 
+  useEffect(() => {
+    if (data && data.status !== 'Menunggu Pembayaran') {
+      router.replace('/my-bookings');
+    }
+  }, [data, router]);
+
   const hitungTotalHarga = (jamMulai: string, jamSelesai: string, hargaPerJam: number) => {
     if (!jamMulai || !jamSelesai) return hargaPerJam;
     const [h1, m1] = jamMulai.split(':').map(Number);
@@ -68,13 +74,9 @@ export default function CheckoutPage() {
     return <div className="min-h-screen bg-slate-950 flex justify-center items-center text-white">Data Reservasi Tidak Ditemukan.</div>;
   }
 
+  // Jika status bukan Menunggu Pembayaran, useEffect akan melakukan redirect, tampilkan loading sementara
   if (data.status !== 'Menunggu Pembayaran') {
-    return (
-      <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center text-white">
-        <h2 className="text-2xl font-bold mb-4">Reservasi ini tidak memerlukan pembayaran DP.</h2>
-        <button onClick={() => router.push('/my-bookings')} className="text-emerald-400 underline">Kembali ke Riwayat</button>
-      </div>
-    );
+    return <div className="min-h-screen bg-slate-950 flex justify-center items-center text-emerald-500"><Loader2 className="animate-spin" size={40} /></div>;
   }
 
   const total = hitungTotalHarga(data.jam_mulai, data.jam_selesai, data.harga_per_jam);
