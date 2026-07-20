@@ -59,7 +59,7 @@ export default function DashboardView({ setActiveTab }: { setActiveTab?: (t: str
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto pb-10">
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Card 1 */}
         <div className="bg-white border border-slate-200 p-6 rounded-2xl flex items-center gap-4 shadow-sm">
           <div className="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
@@ -99,20 +99,6 @@ export default function DashboardView({ setActiveTab }: { setActiveTab?: (t: str
               <h3 className="text-2xl font-bold text-slate-900">{loading ? "..." : stats.memberAktif}</h3>
             </div>
             <p className="text-[11px] font-medium text-emerald-600 mt-1">+4 dari bulan lalu</p>
-          </div>
-        </div>
-
-        {/* Card 4 */}
-        <div className="bg-white border border-slate-200 p-6 rounded-2xl flex items-center gap-4 shadow-sm">
-          <div className="w-14 h-14 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-            <SquareDashedBottom className="text-orange-500" size={24} />
-          </div>
-          <div>
-            <p className="text-slate-500 text-xs font-medium mb-1">Lapangan Tersedia</p>
-            <div className="flex items-baseline gap-2">
-              <h3 className="text-2xl font-bold text-slate-900">3 / 5</h3>
-            </div>
-            <p className="text-[11px] font-medium text-slate-400 mt-1">2 sedang digunakan</p>
           </div>
         </div>
       </div>
@@ -182,7 +168,7 @@ export default function DashboardView({ setActiveTab }: { setActiveTab?: (t: str
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-bold text-slate-900">Reservasi Bulan Ini</h3>
               <select className="bg-slate-50 border border-slate-200 text-slate-600 text-xs rounded-lg px-2 py-1 outline-none">
-                <option>Juli 2024</option>
+                <option>Juli 2026</option>
               </select>
             </div>
             <div className="flex-1 relative w-full h-full">
@@ -213,7 +199,7 @@ export default function DashboardView({ setActiveTab }: { setActiveTab?: (t: str
              <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-bold text-slate-900">Pendapatan Bulanan</h3>
               <select className="bg-slate-50 border border-slate-200 text-slate-600 text-xs rounded-lg px-2 py-1 outline-none">
-                <option>Juli 2024</option>
+                <option>Juli 2026</option>
               </select>
             </div>
             <div className="flex items-baseline gap-2 mb-6">
@@ -234,7 +220,7 @@ export default function DashboardView({ setActiveTab }: { setActiveTab?: (t: str
       
       {/* Footer */}
       <div className="pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-400 gap-2">
-        <p>© 2024 SM Sport. All rights reserved.</p>
+        <p>© 2026 SM Sport. All rights reserved.</p>
         <p>Dibuat dengan <span className="text-red-500">❤️</span> untuk SM Sport</p>
       </div>
     </div>
