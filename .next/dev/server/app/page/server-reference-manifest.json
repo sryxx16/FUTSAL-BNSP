@@ -1,0 +1,17 @@
+{
+  "node": {
+    "005a30b940cd0f12ee9b46a3be7a6097b55163b584": {
+      "workers": {
+        "app/page": {
+          "moduleId": "[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/lib/db.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getJadwalHariIni",
+          "filename": "src/lib/db.ts"
+        }
+      },
+      "exportedName": "getJadwalHariIni",
+      "filename": "src/lib/db.ts"
+    }
+  },
+  "edge": {}
+}

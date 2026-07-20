@@ -66,7 +66,7 @@ export default function Navbar() {
                   )}
                   <div className="flex items-center gap-3 ml-2 pl-4 border-l border-slate-700">
                     <Link 
-                      to={user.role === 'admin' ? '/admin' : '/my-bookings'}
+                      href={user.role === 'admin' ? '/admin' : '/my-bookings'}
                       className="text-sm text-emerald-400 font-bold flex items-center gap-2 hover:text-emerald-300 transition-colors bg-emerald-500/10 px-3 py-1.5 rounded-full"
                       title={user.role === 'admin' ? 'Buka Admin Panel' : 'Lihat Profil'}
                     >

@@ -1,7 +1,6 @@
 
 import './globals.css';
-import Navbar from '../src/components/layout/Navbar';
-import Footer from '../src/components/layout/Footer';
+import ClientLayoutWrapper from './ClientLayoutWrapper';
 
 export const metadata = {
   title: 'SM Sport - Booking Futsal & Badminton',
@@ -13,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="id">
       <body>
         <div className="min-h-screen bg-slate-950 text-slate-50 font-sans selection:bg-emerald-500/30 overflow-x-hidden flex flex-col">
-          {children}
+          <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
         </div>
       </body>
     </html>
