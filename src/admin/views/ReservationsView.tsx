@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { getSemuaReservasi, hapusReservasi, updateStatusReservasi, getDaftarLapangan, buatReservasiDB } from '../../lib/db';
-import { X, Loader2, Printer } from 'lucide-react';
+import { X, Loader2, Printer, Calendar as CalendarIcon } from 'lucide-react';
 
 export default function ReservationsView() {
   const [reservations, setReservations] = useState<any[]>([]);
@@ -132,10 +132,8 @@ export default function ReservationsView() {
     if (filterStatus !== 'Semua Status' && r.status !== filterStatus) return false;
     if (filterDate) {
       const d = new Date(r.tanggal);
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      if (`${yyyy}-${mm}-${dd}` !== filterDate) return false;
+      const localD = new Date(d.getTime() - (d.getTimezoneOffset() * 60000));
+      if (localD.toISOString().split('T')[0] !== filterDate) return false;
     }
     return true;
   });
@@ -160,13 +158,15 @@ export default function ReservationsView() {
               <option value="Selesai">Selesai</option>
               <option value="Dibatalkan">Dibatalkan</option>
             </select>
-            <input 
-              type="date" 
-              value={filterDate}
-              onChange={e => setFilterDate(e.target.value)}
-              className="bg-white border border-slate-200 rounded-lg px-4 py-2 text-slate-600 focus:outline-none focus:border-emerald-500" 
-              style={{ colorScheme: 'light' }}
-            />
+            <div className="relative inline-flex items-center">
+              <input 
+                type="date" 
+                value={filterDate}
+                onChange={e => setFilterDate(e.target.value)}
+                className="bg-white border border-slate-200 rounded-lg pl-4 pr-10 py-2 text-slate-600 focus:outline-none focus:border-emerald-500 relative z-10 bg-transparent [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:cursor-pointer" 
+              />
+              <CalendarIcon size={18} className="absolute right-3 text-slate-400 z-0 pointer-events-none" />
+            </div>
             {filterDate && (
               <button onClick={() => setFilterDate('')} className="text-sm text-slate-500 hover:text-slate-900">Clear Date</button>
             )}
