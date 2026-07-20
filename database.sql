@@ -1,62 +1,5 @@
-# Dokumen 2: ERD dan SQL Script
-
-**Mata Uji Kompetensi:** 
-- J.620100.020.02 Menggunakan SQL
-- J.620100.021.02 Menerapkan Akses Basis Data
-**Proyek:** Sistem Reservasi Lapangan Olahraga SM Sport Center
-
----
-
-## 1. Entity Relationship Diagram (ERD)
-
-Desain basis data terdiri dari tiga tabel utama dengan relasi sebagai berikut:
-- **Tabel `pelanggan`** memiliki relasi *One-to-Many* (1:N) terhadap tabel `reservasi` (Seorang pelanggan dapat membuat banyak reservasi).
-- **Tabel `lapangan`** memiliki relasi *One-to-Many* (1:N) terhadap tabel `reservasi` (Satu lapangan dapat memiliki banyak reservasi).
-
-```mermaid
-erDiagram
-    USERS ||--o{ BOOKINGS : "membuat"
-    COURT ||--o{ BOOKINGS : "dipesan dalam"
-
-    USERS {
-        serial id PK
-        varchar name
-        varchar email
-        varchar phone
-        varchar password
-        timestamp created_at
-    }
-
-    COURT {
-        serial id PK
-        varchar name
-        varchar type
-        decimal price_per_hour
-    }
-
-    BOOKINGS {
-        serial id PK
-        int user_id FK
-        int court_id FK
-        date date
-        time start_time
-        time end_time
-        varchar status
-        decimal dp_amount
-        decimal total_price
-        timestamp created_at
-    }
-```
-
----
-
-## 2. Implementasi SQL Script
-
-Skrip SQL (_Data Definition Language_ dan _Data Manipulation Language_) yang digunakan untuk merancang skema *database* PostgreSQL melalui koneksi _Cloud_ (Neon DB):
-
-```sql
 -- ==========================================
--- DDL: PEMBUATAN TABEL DAN STRUKTUR DATABASE
+-- DATABASE SCRIPT: SISTEM RESERVASI LAPANGAN
 -- ==========================================
 
 -- 1. Membuat tabel Users
@@ -69,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Membuat tabel Court
+-- 2. Membuat tabel Court (Lapangan)
 CREATE TABLE IF NOT EXISTS court (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -77,7 +20,7 @@ CREATE TABLE IF NOT EXISTS court (
   price_per_hour DECIMAL(10,2) NOT NULL
 );
 
--- 3. Membuat tabel Bookings
+-- 3. Membuat tabel Bookings (Reservasi)
 CREATE TABLE IF NOT EXISTS bookings (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -121,4 +64,3 @@ INSERT INTO users (name, email, password) VALUES
 ('Surya', 'surya@example.com', 'rahasia123'),
 ('Budi Santoso', 'budi.santoso@example.com', 'password123')
 ON CONFLICT (email) DO NOTHING;
-```
