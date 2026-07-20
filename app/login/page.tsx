@@ -9,7 +9,7 @@ import { loginUser, registerUser } from '../../src/lib/db';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
-  const navigate = useRouter();
+  const router = useRouter();
   
   const [formData, setFormData] = useState({
     nama: '',

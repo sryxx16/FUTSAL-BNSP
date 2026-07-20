@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 export default function MyBookingsPage() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useRouter();
+  const router = useRouter();
 
   useEffect(() => {
     const sessionStr = typeof window !== 'undefined' ? localStorage.getItem('sm_session') : null;

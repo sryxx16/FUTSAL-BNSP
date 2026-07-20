@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 
 
 export default function ReservationPage() {
-  const navigate = useRouter();
+  const router = useRouter();
   const [lapanganList, setLapanganList] = useState<any[]>([]);
   const sessionStr = typeof window !== 'undefined' ? localStorage.getItem('sm_session') : null;
   const user = sessionStr ? JSON.parse(sessionStr) : null;

@@ -12,7 +12,7 @@ import SettingsView from '../../src/admin/views/SettingsView';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const navigate = useRouter();
+  const router = useRouter();
 
   useEffect(() => {
     const sessionStr = typeof window !== 'undefined' ? localStorage.getItem('sm_session') : null;

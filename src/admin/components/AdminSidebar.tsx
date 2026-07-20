@@ -9,7 +9,7 @@ interface AdminSidebarProps {
 }
 
 export default function AdminSidebar({ activeTab, setActiveTab }: AdminSidebarProps) {
-  const navigate = useRouter();
+  const router = useRouter();
 
   const handleLogout = () => {
     localStorage.removeItem('sm_session');

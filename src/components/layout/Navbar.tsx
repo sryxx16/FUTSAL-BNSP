@@ -10,7 +10,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const navigate = useRouter();
+  const router = useRouter();
   const location = usePathname();
   
   // Ambil sesi user tiap kali pindah halaman

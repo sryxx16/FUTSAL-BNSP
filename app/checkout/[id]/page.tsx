@@ -9,7 +9,7 @@ import { QRCodeSVG } from 'qrcode.react';
 
 export default function CheckoutPage() {
   const { id } = useParams();
-  const navigate = useRouter();
+  const router = useRouter();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [payStatus, setPayStatus] = useState<'idle' | 'loading' | 'success'>('idle');
