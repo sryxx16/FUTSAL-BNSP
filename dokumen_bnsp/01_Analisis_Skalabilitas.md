@@ -44,10 +44,17 @@ Asumsi operasional:
 Berdasarkan arsitektur *Cloud Serverless PostgreSQL* (Neon), menangani 18.250 baris/tahun adalah beban kerja yang sangat ringan (Skala Kecil-Menengah). Skalabilitas *storage* tidak menjadi masalah utama, melainkan skalabilitas kalkulasi *Read-Query*.
 
 ### C. Rekomendasi Peningkatan Performa
-Untuk memastikan sistem tetap *scalable* saat jumlah pesanan mencapai puluhan ribu, kami merekomendasikan:
-1. **Penerapan Database Indexing:** 
-   Membuat kombinasi *index* (_Composite Index_) pada kolom `(lapangan_id, tanggal)` di tabel `reservasi`. Hal ini akan mencegah _Full Table Scan_ karena *database* dapat langsung melompat ke blok data spesifik lapangan dan hari tertentu saat memvalidasi bentrok jadwal.
-2. **Pendekatan Connection Pooling:** 
-   Karena aplikasi menggunakan fungsi berbasis *serverless* (Edge/Serverless Functions Vercel), maka wajib menerapkan mekanisme koneksi *Pooling* (misalnya pgbouncer) atau *HTTP-based pooling* seperti yang disediakan oleh arsitektur Neon, agar *database* tidak tumbang (_connection limit reached_) saat diakses ribuan klien serentak.
-3. **Cron Job & Polling Terdistribusi (Auto-Cancel & Notifikasi):**
-   Fitur Auto-Cancel 20 Menit dan Polling Notifikasi 30 Detik memicu kueri yang sangat intens. Dengan menggunakan arsitektur serverless, fungsi-fungsi ini diisolasi per request sehingga meminimalisir beban *CPU blocking* di sisi server utama.
+
+Untuk memastikan sistem tetap *scalable* saat jumlah pesanan mencapai puluhan ribu di masa depan, kami merumuskan 6 rekomendasi peningkatan arsitektur:
+
+| No | Rekomendasi Peningkatan | Alasan & Manfaat |
+|:---|:---|:---|
+| 1 | **Gunakan PgBouncer / Neon Pooler** | Menangani lonjakan koneksi (*Connection Pooling*) agar *database* tidak tumbang saat ribuan klien mengakses serentak. |
+| 2 | **Database Indexing & Caching (Redis)** | Mengurangi beban komputasi *query* pengecekan jadwal bentrok dan pencarian data pelangan. |
+| 3 | **Server-side Pagination** | Mengoptimalkan pemuatan data di Dasbor Admin jika baris riwayat transaksi sudah melebihi puluhan ribu. |
+| 4 | **Integrasi Payment Gateway API** | Mencegah risiko *No-Show* (Pesan tapi tidak datang) melalui kewajiban DP otomatis via QRIS / Virtual Account. |
+| 5 | **Rate Limiting di Endpoint API** | Mencegah penyalahgunaan (*spam / DDoS bot*) yang berulang kali mencoba melakukan transaksi palsu. |
+| 6 | **Cron Job & Monitoring Otomatis** | Mendeteksi pesanan menggantung yang belum dibayar (*timeout 20 menit*) dan membatalkannya secara asinkron tanpa membebani server utama. |
+
+## 3. Kesimpulan
+Dengan estimasi penyimpanan kurang dari 5 MB dalam 5 tahun, sistem ini tergolong sangat ringan. Kombinasi *Serverless Edge Functions* (Vercel) dan *Serverless PostgreSQL* (Neon) sudah sangat memadai. Masalah *double booking* telah diatasi di level kode, dan rekomendasi di atas disusun murni untuk persiapan skalabilitas tingkat lanjut di masa depan.
