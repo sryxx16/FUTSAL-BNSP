@@ -12,13 +12,52 @@ Berdasarkan proses bisnis pada SM Sport Center, terdapat dua aktor utama yang be
 1. **Pelanggan / Member (User):** Pihak yang menyewa lapangan. Mereka memerlukan antarmuka untuk melihat jadwal kosong, melakukan pemesanan (reservasi), dan melihat riwayat pemesanan mereka sendiri.
 2. **Administrator (Admin):** Pihak manajemen SM Sport Center. Bertanggung jawab mengelola data master (harga lapangan), mengawasi seluruh transaksi reservasi, dan memvalidasi atau membatalkan pesanan.
 
-### B. Kebutuhan Fungsional (Functional Requirements)
+### B. Diagram Use Case (Use Case Diagram)
+Diagram berikut memetakan batasan sistem dan interaksi antara aktor dengan fungsionalitas aplikasi:
+
+```mermaid
+flowchart LR
+    %% Aktor
+    Pelanggan((Pelanggan))
+    Admin((Admin))
+
+    %% Batasan Sistem (System Boundary)
+    subgraph Sistem Reservasi SM Sport Center Berbasis Web
+        direction TB
+        UC1([Registrasi & Autentikasi])
+        UC2([Melihat Ketersediaan Lapangan])
+        UC3([Membuat Reservasi / Booking])
+        UC4([Membayar DP via QRIS Dinamis])
+        UC5([Melihat Riwayat Transaksi Pribadi])
+        
+        UC6([Mengelola Data Reservasi Pelanggan])
+        UC7([Memantau Dasbor & Notifikasi Real-time])
+        UC8([Melihat Data Pelanggan LTV])
+        UC9([Mencetak Laporan Keuangan PDF])
+    end
+
+    %% Relasi Aktor Pelanggan
+    Pelanggan --- UC1
+    Pelanggan --- UC2
+    Pelanggan --- UC3
+    Pelanggan --- UC4
+    Pelanggan --- UC5
+
+    %% Relasi Aktor Admin
+    UC1 --- Admin
+    UC6 --- Admin
+    UC7 --- Admin
+    UC8 --- Admin
+    UC9 --- Admin
+```
+
+### C. Kebutuhan Fungsional (Functional Requirements)
 1. **Sistem Autentikasi:** Sistem harus menyediakan fitur pendaftaran (Register) dan masuk (Login) untuk membedakan hak akses antara Pelanggan dan Admin.
 2. **Manajemen Reservasi (Pelanggan):** Sistem harus memungkinkan pelanggan memilih tanggal, jam mulai, dan jam selesai, serta memastikan jadwal tersebut belum di-_booking_ oleh orang lain.
 3. **Manajemen Reservasi (Admin):** Sistem harus menampilkan seluruh daftar reservasi dalam sebuah Dasbor dan mengizinkan admin untuk mengubah status pesanan (Selesai/Dibatalkan) serta menghapus pesanan (CRUD).
 4. **Validasi Anti-Bentrok:** Sistem secara proaktif menolak masukan jadwal jika terjadi irisan waktu (_time overlap_) pada lapangan dan tanggal yang sama.
 
-### C. Kebutuhan Non-Fungsional (Non-Functional Requirements)
+### D. Kebutuhan Non-Fungsional (Non-Functional Requirements)
 1. **Performa:** Waktu respons (_response time_) untuk mengecek ketersediaan jadwal harus di bawah 1 detik agar pelanggan tidak merasa *lag*.
 2. **Ketersediaan (Availability):** Sistem di-_deploy_ di atas layanan *cloud* (Vercel) yang menjamin *uptime* 99.9%.
 3. **Keamanan:** Komunikasi data diamankan melalui enkripsi SSL (HTTPS) dan kredensial akses diatur melalui *Role-Based Access Control* (RBAC).
