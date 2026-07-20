@@ -23,6 +23,11 @@ export default function ReservationPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
     
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    
     async function loadLapangan() {
       try {
         const data = await getDaftarLapangan();
