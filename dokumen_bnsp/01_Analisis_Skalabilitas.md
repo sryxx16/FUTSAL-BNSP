@@ -34,7 +34,7 @@ flowchart LR
         UC7([Memantau Dashboard & Notifikasi])
         UC8([Mengelola Data Pelanggan])
         UC9([Mencetak Laporan Keuangan])
-        UC10([Mengelola Harga Lapangan])
+        UC10([Mengelola Pengaturan Sistem])
         UC11([Logout / Keluar Sistem])
     end
 
@@ -59,7 +59,8 @@ flowchart LR
 1. **Sistem Autentikasi:** Sistem harus Mengadopsi arsitektur Next.js App Router dengan React Server Components (RSC) untuk mempercepat muat awal halaman (TTV) secara signifikan.
 2. **Manajemen Reservasi (Pelanggan):** Sistem harus memungkinkan pelanggan memilih tanggal, jam mulai, dan jam selesai, serta memastikan jadwal tersebut belum di-_booking_ oleh orang lain.
 3. **Manajemen Reservasi (Admin):** Sistem harus menampilkan seluruh daftar reservasi dalam sebuah Dasbor dan mengizinkan admin untuk mengubah status pesanan (Selesai/Dibatalkan) serta menghapus pesanan (CRUD).
-4. **Validasi Anti-Bentrok:** Sistem secara proaktif menolak masukan jadwal jika terjadi irisan waktu (_time overlap_) pada lapangan dan tanggal yang sama.
+4. **Manajemen Pengaturan (Admin):** Sistem harus memiliki panel pengaturan dinamis bagi Admin untuk memperbarui harga sewa lapangan dan informasi kontak yang tampil pada *Landing Page*.
+5. **Validasi Anti-Bentrok:** Sistem secara proaktif menolak masukan jadwal jika terjadi irisan waktu (_time overlap_) pada lapangan dan tanggal yang sama.
 
 ### D. Kebutuhan Non-Fungsional (Non-Functional Requirements)
 1. **Performa:** Waktu respons (_response time_) untuk mengecek ketersediaan jadwal harus di bawah 1 detik agar pelanggan tidak merasa *lag*.
@@ -86,18 +87,24 @@ Asumsi operasional:
 
 Berdasarkan Arsitektur Saat Ini: Next.js Full-Stack App + Serverless PostgreSQL (Neon DB) + Vercel Deployment menangani 18.250 baris/tahun adalah beban kerja yang sangat ringan (Skala Kecil-Menengah). Skalabilitas *storage* tidak menjadi masalah utama, melainkan skalabilitas kalkulasi *Read-Query*.
 
-### C. Rekomendasi Peningkatan Performa
+### C. Solusi Peningkatan Performa (Telah Diterapkan)
 
-Untuk memastikan sistem tetap *scalable* saat jumlah pesanan mencapai puluhan ribu di masa depan, kami merumuskan 6 rekomendasi peningkatan arsitektur:
+Untuk memastikan sistem berjalan optimal pada skala awal-menengah, beberapa strategi optimasi telah diimplementasikan secara langsung pada level kode dan *database*:
+
+1. **Database Indexing (`CREATE INDEX`)**: Pembuatan indeks pada kolom *foreign key* (`user_id`, `court_id`) dan kolom pencarian (`email`) telah diterapkan guna mempercepat eksekusi *query* dan mencegah *Full Table Scan*.
+2. **Sistem DP QRIS Dinamis**: Fitur pembayaran DP 50% diwajibkan di muka untuk mengunci jadwal, hal ini bertujuan meminimalisir risiko pelanggan fiktif (*No-Show*).
+3. **Auto-Cancel / Timeout 20 Menit**: Logika pembatalan otomatis (*pseudo-cron*) telah disematkan di dalam sistem. Pesanan yang menggantung lebih dari 20 menit tanpa pelunasan DP akan dibatalkan otomatis untuk membuka kembali ketersediaan slot.
+
+### D. Rekomendasi Skalabilitas Lanjutan (Masa Depan)
+
+Apabila *traffic* mencapai ratusan ribu transaksi harian, berikut rancangan arsitektur lanjutan yang disarankan:
 
 | No | Rekomendasi Peningkatan | Alasan & Manfaat |
 |:---|:---|:---|
 | 1 | **Gunakan PgBouncer / Neon Pooler** | Menangani lonjakan koneksi (*Connection Pooling*) agar *database* tidak tumbang saat ribuan klien mengakses serentak. |
-| 2 | **Database Indexing & Caching (Redis)** | Mengurangi beban komputasi *query* pengecekan jadwal bentrok dan pencarian data pelangan. |
-| 3 | **Server-side Pagination** | Mengoptimalkan pemuatan data di Dasbor Admin jika baris riwayat transaksi sudah melebihi puluhan ribu. |
-| 4 | **Integrasi Payment Gateway API** | Mencegah risiko *No-Show* (Pesan tapi tidak datang) melalui kewajiban DP otomatis via QRIS / Virtual Account. |
-| 5 | **Rate Limiting di Endpoint API** | Mencegah penyalahgunaan (*spam / DDoS bot*) yang berulang kali mencoba melakukan transaksi palsu. |
-| 6 | **Cron Job & Monitoring Otomatis** | Mendeteksi pesanan menggantung yang belum dibayar (*timeout 20 menit*) dan membatalkannya secara asinkron tanpa membebani server utama. |
+| 2 | **Caching Layer (Redis)** | Menyimpan hasil *query* ketersediaan lapangan di memori (Redis) untuk menghindari permintaan baca (Read) langsung ke *database* secara berlebihan. |
+| 3 | **Server-side Pagination** | Mengoptimalkan pemuatan data di Dasbor Admin dengan membatasi pengambilan data (misal: 50 baris per halaman) menggunakan perintah `LIMIT` & `OFFSET`. |
+| 4 | **Rate Limiting di Endpoint API** | Melindungi *server* dengan mencegah aktivitas *spam* atau percobaan *booking* palsu massal yang dilakukan oleh program *bot*. |
 
 ## 3. Kesimpulan
-Dengan estimasi penyimpanan kurang dari 5 MB dalam 5 tahun, sistem ini tergolong sangat ringan. Kombinasi *Serverless Edge Functions* (Vercel) dan *Serverless PostgreSQL* (Neon) sudah sangat memadai. Masalah *double booking* telah diatasi di level kode, dan rekomendasi di atas disusun murni untuk persiapan skalabilitas tingkat lanjut di masa depan.
+Dengan estimasi ukuran basis data kurang dari 5 MB dalam kurun 5 tahun, sistem ini tergolong efisien dan ringan. Kombinasi arsitektur *Next.js Server Actions* (Vercel) dan *Serverless PostgreSQL* (Neon), dipadukan dengan optimasi performa bawaan (Indexing & Auto-Cancel), menjadikan aplikasi ini sangat reliabel (tangguh). Seluruh kasus uji kritis seperti *double booking* telah ditangani secara utuh pada level kode. Adapun rekomendasi tingkat lanjut (Redis & Connection Pooling) murni disiapkan sebagai langkah strategis jangka panjang apabila SM Sport Center berkembang menjadi ekosistem skala masif.

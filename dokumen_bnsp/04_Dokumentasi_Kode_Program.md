@@ -6,10 +6,11 @@
 ---
 
 ## 1. Struktur Database PostgreSQL
-Sistem terhubung dengan *serverless database* PostgreSQL (Neon) yang terdiri dari 3 entitas utama:
+Sistem terhubung dengan *serverless database* PostgreSQL (Neon) yang terdiri dari 4 entitas utama:
 - **`pelanggan`**: Menyimpan kredensial (`nama`, `email`, `password`) sebagai identitas aktor.
 - **`lapangan`**: Data master (`nama`, `jenis`, `harga_per_jam`) yang nilainya bersifat konstan namun dapat di-_update_ harga sewanya oleh admin.
 - **`reservasi`**: Merupakan *pivot table* (transaksi) yang mengikat `pelanggan` dan `lapangan` berdasarkan rentang waktu (`tanggal`, `jam_mulai`, `jam_selesai`) dan memiliki status (Menunggu / Selesai / Dibatalkan).
+- **`settings`**: Tabel konfigurasi dinamis yang menyimpan pengaturan sistem seperti informasi kontak dengan pola _key-value pair_.
 
 ---
 
@@ -35,7 +36,7 @@ File `src/lib/db.ts` bertindak sebagai lapisan jembatan (*controller*) antara an
    Mengeksekusi *query* `SELECT` ke tabel pelanggan. Modul ini bertanggung jawab memberikan atribut `role='admin'` jika email yang *login* cocok dengan *email master* perusahaan (`admin@smsport.com`).
    
 2. **`buatReservasiDB(pelangganNama, lapanganId, tanggal, jamMulai, jamSelesai)`**: 
-   Merupakan fungsi transaksional yang paling krusial. Sebelum mengeksekusi `INSERT`, ia memanggil fungsi `cekKetersediaanDB()`. Jika ditemukan bentrokan, ia akan melempar *Error Exception* dan memblokir injeksi data.
+   Merupakan fungsi transaksional yang krusial. Sebelum mengeksekusi `INSERT`, ia memanggil `cekKetersediaanDB()`. Jika bentrok, fungsi ini mengembalikan objek format JSON `{ success: false, error: '...' }` alih-alih melempar *Error Exception*, demi keamanan dan kompatibilitas pada lingkungan *Next.js Server Actions*.
 
 3. **`getStatistikDashboard()` & `getLaporanPendapatan()`**: 
    Fungsi agregasi untuk Dasbor Admin. Menjalankan *query* hitung cepat (`COUNT`, `SUM`, `GROUP BY`) guna mendapatkan matrik pendapatan bulanan, harian, dan jumlah *booking*. Fungsi ini menghitung *Total Revenue* murni secara asinkron tanpa memerlukan tabel laporan khusus.
@@ -45,3 +46,6 @@ File `src/lib/db.ts` bertindak sebagai lapisan jembatan (*controller*) antara an
 
 5. **`tambahPelangganAdmin()` & `getRiwayatBooking(pelangganId)`**:
    Mendukung fitur CRUD lengkap di Admin Panel. Memanfaatkan relasi *One-to-Many* untuk merangkum dan menghitung nilai LTV (*Lifetime Value* / Total Uang Dihabiskan) per pelanggan.
+
+6. **`getSettings()` & `updateSettings(key, value)`**:
+   Fungsi untuk menarik dan memperbarui nilai pada tabel `settings`. Digunakan pada *landing page* (menampilkan info kontak dinamis) dan di panel Admin.

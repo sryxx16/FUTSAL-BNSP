@@ -17,6 +17,10 @@ Desain basis data terdiri dari tiga tabel utama dengan relasi sebagai berikut:
 erDiagram
     USERS ||--o{ BOOKINGS : "membuat"
     COURT ||--o{ BOOKINGS : "dipesan dalam"
+    SETTINGS {
+        varchar key PK
+        text value
+    }
 
     USERS {
         serial id PK
@@ -93,7 +97,13 @@ CREATE TABLE IF NOT EXISTS bookings (
   CONSTRAINT chk_valid_dp CHECK (dp_amount >= 0 AND dp_amount <= total_price)
 );
 
--- 4. Membuat Index untuk Optimalisasi Pencarian (Performa Tinggi)
+-- 4. Membuat tabel Settings (Pengaturan Sistem)
+CREATE TABLE IF NOT EXISTS settings (
+  key VARCHAR(50) PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
+-- 5. Membuat Index untuk Optimalisasi Pencarian (Performa Tinggi)
 CREATE INDEX IF NOT EXISTS bookings_user_id_idx ON bookings(user_id);
 CREATE INDEX IF NOT EXISTS bookings_court_id_idx ON bookings(court_id);
 CREATE UNIQUE INDEX IF NOT EXISTS users_email_idx ON users(email);
@@ -127,4 +137,11 @@ INSERT INTO bookings (user_id, court_id, date, start_time, end_time, status, tot
 (2, 1, CURRENT_DATE + INTERVAL '1 day', '19:00:00', '21:00:00', 'Sudah DP 50%', 300000),
 (3, 3, CURRENT_DATE + INTERVAL '2 days', '15:00:00', '17:00:00', 'Menunggu Pembayaran', 100000)
 ON CONFLICT DO NOTHING;
+
+-- E. Memasukkan data awal Settings (Kontak)
+INSERT INTO settings (key, value) VALUES
+('contact_address', 'Jl. Merdeka No. 123, Jakarta Selatan'),
+('contact_phone', '+62 812-3456-7890'),
+('contact_email', 'info@smsport.com')
+ON CONFLICT (key) DO NOTHING;
 ```

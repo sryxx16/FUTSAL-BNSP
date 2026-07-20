@@ -19,7 +19,7 @@
 
 | ID Test | Skenario Pengujian | Langkah-Langkah | Hasil yang Diharapkan (Expected Result) | Status |
 |---|---|---|---|---|
-| LND-01 | Menampilkan jadwal yang tersedia | 1. Buka Halaman Utama (`/`) <br> 2. Gulir ke bagian "Papan Jadwal Live" | Terlihat 5 kotak nama lapangan beserta lencana ketersediaan (hijau/merah) sesuai dengan _database_ hari ini. | [ ] Pass |
+| LND-01 | Menampilkan jadwal yang tersedia | 1. Buka Halaman Utama (`/`) <br> 2. Gulir ke bagian "Papan Jadwal Live" <br> 3. Ubah Tanggal di Kalender Dropdown | Terlihat 5 kotak nama lapangan beserta jadwal ter-*booking* (merah) yang difilter secara dinamis sesuai tanggal yang dipilih. | [ ] Pass |
 | LND-02 | Auto-scroll Navbar ke Hero | 1. Gulir layar ke paling bawah <br> 2. Klik menu "Home" di Navbar | Layar secara perlahan (smooth) bergeser kembali ke bagian paling atas web. | [ ] Pass |
 
 ---
@@ -54,6 +54,7 @@
 | ADM-02 | Filter data reservasi | 1. Login Admin -> Dasbor -> Reservasi <br> 2. Ubah *dropdown* status menjadi "Selesai" | Tabel secara instan (*real-time*) menyaring dan hanya menampilkan reservasi berstatus "Selesai". | [ ] Pass |
 | ADM-03 | Cetak Laporan PDF | 1. Buka menu Reservasi <br> 2. Klik tombol "Cetak Laporan" | Muncul jendela Print Preview bawaan OS. Layout tampil bersih: latar putih, *sidebar* hitam hilang, teks berwarna hitam. | [ ] Pass |
 | ADM-04 | Edit Harga Lapangan (Settings) | 1. Buka menu Pengaturan <br> 2. Ubah harga Futsal A menjadi 200.000 <br> 3. Simpan | Harga di database berubah. Saat pengguna melakukan *booking*, harga baru diterapkan. | [ ] Pass |
+| ADM-04b | Edit Info Kontak (Settings) | 1. Buka menu Pengaturan <br> 2. Ubah alamat/telepon/email <br> 3. Simpan lalu cek Halaman Utama | Informasi kontak di _database_ diperbarui. Saat mengunjungi bagian Kontak di _Landing Page_, info yang baru langsung tertera. | [ ] Pass |
 | ADM-05 | Laporan Keuangan | 1. Buka Dasbor Admin <br> 2. Cek Total Pendapatan | Sistem menampilkan agregasi pendapatan Harian dan Bulanan. | [ ] Pass |
 | ADM-06 | LTV Pelanggan (CRUD) | 1. Buka menu Data Pelanggan <br> 2. Klik ikon detail pelanggan | Modal akan menampilkan rincian total booking dan Total Uang Dihabiskan (LTV). | [ ] Pass |
 | ADM-07 | Notifikasi Real-time | 1. Pesan lapangan sebagai pelanggan <br> 2. Di layar Admin, tunggu 30 detik | Ikon lonceng otomatis memunculkan angka merah, klik untuk melihat rincian pemesanan tertunda. | [ ] Pass |
