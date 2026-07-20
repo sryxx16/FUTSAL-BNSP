@@ -15,6 +15,7 @@ interface ScheduleSlot {
 export default function ScheduleSection() {
   const [schedules, setSchedules] = useState<ScheduleSlot[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
   useEffect(() => {
     async function loadSchedules() {
@@ -31,6 +32,7 @@ export default function ScheduleSection() {
   }, []);
 
   // Kelompokkan jadwal berdasarkan ID Lapangan
+  // Kelompokkan jadwal berdasarkan ID Lapangan dan filter berdasarkan selectedDate
   const groupedSchedules = schedules.reduce((acc, curr) => {
     if (!acc[curr.lapangan_id]) {
       acc[curr.lapangan_id] = {
@@ -39,11 +41,17 @@ export default function ScheduleSection() {
       };
     }
     if (curr.jam_mulai && curr.jam_selesai && curr.tanggal_main) {
-      // Format jam dari "09:00:00" menjadi "09:00"
-      const formatJam = (time: string) => time.substring(0, 5);
       const tglObj = new Date(curr.tanggal_main);
-      const formatTgl = tglObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
-      acc[curr.lapangan_id].bookedSlots.push(`${formatTgl} | ${formatJam(curr.jam_mulai)} - ${formatJam(curr.jam_selesai)}`);
+      // local time YYYY-MM-DD
+      const year = tglObj.getFullYear();
+      const month = String(tglObj.getMonth() + 1).padStart(2, '0');
+      const day = String(tglObj.getDate()).padStart(2, '0');
+      const localDateStr = `${year}-${month}-${day}`;
+      
+      if (localDateStr === selectedDate) {
+        const formatJam = (time: string) => time.substring(0, 5);
+        acc[curr.lapangan_id].bookedSlots.push(`${formatJam(curr.jam_mulai)} - ${formatJam(curr.jam_selesai)}`);
+      }
     }
     return acc;
   }, {} as Record<number, { nama: string, bookedSlots: string[] }>);
@@ -77,11 +85,29 @@ export default function ScheduleSection() {
             transition={{ delay: 0.1 }}
             className="text-slate-400 text-lg flex flex-col items-center justify-center gap-2"
           >
-            <span className="flex items-center gap-2">
-              <Calendar size={20} className="text-emerald-500" /> Jadwal yang Telah Ter-booking Mendatang
+            <span className="flex items-center gap-2 text-white">
+              <Calendar size={20} className="text-emerald-500" /> Ketersediaan Lapangan
             </span>
-            <span className="text-sm text-slate-500 bg-slate-900 px-4 py-1 rounded-full border border-slate-800">Cek kalender Anda sebelum melakukan reservasi</span>
           </motion.p>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="mt-6 flex justify-center"
+          >
+             <div className="bg-slate-900 border border-slate-800 rounded-full px-6 py-2 flex items-center gap-4">
+               <span className="text-slate-400 text-sm">Pilih Tanggal:</span>
+               <input 
+                 type="date"
+                 value={selectedDate}
+                 onChange={(e) => setSelectedDate(e.target.value)}
+                 min={new Date().toISOString().split('T')[0]}
+                 className="bg-transparent text-emerald-400 font-bold focus:outline-none focus:ring-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:invert-[0.8]"
+               />
+             </div>
+          </motion.div>
         </div>
 
         {loading ? (
@@ -106,7 +132,7 @@ export default function ScheduleSection() {
                   {court.bookedSlots.length === 0 ? (
                     <div className="flex items-center gap-2 text-emerald-400 bg-emerald-500/10 px-4 py-3 rounded-lg border border-emerald-500/20">
                       <Clock size={18} />
-                      <span className="text-sm font-medium">Belum ada booking mendatang</span>
+                      <span className="text-sm font-medium">Tersedia Sepanjang Hari</span>
                     </div>
                   ) : (
                     <>
