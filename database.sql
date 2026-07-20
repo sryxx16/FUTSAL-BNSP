@@ -64,3 +64,9 @@ INSERT INTO users (name, email, password) VALUES
 ('Surya', 'surya@example.com', 'rahasia123'),
 ('Budi Santoso', 'budi.santoso@example.com', 'password123')
 ON CONFLICT (email) DO NOTHING;
+
+-- D. Memasukkan sampel data Reservasi (Booking)
+INSERT INTO bookings (user_id, court_id, date, start_time, end_time, status, total_price) VALUES
+(2, 1, CURRENT_DATE + INTERVAL '1 day', '19:00:00', '21:00:00', 'Sudah DP 50%', 300000),
+(3, 3, CURRENT_DATE + INTERVAL '2 days', '15:00:00', '17:00:00', 'Menunggu Pembayaran', 100000)
+ON CONFLICT DO NOTHING;
