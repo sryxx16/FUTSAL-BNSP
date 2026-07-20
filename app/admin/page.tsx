@@ -24,7 +24,7 @@ export default function AdminDashboard() {
     if (user.role !== 'admin') {
       router.push('/');
     }
-  }, [navigate]);
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-slate-50 flex text-slate-900 font-sans w-full">

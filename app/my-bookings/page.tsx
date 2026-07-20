@@ -32,7 +32,7 @@ export default function MyBookingsPage() {
       }
     }
     loadData();
-  }, [navigate]);
+  }, [router]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
