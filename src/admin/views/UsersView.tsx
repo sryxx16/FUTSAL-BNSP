@@ -131,11 +131,11 @@ export default function UsersView() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-         <h2 className="text-2xl font-bold text-white">Manajemen Pelanggan</h2>
+         <h2 className="text-2xl font-bold text-slate-900">Manajemen Pelanggan</h2>
          <div className="flex items-center gap-3">
            <button 
              onClick={handleExportCSV}
-             className="bg-slate-800 text-white font-bold px-4 py-2 rounded-lg border border-slate-700 hover:bg-slate-700 transition-colors"
+             className="bg-white text-slate-900 font-bold px-4 py-2 rounded-lg border border-slate-300 hover:bg-slate-100 transition-colors"
            >
              Ekspor (CSV)
            </button>
@@ -148,11 +148,11 @@ export default function UsersView() {
          </div>
       </div>
       
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[700px]">
             <thead>
-              <tr className="bg-slate-950/50 text-slate-400 text-sm">
+              <tr className="bg-slate-50 text-slate-500 text-sm">
                 <th className="p-4 font-medium">Nama / Email</th>
                 <th className="p-4 font-medium">Tgl Daftar</th>
                 <th className="p-4 font-medium text-center">Total Booking</th>
@@ -161,26 +161,26 @@ export default function UsersView() {
             </thead>
             <tbody className="text-sm">
               {loading ? (
-                <tr><td colSpan={4} className="p-8 text-center text-slate-400">Memuat pelanggan...</td></tr>
+                <tr><td colSpan={4} className="p-8 text-center text-slate-500">Memuat pelanggan...</td></tr>
               ) : users.length === 0 ? (
-                <tr><td colSpan={4} className="p-8 text-center text-slate-400">Belum ada pelanggan</td></tr>
+                <tr><td colSpan={4} className="p-8 text-center text-slate-500">Belum ada pelanggan</td></tr>
               ) : users.map((row) => (
-                <tr key={row.id} className="border-b border-slate-800/50 hover:bg-slate-800/20 transition-colors">
+                <tr key={row.id} className="border-b border-slate-200/50 hover:bg-white/20 transition-colors">
                   <td className="p-4">
-                    <div className="font-medium text-white">{row.nama}</div>
+                    <div className="font-medium text-slate-900">{row.nama}</div>
                     <div className="text-xs text-slate-500">{row.email} {row.no_hp ? `• ${row.no_hp}` : ''}</div>
                   </td>
-                  <td className="p-4 text-slate-400">{row.tgl_daftar}</td>
-                  <td className="p-4 text-center text-emerald-400 font-bold">{row.total_booking}</td>
+                  <td className="p-4 text-slate-500">{row.tgl_daftar}</td>
+                  <td className="p-4 text-center text-emerald-600 font-bold">{row.total_booking}</td>
                   <td className="p-4">
                     <div className="flex items-center gap-2">
-                      <button onClick={() => openDetailModal(row)} className="p-2 bg-purple-500/10 text-purple-400 rounded-lg hover:bg-purple-500/20 transition-colors" title="Lihat Detail Riwayat">
+                      <button onClick={() => openDetailModal(row)} className="p-2 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors" title="Lihat Detail Riwayat">
                         <Eye size={16} />
                       </button>
-                      <button onClick={() => openEditModal(row)} className="p-2 bg-blue-500/10 text-blue-400 rounded-lg hover:bg-blue-500/20 transition-colors" title="Edit">
+                      <button onClick={() => openEditModal(row)} className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors" title="Edit">
                         <Edit2 size={16} />
                       </button>
-                      <button onClick={() => handleDelete(row.id, row.nama)} className="p-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors" title="Hapus">
+                      <button onClick={() => handleDelete(row.id, row.nama)} className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors" title="Hapus">
                         <Trash2 size={16} />
                       </button>
                     </div>
@@ -194,45 +194,45 @@ export default function UsersView() {
 
       {/* Modal CRUD Pelanggan */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl w-full max-w-md shadow-2xl relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white border border-slate-200 p-6 rounded-2xl w-full max-w-md shadow-2xl relative">
             <button 
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 text-slate-500 hover:text-slate-900"
             >
               <X size={24} />
             </button>
-            <h3 className="text-xl font-bold text-white mb-6">
+            <h3 className="text-xl font-bold text-slate-900 mb-6">
               {modalMode === 'tambah' ? 'Tambah Pelanggan Baru' : 'Edit Pelanggan'}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1">Nama Lengkap</label>
+                <label className="block text-sm font-medium text-slate-500 mb-1">Nama Lengkap</label>
                 <input 
                   type="text" 
                   value={formData.nama}
                   onChange={e => setFormData({...formData, nama: e.target.value})}
                   required
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 focus:outline-none focus:border-emerald-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1">Alamat Email</label>
+                <label className="block text-sm font-medium text-slate-500 mb-1">Alamat Email</label>
                 <input 
                   type="email" 
                   value={formData.email}
                   onChange={e => setFormData({...formData, email: e.target.value})}
                   required
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 focus:outline-none focus:border-emerald-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1">Nomor HP/WA</label>
+                <label className="block text-sm font-medium text-slate-500 mb-1">Nomor HP/WA</label>
                 <input 
                   type="tel" 
                   value={formData.no_hp}
                   onChange={e => setFormData({...formData, no_hp: e.target.value})}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 focus:outline-none focus:border-emerald-500"
                 />
               </div>
               <button 
@@ -249,34 +249,34 @@ export default function UsersView() {
 
       {/* Modal Detail Riwayat */}
       {isDetailModalOpen && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl w-full max-w-2xl shadow-2xl relative max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white border border-slate-200 p-6 rounded-2xl w-full max-w-2xl shadow-2xl relative max-h-[90vh] flex flex-col">
             <button 
               onClick={() => setIsDetailModalOpen(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 text-slate-500 hover:text-slate-900"
             >
               <X size={24} />
             </button>
-            <h3 className="text-xl font-bold text-white mb-2">
+            <h3 className="text-xl font-bold text-slate-900 mb-2">
               Detail Riwayat: {selectedUser.nama}
             </h3>
-            <p className="text-sm text-slate-400 mb-4">{selectedUser.email} &bull; Bergabung sejak {selectedUser.tgl_daftar}</p>
+            <p className="text-sm text-slate-500 mb-4">{selectedUser.email} &bull; Bergabung sejak {selectedUser.tgl_daftar}</p>
             
-            <div className="bg-slate-950/50 rounded-xl p-4 mb-6 border border-slate-800 flex justify-between items-center">
+            <div className="bg-slate-50 rounded-xl p-4 mb-6 border border-slate-200 flex justify-between items-center">
               <div>
-                <p className="text-xs text-slate-400 mb-1">Total Reservasi (Sukses)</p>
-                <p className="text-lg font-bold text-white">{userBookings.filter(b => b.status === 'Selesai' || b.status === 'Sudah DP 50%').length} Kali</p>
+                <p className="text-xs text-slate-500 mb-1">Total Reservasi (Sukses)</p>
+                <p className="text-lg font-bold text-slate-900">{userBookings.filter(b => b.status === 'Selesai' || b.status === 'Sudah DP 50%').length} Kali</p>
               </div>
               <div className="text-right">
-                <p className="text-xs text-slate-400 mb-1">Total Uang Dihabiskan (LTV)</p>
-                <p className="text-xl font-bold text-emerald-400">{formatUang(totalSpent)}</p>
+                <p className="text-xs text-slate-500 mb-1">Total Uang Dihabiskan (LTV)</p>
+                <p className="text-xl font-bold text-emerald-600">{formatUang(totalSpent)}</p>
               </div>
             </div>
             
             <div className="flex-1 overflow-y-auto pr-2">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-950/50 text-slate-400 text-sm">
+                  <tr className="bg-slate-50 text-slate-500 text-sm">
                     <th className="p-3 font-medium">Tanggal</th>
                     <th className="p-3 font-medium">Lapangan</th>
                     <th className="p-3 font-medium">Jam</th>
@@ -286,23 +286,23 @@ export default function UsersView() {
                 </thead>
                 <tbody className="text-sm">
                   {loadingBookings ? (
-                    <tr><td colSpan={5} className="p-4 text-center text-slate-400">Memuat riwayat...</td></tr>
+                    <tr><td colSpan={5} className="p-4 text-center text-slate-500">Memuat riwayat...</td></tr>
                   ) : userBookings.length === 0 ? (
-                    <tr><td colSpan={5} className="p-4 text-center text-slate-400">Belum ada riwayat booking</td></tr>
+                    <tr><td colSpan={5} className="p-4 text-center text-slate-500">Belum ada riwayat booking</td></tr>
                   ) : userBookings.map((b) => (
-                    <tr key={b.id} className="border-b border-slate-800/50 hover:bg-slate-800/20">
-                      <td className="p-3 text-slate-300">{new Date(b.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-                      <td className="p-3 text-emerald-400">{b.lapangan_nama}</td>
-                      <td className="p-3 text-slate-300">{b.jam_mulai.substring(0,5)} - {b.jam_selesai.substring(0,5)}</td>
-                      <td className="p-3 text-emerald-400 font-bold">
+                    <tr key={b.id} className="border-b border-slate-200/50 hover:bg-white/20">
+                      <td className="p-3 text-slate-600">{new Date(b.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                      <td className="p-3 text-emerald-600">{b.lapangan_nama}</td>
+                      <td className="p-3 text-slate-600">{b.jam_mulai.substring(0,5)} - {b.jam_selesai.substring(0,5)}</td>
+                      <td className="p-3 text-emerald-600 font-bold">
                         {formatUang(b.harga_per_jam * ((new Date(`1970-01-01T${b.jam_selesai}Z`).getTime() - new Date(`1970-01-01T${b.jam_mulai}Z`).getTime()) / (1000*60*60)))}
                       </td>
                       <td className="p-3">
                         <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${
-                          b.status === 'Selesai' ? 'text-emerald-400 bg-emerald-400/10' :
-                          b.status === 'Sudah DP 50%' ? 'text-blue-400 bg-blue-400/10' :
-                          b.status === 'Dibatalkan' ? 'text-red-400 bg-red-400/10' :
-                          'text-yellow-400 bg-yellow-400/10'
+                          b.status === 'Selesai' ? 'text-emerald-600 bg-emerald-50' :
+                          b.status === 'Sudah DP 50%' ? 'text-blue-600 bg-blue-50' :
+                          b.status === 'Dibatalkan' ? 'text-red-600 bg-red-50' :
+                          'text-orange-500 bg-orange-50'
                         }`}>
                           {b.status}
                         </span>

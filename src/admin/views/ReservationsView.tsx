@@ -102,11 +102,11 @@ export default function ReservationsView() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Selesai': return 'text-emerald-400 bg-emerald-400/10 border border-emerald-500/30';
-      case 'Sudah DP 50%': return 'text-blue-400 bg-blue-400/10 border border-blue-500/30';
-      case 'Menunggu Pembayaran': return 'text-yellow-400 bg-yellow-400/10 border border-yellow-500/30';
-      case 'Dibatalkan': return 'text-red-400 bg-red-400/10 border border-red-500/30';
-      default: return 'text-slate-400 bg-slate-400/10 border border-slate-500/30';
+      case 'Selesai': return 'text-emerald-600 bg-emerald-50 border border-emerald-500/30';
+      case 'Sudah DP 50%': return 'text-blue-600 bg-blue-50 border border-blue-500/30';
+      case 'Menunggu Pembayaran': return 'text-orange-500 bg-orange-50 border border-yellow-500/30';
+      case 'Dibatalkan': return 'text-red-600 bg-red-50 border border-red-500/30';
+      default: return 'text-slate-500 bg-slate-400/10 border border-slate-500/30';
     }
   };
 
@@ -145,7 +145,7 @@ export default function ReservationsView() {
             <select 
               value={filterStatus}
               onChange={e => setFilterStatus(e.target.value)}
-              className="bg-slate-900 border border-slate-800 rounded-lg px-4 py-2 text-slate-300 focus:outline-none focus:border-emerald-500"
+              className="bg-white border border-slate-200 rounded-lg px-4 py-2 text-slate-600 focus:outline-none focus:border-emerald-500"
             >
               <option>Semua Status</option>
               <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
@@ -157,17 +157,17 @@ export default function ReservationsView() {
               type="date" 
               value={filterDate}
               onChange={e => setFilterDate(e.target.value)}
-              className="bg-slate-900 border border-slate-800 rounded-lg px-4 py-2 text-slate-300 focus:outline-none focus:border-emerald-500" 
+              className="bg-white border border-slate-200 rounded-lg px-4 py-2 text-slate-600 focus:outline-none focus:border-emerald-500" 
               style={{ colorScheme: 'dark' }} 
             />
             {filterDate && (
-              <button onClick={() => setFilterDate('')} className="text-sm text-slate-400 hover:text-white">Clear Date</button>
+              <button onClick={() => setFilterDate('')} className="text-sm text-slate-500 hover:text-slate-900">Clear Date</button>
             )}
          </div>
          <div className="flex gap-3">
            <button 
              onClick={() => window.print()}
-             className="bg-slate-800 text-white font-bold px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors flex items-center gap-2"
+             className="bg-white text-slate-900 font-bold px-4 py-2 rounded-lg hover:bg-slate-100 transition-colors flex items-center gap-2"
            >
              <Printer size={18} /> Cetak Laporan
            </button>
@@ -179,11 +179,11 @@ export default function ReservationsView() {
            </button>
          </div>
       </div>
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden print:bg-white print:border-none print:shadow-none">
+      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden print:bg-white print:border-none print:shadow-none">
         <div className="overflow-x-auto print:overflow-visible">
           <table className="w-full text-left border-collapse min-w-[800px] print:min-w-full print:text-black">
             <thead>
-              <tr className="bg-slate-950/50 text-slate-400 text-sm print:bg-gray-100 print:text-black print:border-b-2 print:border-gray-800">
+              <tr className="bg-slate-50 text-slate-500 text-sm print:bg-gray-100 print:text-black print:border-b-2 print:border-gray-800">
                 <th className="p-4 font-medium">ID</th>
                 <th className="p-4 font-medium">Pelanggan</th>
                 <th className="p-4 font-medium">Lapangan</th>
@@ -195,19 +195,19 @@ export default function ReservationsView() {
             </thead>
             <tbody className="text-sm">
               {loading ? (
-                <tr><td colSpan={7} className="p-8 text-center text-slate-400">Memuat data dari Neon DB...</td></tr>
+                <tr><td colSpan={7} className="p-8 text-center text-slate-500">Memuat data dari Neon DB...</td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={7} className="p-8 text-center text-slate-400">Tidak ada data yang sesuai filter</td></tr>
+                <tr><td colSpan={7} className="p-8 text-center text-slate-500">Tidak ada data yang sesuai filter</td></tr>
               ) : filtered.map((row) => (
-                <tr key={row.id} className="border-b border-slate-800/50 hover:bg-slate-800/20 transition-colors print:border-gray-300 print:hover:bg-transparent">
-                  <td className="p-4 text-slate-400 print:text-black">#{row.id}</td>
-                  <td className="p-4 text-white font-medium print:text-black">{row.pelanggan_nama}</td>
-                  <td className="p-4 text-emerald-400 print:text-black">{row.lapangan_nama}</td>
-                  <td className="p-4 text-slate-300 print:text-black">
+                <tr key={row.id} className="border-b border-slate-200/50 hover:bg-white/20 transition-colors print:border-gray-300 print:hover:bg-transparent">
+                  <td className="p-4 text-slate-500 print:text-black">#{row.id}</td>
+                  <td className="p-4 text-slate-900 font-medium print:text-black">{row.pelanggan_nama}</td>
+                  <td className="p-4 text-emerald-600 print:text-black">{row.lapangan_nama}</td>
+                  <td className="p-4 text-slate-600 print:text-black">
                     {formatTanggal(row.tanggal)}<br/>
                     <span className="text-xs text-slate-500 print:text-black">{row.jam_mulai.substring(0,5)} - {row.jam_selesai.substring(0,5)}</span>
                   </td>
-                  <td className="p-4 text-slate-300 print:text-black">{formatUang(hitungTotalHarga(row.jam_mulai, row.jam_selesai, row.harga_per_jam))}</td>
+                  <td className="p-4 text-slate-600 print:text-black">{formatUang(hitungTotalHarga(row.jam_mulai, row.jam_selesai, row.harga_per_jam))}</td>
                   <td className="p-4 print:text-black">
                     {editingId === row.id ? (
                       <select 
@@ -215,7 +215,7 @@ export default function ReservationsView() {
                         defaultValue={row.status}
                         onChange={(e) => handleUpdateStatus(row.id, e.target.value)}
                         onBlur={() => setEditingId(null)}
-                        className="bg-slate-950 border border-emerald-500 text-emerald-400 rounded px-2 py-1 text-xs font-bold outline-none"
+                        className="bg-white border border-emerald-500 text-emerald-600 rounded px-2 py-1 text-xs font-bold outline-none"
                       >
                         <option value="Menunggu">Menunggu</option>
                         <option value="Selesai">Selesai</option>
@@ -232,15 +232,15 @@ export default function ReservationsView() {
                     )}
                   </td>
                   <td className="p-4 text-center print:hidden">
-                    <button onClick={() => setEditingId(row.id)} className="text-blue-400 hover:text-blue-300 mx-2 transition-colors font-medium">Edit</button>
-                    <button onClick={() => handleDelete(row.id)} className="text-red-400 hover:text-red-300 mx-2 transition-colors font-medium">Hapus</button>
+                    <button onClick={() => setEditingId(row.id)} className="text-blue-600 hover:text-blue-300 mx-2 transition-colors font-medium">Edit</button>
+                    <button onClick={() => handleDelete(row.id)} className="text-red-600 hover:text-red-300 mx-2 transition-colors font-medium">Hapus</button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className="p-4 border-t border-slate-800 flex justify-between items-center text-sm text-slate-400 print:hidden">
+        <div className="p-4 border-t border-slate-200 flex justify-between items-center text-sm text-slate-500 print:hidden">
            <span>Menampilkan {filtered.length} data</span>
         </div>
       </div>
@@ -248,33 +248,33 @@ export default function ReservationsView() {
       {/* Modal Popup Reservasi Manual */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl relative">
-            <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-950/50">
-               <h3 className="text-xl font-bold text-white">Buat Reservasi Manual</h3>
-               <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-white transition-colors">
+          <div className="bg-white border border-slate-300 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl relative">
+            <div className="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+               <h3 className="text-xl font-bold text-slate-900">Buat Reservasi Manual</h3>
+               <button onClick={() => setShowModal(false)} className="text-slate-500 hover:text-slate-900 transition-colors">
                  <X size={24} />
                </button>
             </div>
             
             <form onSubmit={handleCreateManual} className="p-6 space-y-4">
                <div>
-                  <label className="text-sm font-medium text-slate-300 block mb-1">Nama Pemesan</label>
+                  <label className="text-sm font-medium text-slate-600 block mb-1">Nama Pemesan</label>
                   <input 
                     type="text" required
                     value={formData.pelanggan_nama}
                     onChange={e => setFormData({...formData, pelanggan_nama: e.target.value})}
                     placeholder="Masukkan nama lengkap"
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2 text-slate-900 focus:outline-none focus:border-emerald-500"
                   />
                </div>
                
                <div>
-                  <label className="text-sm font-medium text-slate-300 block mb-1">Pilih Lapangan</label>
+                  <label className="text-sm font-medium text-slate-600 block mb-1">Pilih Lapangan</label>
                   <select 
                     required
                     value={formData.lapangan_id}
                     onChange={e => setFormData({...formData, lapangan_id: e.target.value})}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2 text-slate-900 focus:outline-none focus:border-emerald-500"
                   >
                     {lapanganList.map(lap => (
                       <option key={lap.id} value={lap.id}>
@@ -285,24 +285,24 @@ export default function ReservationsView() {
                </div>
                
                <div>
-                  <label className="text-sm font-medium text-slate-300 block mb-1">Tanggal Main</label>
+                  <label className="text-sm font-medium text-slate-600 block mb-1">Tanggal Main</label>
                   <input 
                     type="date" required
                     value={formData.tanggal}
                     onChange={e => setFormData({...formData, tanggal: e.target.value})}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2 text-slate-900 focus:outline-none focus:border-emerald-500"
                     style={{ colorScheme: 'dark' }}
                   />
                </div>
 
                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-slate-300 block mb-1">Jam Mulai</label>
+                    <label className="text-sm font-medium text-slate-600 block mb-1">Jam Mulai</label>
                     <select 
                       required
                       value={formData.jam_mulai}
                       onChange={e => setFormData({...formData, jam_mulai: e.target.value})}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2 text-slate-900 focus:outline-none focus:border-emerald-500"
                     >
                       <option value="">Pilih Jam</option>
                       {Array.from({length: 16}).map((_, i) => {
@@ -312,12 +312,12 @@ export default function ReservationsView() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-slate-300 block mb-1">Jam Selesai</label>
+                    <label className="text-sm font-medium text-slate-600 block mb-1">Jam Selesai</label>
                     <select 
                       required
                       value={formData.jam_selesai}
                       onChange={e => setFormData({...formData, jam_selesai: e.target.value})}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2 text-slate-900 focus:outline-none focus:border-emerald-500"
                     >
                       <option value="">Pilih Jam</option>
                       {Array.from({length: 16}).map((_, i) => {
@@ -332,7 +332,7 @@ export default function ReservationsView() {
                   <button 
                     type="button" 
                     onClick={() => setShowModal(false)}
-                    className="px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-colors"
+                    className="px-4 py-2 rounded-lg text-slate-600 hover:bg-white transition-colors"
                   >
                     Batal
                   </button>

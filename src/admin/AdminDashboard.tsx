@@ -25,13 +25,13 @@ export default function AdminDashboard() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-slate-950 flex text-slate-50 font-sans w-full">
+    <div className="min-h-screen bg-slate-50 flex text-slate-900 font-sans w-full">
       <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
         <AdminHeader activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-950">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50">
           {activeTab === 'dashboard' && <DashboardView setActiveTab={setActiveTab} />}
           {activeTab === 'reservations' && <ReservationsView />}
           {activeTab === 'users' && <UsersView />}
