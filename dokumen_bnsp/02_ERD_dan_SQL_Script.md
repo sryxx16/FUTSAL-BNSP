@@ -15,34 +15,34 @@ Desain basis data terdiri dari tiga tabel utama dengan relasi sebagai berikut:
 
 ```mermaid
 erDiagram
-    PELANGGAN ||--o{ RESERVASI : "membuat"
-    LAPANGAN ||--o{ RESERVASI : "dipesan dalam"
+    USERS ||--o{ BOOKINGS : "membuat"
+    COURT ||--o{ BOOKINGS : "dipesan dalam"
 
-    PELANGGAN {
+    USERS {
         serial id PK
-        varchar nama
+        varchar name
         varchar email
-        varchar no_hp
+        varchar phone
         varchar password
         timestamp created_at
     }
 
-    LAPANGAN {
+    COURT {
         serial id PK
-        varchar nama
-        varchar jenis
-        decimal harga_per_jam
+        varchar name
+        varchar type
+        decimal price_per_hour
     }
 
-    RESERVASI {
+    BOOKINGS {
         serial id PK
-        int pelanggan_id FK
-        int lapangan_id FK
-        date tanggal
-        time jam_mulai
-        time jam_selesai
+        int user_id FK
+        int court_id FK
+        date date
+        time start_time
+        time end_time
         varchar status
-        decimal nominal_dp
+        decimal dp_amount
         timestamp created_at
     }
 ```
@@ -58,34 +58,34 @@ Skrip SQL (_Data Definition Language_ dan _Data Manipulation Language_) yang dig
 -- DDL: PEMBUATAN TABEL DAN STRUKTUR DATABASE
 -- ==========================================
 
--- 1. Membuat tabel Pelanggan
-CREATE TABLE IF NOT EXISTS pelanggan (
+-- 1. Membuat tabel Users
+CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
-  nama VARCHAR(100) NOT NULL,
+  name VARCHAR(100) NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
-  no_hp VARCHAR(20) DEFAULT '',
+  phone VARCHAR(20) DEFAULT '',
   password VARCHAR(255) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Membuat tabel Lapangan
-CREATE TABLE IF NOT EXISTS lapangan (
+-- 2. Membuat tabel Court
+CREATE TABLE IF NOT EXISTS court (
   id SERIAL PRIMARY KEY,
-  nama VARCHAR(100) NOT NULL,
-  jenis VARCHAR(50) NOT NULL, 
-  harga_per_jam DECIMAL(10,2) NOT NULL
+  name VARCHAR(100) NOT NULL,
+  type VARCHAR(50) NOT NULL, 
+  price_per_hour DECIMAL(10,2) NOT NULL
 );
 
--- 3. Membuat tabel Reservasi
-CREATE TABLE IF NOT EXISTS reservasi (
+-- 3. Membuat tabel Bookings
+CREATE TABLE IF NOT EXISTS bookings (
   id SERIAL PRIMARY KEY,
-  pelanggan_id INTEGER NOT NULL REFERENCES pelanggan(id) ON DELETE CASCADE,
-  lapangan_id INTEGER NOT NULL REFERENCES lapangan(id) ON DELETE CASCADE,
-  tanggal DATE NOT NULL,
-  jam_mulai TIME NOT NULL,
-  jam_selesai TIME NOT NULL,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  court_id INTEGER NOT NULL REFERENCES court(id) ON DELETE CASCADE,
+  date DATE NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
   status VARCHAR(50) NOT NULL DEFAULT 'Menunggu Pembayaran',
-  nominal_dp DECIMAL(10,2) DEFAULT 0,
+  dp_amount DECIMAL(10,2) DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS reservasi (
 -- ==========================================
 
 -- A. Memasukkan data master Lapangan (2 Futsal, 3 Badminton)
-INSERT INTO lapangan (nama, jenis, harga_per_jam) VALUES
+INSERT INTO court (name, type, price_per_hour) VALUES
 ('Lapangan Futsal 1', 'Futsal', 150000),
 ('Lapangan Futsal 2', 'Futsal', 150000),
 ('Lapangan Badminton 1', 'Badminton', 50000),
@@ -103,12 +103,12 @@ INSERT INTO lapangan (nama, jenis, harga_per_jam) VALUES
 ON CONFLICT DO NOTHING;
 
 -- B. Memasukkan akun Administrator
-INSERT INTO pelanggan (nama, email, password) VALUES
+INSERT INTO users (name, email, password) VALUES
 ('Super Admin', 'admin@smsport.com', 'admin123')
 ON CONFLICT (email) DO NOTHING;
 
 -- C. Memasukkan sampel data Pelanggan reguler
-INSERT INTO pelanggan (nama, email, password) VALUES
+INSERT INTO users (name, email, password) VALUES
 ('Surya', 'surya@example.com', 'rahasia123'),
 ('Budi Santoso', 'budi.santoso@example.com', 'password123')
 ON CONFLICT (email) DO NOTHING;
