@@ -13,7 +13,7 @@ export default function AdminSidebar({ activeTab, setActiveTab }: AdminSidebarPr
 
   const handleLogout = () => {
     localStorage.removeItem('sm_session');
-    router.push('/');
+    window.location.href = '/';
   };
 
   return (

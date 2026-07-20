@@ -29,8 +29,9 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem('sm_session');
+    setUser(null);
     setIsMobileMenuOpen(false);
-    router.push('/');
+    window.location.href = '/';
   };
 
   return (

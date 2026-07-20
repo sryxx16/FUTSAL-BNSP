@@ -130,7 +130,13 @@ export default function ReservationsView() {
 
   const filtered = reservations.filter(r => {
     if (filterStatus !== 'Semua Status' && r.status !== filterStatus) return false;
-    if (filterDate && new Date(r.tanggal).toISOString().split('T')[0] !== filterDate) return false;
+    if (filterDate) {
+      const d = new Date(r.tanggal);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      if (`${yyyy}-${mm}-${dd}` !== filterDate) return false;
+    }
     return true;
   });
 
@@ -159,7 +165,6 @@ export default function ReservationsView() {
               value={filterDate}
               onChange={e => setFilterDate(e.target.value)}
               className="bg-white border border-slate-200 rounded-lg px-4 py-2 text-slate-600 focus:outline-none focus:border-emerald-500" 
-              style={{ colorScheme: 'dark' }} 
             />
             {filterDate && (
               <button onClick={() => setFilterDate('')} className="text-sm text-slate-500 hover:text-slate-900">Clear Date</button>
@@ -292,7 +297,6 @@ export default function ReservationsView() {
                     value={formData.tanggal}
                     onChange={e => setFormData({...formData, tanggal: e.target.value})}
                     className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2 text-slate-900 focus:outline-none focus:border-emerald-500"
-                    style={{ colorScheme: 'dark' }}
                   />
                </div>
 
