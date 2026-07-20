@@ -1,5 +1,5 @@
 import { LayoutDashboard, CalendarDays, Users, Settings, LogOut, BarChart3, Menu } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface AdminSidebarProps {
   activeTab: string;
