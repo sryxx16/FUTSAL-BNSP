@@ -1,5 +1,7 @@
+"use client";
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
+
 import AdminSidebar from './components/AdminSidebar';
 import AdminHeader from './components/AdminHeader';
 import DashboardView from './views/DashboardView';
@@ -10,17 +12,17 @@ import SettingsView from './views/SettingsView';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const navigate = useNavigate();
+  const navigate = useRouter();
 
   useEffect(() => {
-    const sessionStr = localStorage.getItem('sm_session');
+    const sessionStr = typeof window !== 'undefined' ? localStorage.getItem('sm_session') : null;
     if (!sessionStr) {
-      navigate('/login');
+      router.push('/login');
       return;
     }
     const user = JSON.parse(sessionStr);
     if (user.role !== 'admin') {
-      navigate('/');
+      router.push('/');
     }
   }, [navigate]);
 

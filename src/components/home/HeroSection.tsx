@@ -1,6 +1,8 @@
+"use client";
 import { motion } from 'framer-motion';
 import { ArrowRight, Calendar, Grip } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
+
 
 export default function HeroSection() {
   return (
@@ -33,7 +35,7 @@ export default function HeroSection() {
               Fasilitas standar internasional untuk pengalaman bermain tak terlupakan.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Link to="/book" className="px-6 py-3.5 bg-emerald-500 text-white font-semibold rounded-xl hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2 group">
+              <Link href="/book" className="px-6 py-3.5 bg-emerald-500 text-white font-semibold rounded-xl hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2 group">
                 <Calendar className="w-5 h-5" />
                 Booking Sekarang
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

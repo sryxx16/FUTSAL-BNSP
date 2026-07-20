@@ -1,0 +1,2 @@
+:HL["/_next/static/chunks/1u7trshwezg8_.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"my-bookings","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"A_wliw4USAT7H9iatgWlL"}

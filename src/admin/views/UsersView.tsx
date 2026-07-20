@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from 'react';
 import { getDaftarPelanggan, tambahPelangganAdmin, updatePelanggan, hapusPelanggan, getRiwayatBooking } from '../../lib/db';
 import { Plus, Edit2, Trash2, X, Eye } from 'lucide-react';

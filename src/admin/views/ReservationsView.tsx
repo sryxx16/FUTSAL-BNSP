@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from 'react';
 import { getSemuaReservasi, hapusReservasi, updateStatusReservasi, getDaftarLapangan, buatReservasiDB } from '../../lib/db';
 import { X, Loader2, Printer } from 'lucide-react';

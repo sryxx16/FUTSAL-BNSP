@@ -1,6 +1,7 @@
+"use server";
 import { neon } from '@neondatabase/serverless';
 
-const dbUrl = import.meta.env.VITE_NEON_DB_URL;
+const dbUrl = process.env.VITE_NEON_DB_URL;
 
 if (!dbUrl) {
   throw new Error("VITE_NEON_DB_URL belum dikonfigurasi di file .env");

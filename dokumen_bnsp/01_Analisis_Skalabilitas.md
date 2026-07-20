@@ -56,7 +56,7 @@ flowchart LR
 ```
 
 ### C. Kebutuhan Fungsional (Functional Requirements)
-1. **Sistem Autentikasi:** Sistem harus menyediakan fitur pendaftaran (Register) dan masuk (Login) untuk membedakan hak akses antara Pelanggan dan Admin.
+1. **Sistem Autentikasi:** Sistem harus Mengadopsi arsitektur Next.js App Router dengan React Server Components (RSC) untuk mempercepat muat awal halaman (TTV) secara signifikan.
 2. **Manajemen Reservasi (Pelanggan):** Sistem harus memungkinkan pelanggan memilih tanggal, jam mulai, dan jam selesai, serta memastikan jadwal tersebut belum di-_booking_ oleh orang lain.
 3. **Manajemen Reservasi (Admin):** Sistem harus menampilkan seluruh daftar reservasi dalam sebuah Dasbor dan mengizinkan admin untuk mengubah status pesanan (Selesai/Dibatalkan) serta menghapus pesanan (CRUD).
 4. **Validasi Anti-Bentrok:** Sistem secara proaktif menolak masukan jadwal jika terjadi irisan waktu (_time overlap_) pada lapangan dan tanggal yang sama.
@@ -84,7 +84,7 @@ Asumsi operasional:
 - Perkiraan dalam 1 Bulan = 1.500 baris data reservasi.
 - **Perkiraan Pertumbuhan Data 1 Tahun = 18.250 baris data / tahun.**
 
-Berdasarkan arsitektur *Cloud Serverless PostgreSQL* (Neon), menangani 18.250 baris/tahun adalah beban kerja yang sangat ringan (Skala Kecil-Menengah). Skalabilitas *storage* tidak menjadi masalah utama, melainkan skalabilitas kalkulasi *Read-Query*.
+Berdasarkan Arsitektur Saat Ini: Next.js Full-Stack App + Serverless PostgreSQL (Neon DB) + Vercel Deployment menangani 18.250 baris/tahun adalah beban kerja yang sangat ringan (Skala Kecil-Menengah). Skalabilitas *storage* tidak menjadi masalah utama, melainkan skalabilitas kalkulasi *Read-Query*.
 
 ### C. Rekomendasi Peningkatan Performa
 

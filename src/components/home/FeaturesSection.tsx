@@ -1,3 +1,4 @@
+"use client";
 import { motion } from 'framer-motion';
 import { CalendarCheck, ShieldCheck, Trophy } from 'lucide-react';
 

@@ -1,3 +1,4 @@
+"use client";
 import { motion } from 'framer-motion';
 import { Coffee, Wifi, Store, Car } from 'lucide-react';
 

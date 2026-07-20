@@ -1,18 +1,21 @@
+"use client";
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, LogOut, History, User } from 'lucide-react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate = useRouter();
+  const location = usePathname();
   
   // Ambil sesi user tiap kali pindah halaman
   useEffect(() => {
-    const sessionStr = localStorage.getItem('sm_session');
+    const sessionStr = typeof window !== 'undefined' ? localStorage.getItem('sm_session') : null;
     setUser(sessionStr ? JSON.parse(sessionStr) : null);
   }, [location.pathname]);
 
@@ -27,7 +30,7 @@ export default function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem('sm_session');
     setIsMobileMenuOpen(false);
-    navigate('/');
+    router.push('/');
   };
 
   return (
@@ -42,22 +45,22 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex-shrink-0 flex items-center">
-            <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-600">
+            <Link href="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-600">
               SM Sport
             </Link>
           </div>
           <div className="hidden md:flex space-x-8 items-center">
-            <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-slate-300 hover:text-emerald-400 transition-colors">Home</Link>
+            <Link href="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-slate-300 hover:text-emerald-400 transition-colors">Home</Link>
             <a href="/#fasilitas" className="text-slate-300 hover:text-emerald-400 transition-colors">Fasilitas</a>
             <a href="/#kontak" className="text-slate-300 hover:text-emerald-400 transition-colors">Kontak</a>
             <div className="flex items-center space-x-4 pl-4 border-l border-slate-800">
-              <Link to="/book" className="text-emerald-400 font-bold hover:text-emerald-300 transition-colors">Booking Lapangan</Link>
+              <Link href="/book" className="text-emerald-400 font-bold hover:text-emerald-300 transition-colors">Booking Lapangan</Link>
               
               {user ? (
                 <>
                   {/* Admin panel link dihapus dari Navbar sesuai permintaan */}
                   {user.role === 'user' && (
-                    <Link to="/my-bookings" className="flex items-center gap-2 text-slate-300 hover:text-emerald-400 transition-colors">
+                    <Link href="/my-bookings" className="flex items-center gap-2 text-slate-300 hover:text-emerald-400 transition-colors">
                       <History size={18} /> Riwayat
                     </Link>
                   )}
@@ -75,7 +78,7 @@ export default function Navbar() {
                   </div>
                 </>
               ) : (
-                <Link to="/login" className="px-5 py-2 rounded-full border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 hover:shadow-[0_0_15px_rgba(16,185,129,0.5)] transition-all duration-300">
+                <Link href="/login" className="px-5 py-2 rounded-full border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 hover:shadow-[0_0_15px_rgba(16,185,129,0.5)] transition-all duration-300">
                   Login / Register
                 </Link>
               )}
@@ -102,11 +105,11 @@ export default function Navbar() {
             className="md:hidden bg-slate-900 border-b border-slate-800 overflow-hidden"
           >
             <div className="px-4 pt-2 pb-6 space-y-2">
-              <Link to="/" onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="block px-3 py-2 text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-md">Home</Link>
+              <Link href="/" onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="block px-3 py-2 text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-md">Home</Link>
               <a href="/#fasilitas" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-md">Fasilitas</a>
               <a href="/#kontak" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-md">Kontak</a>
               <div className="mt-6 pt-6 border-t border-slate-800 space-y-3">
-                <Link to="/book" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950 font-bold transition-colors">
+                <Link href="/book" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950 font-bold transition-colors">
                   Booking Lapangan
                 </Link>
                 
@@ -114,7 +117,7 @@ export default function Navbar() {
                   <>
                     {/* Admin panel link dihapus dari Navbar sesuai permintaan */}
                     {user.role === 'user' && (
-                      <Link to="/my-bookings" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full border border-slate-600 text-slate-300 hover:bg-slate-800 transition-colors">
+                      <Link href="/my-bookings" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full border border-slate-600 text-slate-300 hover:bg-slate-800 transition-colors">
                         Riwayat Pemesanan
                       </Link>
                     )}
@@ -123,7 +126,7 @@ export default function Navbar() {
                     </button>
                   </>
                 ) : (
-                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full border border-emerald-600 text-emerald-400 hover:bg-emerald-900 transition-colors">
+                  <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full border border-emerald-600 text-emerald-400 hover:bg-emerald-900 transition-colors">
                     Login / Register
                   </Link>
                 )}

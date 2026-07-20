@@ -1,3 +1,4 @@
+"use client";
 import { Bell } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { getSemuaReservasi } from '../../lib/db';

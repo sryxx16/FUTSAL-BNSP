@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from 'react';
 import { getDaftarLapangan, updateHargaLapangan } from '../../lib/db';
 

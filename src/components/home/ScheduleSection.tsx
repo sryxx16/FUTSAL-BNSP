@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, AlertCircle } from 'lucide-react';

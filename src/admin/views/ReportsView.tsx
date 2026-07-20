@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from 'react';
 import { getLaporanPendapatan } from '../../lib/db';
 import { Printer, Calendar, TrendingUp } from 'lucide-react';

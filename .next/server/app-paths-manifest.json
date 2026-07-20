@@ -1,0 +1,10 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/book/page": "app/book/page.js",
+  "/checkout/[id]/page": "app/checkout/[id]/page.js",
+  "/login/page": "app/login/page.js",
+  "/my-bookings/page": "app/my-bookings/page.js",
+  "/page": "app/page.js"
+}

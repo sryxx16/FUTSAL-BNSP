@@ -1,0 +1,10 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/admin/page": "/admin",
+  "/book/page": "/book",
+  "/checkout/[id]/page": "/checkout/[id]",
+  "/login/page": "/login",
+  "/my-bookings/page": "/my-bookings",
+  "/page": "/"
+}

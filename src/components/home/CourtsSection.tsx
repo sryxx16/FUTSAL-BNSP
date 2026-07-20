@@ -1,6 +1,8 @@
+"use client";
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
+
 
 export default function CourtsSection() {
   return (
@@ -36,7 +38,7 @@ export default function CourtsSection() {
                 <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
                   <h3 className="text-xl font-bold text-white mb-1">{court.name}</h3>
                   <p className="text-emerald-400 font-medium mb-3 text-sm">{court.price}</p>
-                  <Link to="/book" className="inline-flex items-center gap-2 text-white text-sm font-medium hover:text-emerald-400 transition-colors">
+                  <Link href="/book" className="inline-flex items-center gap-2 text-white text-sm font-medium hover:text-emerald-400 transition-colors">
                     Booking Lapangan {court.link} <ArrowRight size={16} />
                   </Link>
                 </div>

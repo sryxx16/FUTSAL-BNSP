@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from 'react';
 import { getStatistikDashboard, getSemuaReservasi } from '../../lib/db';
 import { Calendar, DollarSign, Users } from 'lucide-react';

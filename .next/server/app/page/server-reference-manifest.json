@@ -1,0 +1,17 @@
+{
+  "node": {
+    "006b3c06ce0afa1b27d21bd50420b0c9758dc905f8": {
+      "workers": {
+        "app/page": {
+          "moduleId": 68136,
+          "async": false,
+          "exportedName": "getJadwalHariIni",
+          "filename": "src/lib/db.ts"
+        }
+      },
+      "exportedName": "getJadwalHariIni",
+      "filename": "src/lib/db.ts"
+    }
+  },
+  "edge": {}
+}

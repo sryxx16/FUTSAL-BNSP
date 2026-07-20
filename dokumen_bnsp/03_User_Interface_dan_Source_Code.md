@@ -35,8 +35,8 @@
 
 ## 2. Implementasi Source Code Utama (Tautan)
 
-Seluruh struktur _source code_ dibangun menggunakan arsitektur komponen React (Vite) dipadukan dengan TypeScript. 
-Untuk memenuhi bukti fisik pengujian, *source code* secara lengkap diunggah ke dalam *repository* *Version Control System* (GitHub).
+Aplikasi ini dibangun menggunakan arsitektur **Next.js Full-Stack Serverless**. Semua rute antarmuka diatur menggunakan struktur Next.js App Router (`app/`).
+Fungsi-fungsi basis data terpusat pada file `src/lib/db.ts` yang dikonfigurasi sebagai **Server Actions**, bertindak sebagai **Backend Controller** yang mengeksekusi *query* langsung ke Neon DB secara aman tanpa mengekspos kredensial ke sisi klien (*Browser*).
 
 **Tautan Repository Kode Sumber:** 
 👉 `https://github.com/sryxx16/FUTSAL-BNSP`

@@ -1,5 +1,7 @@
+"use client";
 import { LayoutDashboard, CalendarDays, Users, Settings, LogOut, BarChart3, Menu } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
+
 
 interface AdminSidebarProps {
   activeTab: string;
@@ -7,11 +9,11 @@ interface AdminSidebarProps {
 }
 
 export default function AdminSidebar({ activeTab, setActiveTab }: AdminSidebarProps) {
-  const navigate = useNavigate();
+  const navigate = useRouter();
 
   const handleLogout = () => {
     localStorage.removeItem('sm_session');
-    navigate('/');
+    router.push('/');
   };
 
   return (
