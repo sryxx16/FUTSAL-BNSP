@@ -99,9 +99,20 @@ export async function buatReservasiDB(pelangganNama: string, lapanganId: number,
     pelangganId = newUser[0].id;
   }
   
+  const courtInfo = await sql`SELECT price_per_hour FROM court WHERE id = ${lapanganId}`;
+  const pricePerHour = courtInfo[0].price_per_hour;
+  
   const result = await sql`
-    INSERT INTO bookings (user_id, court_id, date, start_time, end_time, status)
-    VALUES (${pelangganId}, ${lapanganId}, ${tanggal}::date, ${jamMulai}::time, ${jamSelesai}::time, 'Menunggu Pembayaran')
+    INSERT INTO bookings (user_id, court_id, date, start_time, end_time, status, total_price)
+    VALUES (
+      ${pelangganId}, 
+      ${lapanganId}, 
+      ${tanggal}::date, 
+      ${jamMulai}::time, 
+      ${jamSelesai}::time, 
+      'Menunggu Pembayaran',
+      ${pricePerHour} * (EXTRACT(EPOCH FROM (${jamSelesai}::time - ${jamMulai}::time)) / 3600)
+    )
     RETURNING id, user_id as pelanggan_id, court_id as lapangan_id, date as tanggal, start_time as jam_mulai, end_time as jam_selesai, status, dp_amount as nominal_dp, created_at
   `;
   

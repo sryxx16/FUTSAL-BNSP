@@ -43,6 +43,7 @@ erDiagram
         time end_time
         varchar status
         decimal dp_amount
+        decimal total_price
         timestamp created_at
     }
 ```
@@ -86,6 +87,7 @@ CREATE TABLE IF NOT EXISTS bookings (
   end_time TIME NOT NULL,
   status VARCHAR(50) NOT NULL DEFAULT 'Menunggu Pembayaran',
   dp_amount DECIMAL(10,2) DEFAULT 0,
+  total_price DECIMAL(10,2) DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
