@@ -147,7 +147,7 @@ export async function bayarDPReservasi(id: number, nominal: number) {
 
 export async function getDaftarPelanggan() {
   return await sql`
-    SELECT p.id, p.nama, p.email, TO_CHAR(p.created_at, 'DD Mon YYYY') as tgl_daftar, 
+    SELECT p.id, p.nama, p.email, p.no_hp, TO_CHAR(p.created_at, 'DD Mon YYYY') as tgl_daftar, 
            COUNT(r.id) as total_booking
     FROM pelanggan p
     LEFT JOIN reservasi r ON p.id = r.pelanggan_id
@@ -173,14 +173,14 @@ export async function loginUser(email: string, password: string) {
   throw new Error("Email atau password salah.");
 }
 
-export async function registerUser(nama: string, email: string, password: string) {
+export async function registerUser(nama: string, email: string, password: string, noHp: string = '') {
   const check = await sql`SELECT id FROM pelanggan WHERE email = ${email}`;
   if (check.length > 0) throw new Error("Email sudah terdaftar.");
   
   const result = await sql`
-    INSERT INTO pelanggan (nama, email, password) 
-    VALUES (${nama}, ${email}, ${password})
-    RETURNING id, nama, email
+    INSERT INTO pelanggan (nama, email, password, no_hp) 
+    VALUES (${nama}, ${email}, ${password}, ${noHp})
+    RETURNING id, nama, email, no_hp
   `;
   const user = result[0];
   const isAdmin = user.email === 'admin@smsport.com' || user.email === 'admin@futsal.com';
@@ -199,20 +199,20 @@ export async function getRiwayatBooking(pelangganId: number) {
 
 // === ADMIN CRUD & LAPORAN === //
 
-export async function tambahPelangganAdmin(nama: string, email: string) {
+export async function tambahPelangganAdmin(nama: string, email: string, noHp: string = '') {
   // Check if exists
   const check = await sql`SELECT id FROM pelanggan WHERE email = ${email}`;
   if (check.length > 0) throw new Error("Email sudah terdaftar.");
   
   return await sql`
-    INSERT INTO pelanggan (nama, email, password) 
-    VALUES (${nama}, ${email}, 'default123')
+    INSERT INTO pelanggan (nama, email, password, no_hp) 
+    VALUES (${nama}, ${email}, 'default123', ${noHp})
     RETURNING id
   `;
 }
 
-export async function updatePelanggan(id: number, nama: string, email: string) {
-  return await sql`UPDATE pelanggan SET nama = ${nama}, email = ${email} WHERE id = ${id}`;
+export async function updatePelanggan(id: number, nama: string, email: string, noHp: string = '') {
+  return await sql`UPDATE pelanggan SET nama = ${nama}, email = ${email}, no_hp = ${noHp} WHERE id = ${id}`;
 }
 
 export async function hapusPelanggan(id: number) {

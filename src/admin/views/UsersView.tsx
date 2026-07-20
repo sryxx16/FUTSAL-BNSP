@@ -9,7 +9,7 @@ export default function UsersView() {
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'tambah' | 'edit'>('tambah');
-  const [formData, setFormData] = useState({ id: 0, nama: '', email: '' });
+  const [formData, setFormData] = useState({ id: 0, nama: '', email: '', no_hp: '' });
   const [processing, setProcessing] = useState(false);
   
   // Detail Modal states
@@ -39,8 +39,8 @@ export default function UsersView() {
       alert("Belum ada data pelanggan untuk diekspor!");
       return;
     }
-    const headers = ['Nama Lengkap', 'Email', 'Tanggal Daftar', 'Total Booking'];
-    const csvData = users.map(u => `"${u.nama}","${u.email}","${u.tgl_daftar}","${u.total_booking}"`);
+    const headers = ['Nama Lengkap', 'Email', 'No HP', 'Tanggal Daftar', 'Total Booking'];
+    const csvData = users.map(u => `"${u.nama}","${u.email}","${u.no_hp || '-'}","${u.tgl_daftar}","${u.total_booking}"`);
     const csvContent = [headers.join(','), ...csvData].join('\n');
     
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -55,13 +55,13 @@ export default function UsersView() {
 
   const openTambahModal = () => {
     setModalMode('tambah');
-    setFormData({ id: 0, nama: '', email: '' });
+    setFormData({ id: 0, nama: '', email: '', no_hp: '' });
     setIsModalOpen(true);
   };
 
   const openEditModal = (u: any) => {
     setModalMode('edit');
-    setFormData({ id: u.id, nama: u.nama, email: u.email });
+    setFormData({ id: u.id, nama: u.nama, email: u.email, no_hp: u.no_hp || '' });
     setIsModalOpen(true);
   };
 
@@ -85,10 +85,10 @@ export default function UsersView() {
     setProcessing(true);
     try {
       if (modalMode === 'tambah') {
-        await tambahPelangganAdmin(formData.nama, formData.email);
+        await tambahPelangganAdmin(formData.nama, formData.email, formData.no_hp);
         alert('Berhasil menambah pelanggan baru!');
       } else {
-        await updatePelanggan(formData.id, formData.nama, formData.email);
+        await updatePelanggan(formData.id, formData.nama, formData.email, formData.no_hp);
         alert('Berhasil memperbarui data pelanggan!');
       }
       setIsModalOpen(false);
@@ -168,7 +168,7 @@ export default function UsersView() {
                 <tr key={row.id} className="border-b border-slate-800/50 hover:bg-slate-800/20 transition-colors">
                   <td className="p-4">
                     <div className="font-medium text-white">{row.nama}</div>
-                    <div className="text-xs text-slate-500">{row.email}</div>
+                    <div className="text-xs text-slate-500">{row.email} {row.no_hp ? `• ${row.no_hp}` : ''}</div>
                   </td>
                   <td className="p-4 text-slate-400">{row.tgl_daftar}</td>
                   <td className="p-4 text-center text-emerald-400 font-bold">{row.total_booking}</td>
@@ -223,6 +223,15 @@ export default function UsersView() {
                   value={formData.email}
                   onChange={e => setFormData({...formData, email: e.target.value})}
                   required
+                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-400 mb-1">Nomor HP/WA</label>
+                <input 
+                  type="tel" 
+                  value={formData.no_hp}
+                  onChange={e => setFormData({...formData, no_hp: e.target.value})}
                   className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500"
                 />
               </div>

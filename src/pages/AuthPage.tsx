@@ -11,6 +11,7 @@ export default function AuthPage() {
   const [formData, setFormData] = useState({
     nama: '',
     email: '',
+    no_hp: '',
     password: ''
   });
   
@@ -38,7 +39,7 @@ export default function AuthPage() {
           navigate('/');
         }
       } else {
-        await registerUser(formData.nama, formData.email, formData.password);
+        await registerUser(formData.nama, formData.email, formData.password, formData.no_hp);
         // Jangan auto-login. Ubah ke form login dan tampilkan pesan sukses.
         setStatus({ type: 'success', message: 'Registrasi berhasil! Silakan login.' });
         setIsLogin(true);
@@ -141,6 +142,24 @@ export default function AuthPage() {
                         onChange={handleChange}
                         required={!isLogin}
                         placeholder="John Doe"
+                        className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors placeholder-slate-600"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {!isLogin && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-300">Nomor HP/WA</label>
+                    <div className="relative">
+                      <ArrowRight className="absolute left-4 top-3.5 text-slate-500" size={20} />
+                      <input 
+                        type="tel" 
+                        name="no_hp"
+                        value={formData.no_hp}
+                        onChange={handleChange}
+                        required={!isLogin}
+                        placeholder="08123456789"
                         className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors placeholder-slate-600"
                       />
                     </div>

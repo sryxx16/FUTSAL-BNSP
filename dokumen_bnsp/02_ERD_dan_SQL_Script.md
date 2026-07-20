@@ -22,6 +22,7 @@ erDiagram
         serial id PK
         varchar nama
         varchar email
+        varchar no_hp
         varchar password
         timestamp created_at
     }
@@ -62,6 +63,7 @@ CREATE TABLE IF NOT EXISTS pelanggan (
   id SERIAL PRIMARY KEY,
   nama VARCHAR(100) NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
+  no_hp VARCHAR(20) DEFAULT '',
   password VARCHAR(255) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
