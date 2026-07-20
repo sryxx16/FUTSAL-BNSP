@@ -3,7 +3,7 @@ import { getLaporanPendapatan } from '../../lib/db';
 import { Printer, Calendar, TrendingUp } from 'lucide-react';
 
 export default function ReportsView() {
-  const [laporan, setLaporan] = useState<{ harian: any[], bulanan: any[] }>({ harian: [], bulanan: [] });
+  const [laporan, setLaporan] = useState<{ harian: any[], bulanan: any[], lapangan: any[] }>({ harian: [], bulanan: [], lapangan: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -115,6 +115,39 @@ export default function ReportsView() {
            </table>
         </div>
 
+      </div>
+
+      {/* Laporan Per Lapangan (Full Width) */}
+      <div className="bg-slate-900 print:bg-transparent print:border-none border border-slate-800 rounded-2xl p-6 mt-6">
+         <div className="flex items-center gap-3 mb-6 print:text-black">
+            <div className="p-2 bg-purple-500/20 text-purple-400 print:hidden rounded-lg">
+               <TrendingUp size={24} />
+            </div>
+            <h3 className="text-xl font-bold text-white print:text-black">Rekap Pendapatan per Lapangan</h3>
+         </div>
+         
+         <table className="w-full text-left border-collapse print:text-black">
+           <thead>
+             <tr className="border-b border-slate-800 print:border-black text-slate-400 print:text-black text-sm">
+               <th className="pb-3 font-medium">Nama Lapangan</th>
+               <th className="pb-3 font-medium text-center">Total Reservasi</th>
+               <th className="pb-3 font-medium text-right">Total Pendapatan (Estimasi)</th>
+             </tr>
+           </thead>
+           <tbody className="text-sm">
+             {loading ? (
+               <tr><td colSpan={3} className="py-4 text-center text-slate-400">Memuat data...</td></tr>
+             ) : laporan.lapangan.length === 0 ? (
+               <tr><td colSpan={3} className="py-4 text-center text-slate-400">Belum ada data</td></tr>
+             ) : laporan.lapangan.map((row, i) => (
+               <tr key={i} className="border-b border-slate-800/50 print:border-gray-300">
+                 <td className="py-4 text-white print:text-black font-medium">{row.nama_lapangan}</td>
+                 <td className="py-4 text-center text-slate-300 print:text-black">{row.total_booking}</td>
+                 <td className="py-4 text-right text-emerald-400 print:text-black font-bold">{formatUang(row.total_pendapatan)}</td>
+               </tr>
+             ))}
+           </tbody>
+         </table>
       </div>
     </div>
   );

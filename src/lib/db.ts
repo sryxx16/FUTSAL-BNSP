@@ -244,5 +244,16 @@ export async function getLaporanPendapatan() {
     LIMIT 12
   `;
   
-  return { harian, bulanan };
+  const lapangan = await sql`
+    SELECT l.nama as nama_lapangan, 
+           COUNT(r.id) as total_booking,
+           COALESCE(SUM(l.harga_per_jam * (EXTRACT(EPOCH FROM (r.jam_selesai - r.jam_mulai)) / 3600)), 0) as total_pendapatan
+    FROM reservasi r
+    JOIN lapangan l ON r.lapangan_id = l.id
+    WHERE r.status != 'Dibatalkan'
+    GROUP BY l.nama
+    ORDER BY total_pendapatan DESC
+  `;
+  
+  return { harian, bulanan, lapangan };
 }
