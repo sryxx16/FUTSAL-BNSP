@@ -272,3 +272,41 @@ export async function getLaporanPendapatan() {
   
   return { harian, bulanan, lapangan };
 }
+
+// === SETTINGS === //
+
+export async function initSettingsTable() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS settings (
+      key VARCHAR(50) PRIMARY KEY,
+      value TEXT NOT NULL
+    )
+  `;
+  await sql`
+    INSERT INTO settings (key, value) VALUES
+    ('contact_address', 'Jl. Olahraga No. 88, Senayan, Jakarta Selatan'),
+    ('contact_phone', '+62 812 3456 7890'),
+    ('contact_email', 'info@smsport.com')
+    ON CONFLICT (key) DO NOTHING
+  `;
+}
+
+export async function getSettings() {
+  await initSettingsTable(); // Ensure table exists and is seeded
+  const result = await sql`SELECT key, value FROM settings`;
+  const settingsObj: Record<string, string> = {};
+  for (const row of result) {
+    settingsObj[row.key] = row.value;
+  }
+  return settingsObj;
+}
+
+export async function updateSettings(settings: Record<string, string>) {
+  for (const [key, value] of Object.entries(settings)) {
+    await sql`
+      INSERT INTO settings (key, value)
+      VALUES (${key}, ${value})
+      ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value
+    `;
+  }
+}

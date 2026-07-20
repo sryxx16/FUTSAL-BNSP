@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { getSemuaReservasi, hapusReservasi, updateStatusReservasi, getDaftarLapangan, buatReservasiDB } from '../../lib/db';
-import { X, Loader2, Printer, Calendar as CalendarIcon } from 'lucide-react';
+import { X, Loader2, Printer, ChevronDown } from 'lucide-react';
 
 export default function ReservationsView() {
   const [reservations, setReservations] = useState<any[]>([]);
@@ -131,9 +131,7 @@ export default function ReservationsView() {
   const filtered = reservations.filter(r => {
     if (filterStatus !== 'Semua Status' && r.status !== filterStatus) return false;
     if (filterDate) {
-      const d = new Date(r.tanggal);
-      const localD = new Date(d.getTime() - (d.getTimezoneOffset() * 60000));
-      if (localD.toISOString().split('T')[0] !== filterDate) return false;
+      if (formatTanggal(r.tanggal) !== formatTanggal(filterDate)) return false;
     }
     return true;
   });
@@ -158,14 +156,14 @@ export default function ReservationsView() {
               <option value="Selesai">Selesai</option>
               <option value="Dibatalkan">Dibatalkan</option>
             </select>
-            <div className="relative inline-flex items-center">
+            <div className="relative inline-flex items-center min-w-[160px]">
               <input 
                 type="date" 
                 value={filterDate}
                 onChange={e => setFilterDate(e.target.value)}
-                className="bg-white border border-slate-200 rounded-lg pl-4 pr-10 py-2 text-slate-600 focus:outline-none focus:border-emerald-500 relative z-10 bg-transparent [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:cursor-pointer" 
+                className="w-full bg-white border border-slate-200 rounded-lg pl-4 pr-10 py-2 text-slate-600 focus:outline-none focus:border-emerald-500 relative z-10 appearance-none [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:cursor-pointer" 
               />
-              <CalendarIcon size={18} className="absolute right-3 text-slate-400 z-0 pointer-events-none" />
+              <ChevronDown size={18} className="absolute right-3 text-slate-500 z-20 pointer-events-none" />
             </div>
             {filterDate && (
               <button onClick={() => setFilterDate('')} className="text-sm text-slate-500 hover:text-slate-900">Clear Date</button>
@@ -293,12 +291,15 @@ export default function ReservationsView() {
                
                <div>
                   <label className="text-sm font-medium text-slate-600 block mb-1">Tanggal Main</label>
-                  <input 
-                    type="date" required
-                    value={formData.tanggal}
-                    onChange={e => setFormData({...formData, tanggal: e.target.value})}
-                    className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2 text-slate-900 focus:outline-none focus:border-emerald-500"
-                  />
+                  <div className="relative">
+                    <input 
+                      type="date" required
+                      value={formData.tanggal}
+                      onChange={e => setFormData({...formData, tanggal: e.target.value})}
+                      className="w-full bg-white border border-slate-300 rounded-lg pl-4 pr-10 py-2 text-slate-900 focus:outline-none focus:border-emerald-500 relative z-10 appearance-none [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+                    />
+                    <ChevronDown size={18} className="absolute right-3 top-3 text-slate-500 z-20 pointer-events-none" />
+                  </div>
                </div>
 
                <div className="grid grid-cols-2 gap-4">

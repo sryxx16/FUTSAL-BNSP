@@ -5,8 +5,10 @@ import { Calendar, DollarSign, Users } from 'lucide-react';
 
 export default function DashboardView({ setActiveTab }: { setActiveTab?: (t: string) => void }) {
   const [stats, setStats] = useState({ reservasiHariIni: 0, pendapatanBulanan: 0, memberAktif: 0 });
-  const [recent, setRecent] = useState<any[]>([]);
+  const [allRecent, setAllRecent] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const itemsPerPage = 6;
 
   useEffect(() => {
     async function loadData() {
@@ -17,7 +19,7 @@ export default function DashboardView({ setActiveTab }: { setActiveTab?: (t: str
         ]);
         setStats(statData);
         const sortedRecent = [...resData].sort((a, b) => b.id - a.id);
-        setRecent(sortedRecent.slice(0, 6)); // Ambil 6 data teratas berdasarkan pemesanan terbaru
+        setAllRecent(sortedRecent);
       } catch (e) {
         console.error(e);
       } finally {
@@ -26,6 +28,9 @@ export default function DashboardView({ setActiveTab }: { setActiveTab?: (t: str
     }
     loadData();
   }, []);
+
+  const currentRecent = allRecent.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(allRecent.length / itemsPerPage) || 1;
 
   const formatUang = (harga: number) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(harga);
@@ -132,9 +137,9 @@ export default function DashboardView({ setActiveTab }: { setActiveTab?: (t: str
               <tbody className="text-sm">
                 {loading ? (
                    <tr><td colSpan={6} className="py-4 text-center text-slate-500">Memuat data...</td></tr>
-                ) : recent.length === 0 ? (
+                ) : currentRecent.length === 0 ? (
                    <tr><td colSpan={6} className="py-4 text-center text-slate-500">Belum ada reservasi</td></tr>
-                ) : recent.map((row) => (
+                ) : currentRecent.map((row) => (
                   <tr key={row.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
                     <td className="py-4 px-6 text-slate-400">#{row.id}</td>
                     <td className="py-4 px-6 text-slate-900 font-semibold">{row.pelanggan_nama}</td>
@@ -152,13 +157,37 @@ export default function DashboardView({ setActiveTab }: { setActiveTab?: (t: str
             </table>
           </div>
           <div className="p-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-            <span>Menampilkan {recent.length} dari data terbaru</span>
+            <span>Menampilkan {currentRecent.length} dari total {allRecent.length} data</span>
             <div className="flex items-center gap-1">
-               <span className="px-2 cursor-pointer">&lt;</span>
-               <span className="w-6 h-6 flex items-center justify-center rounded bg-emerald-50 text-emerald-600 font-bold cursor-pointer">1</span>
-               <span className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 text-slate-500 cursor-pointer">2</span>
-               <span className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 text-slate-500 cursor-pointer">3</span>
-               <span className="px-2 cursor-pointer">&gt;</span>
+               <button 
+                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                 disabled={currentPage === 1}
+                 className="px-2 py-1 cursor-pointer disabled:opacity-50 hover:text-emerald-600 transition-colors"
+               >
+                 &lt;
+               </button>
+               
+               {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                 <button 
+                   key={page}
+                   onClick={() => setCurrentPage(page)}
+                   className={`w-6 h-6 flex items-center justify-center rounded cursor-pointer transition-colors ${
+                     currentPage === page 
+                       ? 'bg-emerald-50 text-emerald-600 font-bold' 
+                       : 'hover:bg-slate-100 text-slate-500'
+                   }`}
+                 >
+                   {page}
+                 </button>
+               ))}
+
+               <button 
+                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                 disabled={currentPage === totalPages}
+                 className="px-2 py-1 cursor-pointer disabled:opacity-50 hover:text-emerald-600 transition-colors"
+               >
+                 &gt;
+               </button>
             </div>
           </div>
         </div>

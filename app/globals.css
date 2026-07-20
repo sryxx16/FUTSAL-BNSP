@@ -17,13 +17,7 @@ body {
   color: var(--foreground);
 }
 
-/* Memaksa icon kalender muncul gelap di light mode */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.6) sepia(1) saturate(3) hue-rotate(100deg); /* Warna emerald-ish atau gelap */
-  opacity: 1;
-  display: block;
-  cursor: pointer;
-}
+
 
 @media print {
   body {

@@ -1,8 +1,31 @@
 "use client";
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { getSettings } from '../../lib/db';
 
 export default function ContactSection() {
+  const [contactSettings, setContactSettings] = useState({
+    contact_address: 'Memuat...',
+    contact_phone: 'Memuat...',
+    contact_email: 'Memuat...'
+  });
+
+  useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const settings = await getSettings();
+        setContactSettings({
+          contact_address: settings.contact_address || 'Jl. Olahraga No. 88, Senayan, Jakarta Selatan',
+          contact_phone: settings.contact_phone || '+62 812 3456 7890',
+          contact_email: settings.contact_email || 'info@smsport.com'
+        });
+      } catch (err) {
+        console.error("Gagal memuat pengaturan kontak:", err);
+      }
+    }
+    fetchSettings();
+  }, []);
   return (
       <section id="kontak" className="py-20 bg-slate-950 relative z-10 border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,24 +44,24 @@ export default function ContactSection() {
                   <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-emerald-400 mb-4">
                     <MapPin size={32} />
                   </div>
-                  <h4 className="text-white font-bold mb-2">Alamat</h4>
-                  <p className="text-slate-400 text-sm">Jl. Olahraga No. 88, Senayan, Jakarta Selatan</p>
+                  <h3 className="text-xl font-bold text-white mb-2">Alamat</h3>
+                  <p className="text-slate-400 text-sm">{contactSettings.contact_address}</p>
                 </div>
                 
                 <div className="flex flex-col items-center text-center p-6 bg-slate-900/50 rounded-3xl border border-slate-800">
                   <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-emerald-400 mb-4">
                     <Phone size={32} />
                   </div>
-                  <h4 className="text-white font-bold mb-2">Telepon</h4>
-                  <p className="text-slate-400 text-sm">+62 812 3456 7890</p>
+                  <h3 className="text-xl font-bold text-white mb-2">Telepon</h3>
+                  <p className="text-slate-400 text-sm">{contactSettings.contact_phone}</p>
                 </div>
                 
                 <div className="flex flex-col items-center text-center p-6 bg-slate-900/50 rounded-3xl border border-slate-800">
                   <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-emerald-400 mb-4">
                     <Mail size={32} />
                   </div>
-                  <h4 className="text-white font-bold mb-2">Email</h4>
-                  <p className="text-slate-400 text-sm">info@smsport.com</p>
+                  <h3 className="text-xl font-bold text-white mb-2">Email</h3>
+                  <p className="text-slate-400 text-sm">{contactSettings.contact_email}</p>
                 </div>
               </div>
             </motion.div>
