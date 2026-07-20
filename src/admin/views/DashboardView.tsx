@@ -16,7 +16,8 @@ export default function DashboardView({ setActiveTab }: { setActiveTab?: (t: str
           getSemuaReservasi()
         ]);
         setStats(statData);
-        setRecent(resData.slice(0, 6)); // Ambil 6 data teratas
+        const sortedRecent = [...resData].sort((a, b) => b.id - a.id);
+        setRecent(sortedRecent.slice(0, 6)); // Ambil 6 data teratas berdasarkan pemesanan terbaru
       } catch (e) {
         console.error(e);
       } finally {

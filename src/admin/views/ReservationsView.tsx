@@ -165,6 +165,7 @@ export default function ReservationsView() {
               value={filterDate}
               onChange={e => setFilterDate(e.target.value)}
               className="bg-white border border-slate-200 rounded-lg px-4 py-2 text-slate-600 focus:outline-none focus:border-emerald-500" 
+              style={{ colorScheme: 'light' }}
             />
             {filterDate && (
               <button onClick={() => setFilterDate('')} className="text-sm text-slate-500 hover:text-slate-900">Clear Date</button>

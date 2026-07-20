@@ -58,7 +58,7 @@ export async function getSemuaReservasi() {
     FROM bookings b
     JOIN users u ON b.user_id = u.id
     JOIN court c ON b.court_id = c.id
-    ORDER BY b.id DESC
+    ORDER BY b.date DESC, b.start_time DESC
   `;
   return result;
 }
