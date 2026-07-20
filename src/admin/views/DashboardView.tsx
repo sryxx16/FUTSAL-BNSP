@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getStatistikDashboard, getSemuaReservasi } from '../../lib/db';
-import { Calendar, DollarSign, Users, SquareDashedBottom } from 'lucide-react';
+import { Calendar, DollarSign, Users } from 'lucide-react';
 
 export default function DashboardView({ setActiveTab }: { setActiveTab?: (t: string) => void }) {
   const [stats, setStats] = useState({ reservasiHariIni: 0, pendapatanBulanan: 0, memberAktif: 0 });
