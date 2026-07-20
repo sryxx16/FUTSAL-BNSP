@@ -32,13 +32,14 @@ export async function getJadwalHariIni() {
     SELECT 
       c.id as lapangan_id,
       c.name as lapangan_nama,
+      b.date as tanggal_main,
       b.start_time as jam_mulai, 
       b.end_time as jam_selesai
     FROM court c
     LEFT JOIN bookings b ON c.id = b.court_id 
-      AND b.date = CURRENT_DATE 
+      AND b.date >= CURRENT_DATE 
       AND b.status != 'Dibatalkan'
-    ORDER BY c.id ASC, b.start_time ASC
+    ORDER BY c.id ASC, b.date ASC, b.start_time ASC
   `;
   return result;
 }

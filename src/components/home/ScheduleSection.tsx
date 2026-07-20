@@ -7,6 +7,7 @@ import { getJadwalHariIni } from '../../lib/db';
 interface ScheduleSlot {
   lapangan_id: number;
   lapangan_nama: string;
+  tanggal_main: string | null;
   jam_mulai: string | null;
   jam_selesai: string | null;
 }
@@ -37,10 +38,12 @@ export default function ScheduleSection() {
         bookedSlots: []
       };
     }
-    if (curr.jam_mulai && curr.jam_selesai) {
+    if (curr.jam_mulai && curr.jam_selesai && curr.tanggal_main) {
       // Format jam dari "09:00:00" menjadi "09:00"
       const formatJam = (time: string) => time.substring(0, 5);
-      acc[curr.lapangan_id].bookedSlots.push(`${formatJam(curr.jam_mulai)} - ${formatJam(curr.jam_selesai)}`);
+      const tglObj = new Date(curr.tanggal_main);
+      const formatTgl = tglObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
+      acc[curr.lapangan_id].bookedSlots.push(`${formatTgl} | ${formatJam(curr.jam_mulai)} - ${formatJam(curr.jam_selesai)}`);
     }
     return acc;
   }, {} as Record<number, { nama: string, bookedSlots: string[] }>);
@@ -72,9 +75,12 @@ export default function ScheduleSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-slate-400 text-lg flex items-center justify-center gap-2"
+            className="text-slate-400 text-lg flex flex-col items-center justify-center gap-2"
           >
-            <Calendar size={20} className="text-emerald-500" /> Ketersediaan Lapangan Hari Ini: <span className="text-emerald-400 font-semibold">{today}</span>
+            <span className="flex items-center gap-2">
+              <Calendar size={20} className="text-emerald-500" /> Jadwal yang Telah Ter-booking Mendatang
+            </span>
+            <span className="text-sm text-slate-500 bg-slate-900 px-4 py-1 rounded-full border border-slate-800">Cek kalender Anda sebelum melakukan reservasi</span>
           </motion.p>
         </div>
 
@@ -100,7 +106,7 @@ export default function ScheduleSection() {
                   {court.bookedSlots.length === 0 ? (
                     <div className="flex items-center gap-2 text-emerald-400 bg-emerald-500/10 px-4 py-3 rounded-lg border border-emerald-500/20">
                       <Clock size={18} />
-                      <span className="text-sm font-medium">Tersedia Sepanjang Hari</span>
+                      <span className="text-sm font-medium">Belum ada booking mendatang</span>
                     </div>
                   ) : (
                     <>
