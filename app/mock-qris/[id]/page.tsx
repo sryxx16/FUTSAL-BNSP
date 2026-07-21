@@ -57,10 +57,10 @@ export default function MockQrisPage() {
 
   if (!data || data.status !== 'Menunggu Pembayaran') {
     return (
-      <div className="min-h-screen bg-slate-100 flex flex-col justify-center items-center p-6 text-center">
+      <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center p-6 text-center">
         <CheckCircle size={64} className="text-emerald-500 mb-4" />
-        <h1 className="text-2xl font-bold text-slate-800 mb-2">Transaksi Selesai / Tidak Valid</h1>
-        <p className="text-slate-600">Silakan kembali ke aplikasi utama atau periksa status pesanan Anda.</p>
+        <h1 className="text-2xl font-bold text-white mb-2">Transaksi Selesai / Tidak Valid</h1>
+        <p className="text-slate-400">Silakan kembali ke aplikasi utama atau periksa status pesanan Anda.</p>
       </div>
     );
   }
@@ -68,13 +68,16 @@ export default function MockQrisPage() {
   const dp = hitungTotalHarga(data.jam_mulai, data.jam_selesai, data.harga_per_jam) / 2;
 
   return (
-    <main className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+    <main className="min-h-[calc(100vh-80px)] bg-slate-950 flex flex-col items-center pt-12 p-4 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-600/10 rounded-full blur-[80px] pointer-events-none" />
+      
       <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-sm bg-white rounded-3xl shadow-xl overflow-hidden"
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden relative z-10"
       >
-        <div className="bg-blue-600 p-6 text-center text-white relative">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-center text-white relative">
           <div className="absolute top-4 right-4"><ShieldCheck size={24} className="text-blue-200" /></div>
           <h1 className="text-xl font-bold mb-1">SM Sport Pay</h1>
           <p className="text-blue-200 text-sm">Pembayaran Aman via QRIS</p>
@@ -82,22 +85,22 @@ export default function MockQrisPage() {
 
         <div className="p-6">
           <div className="text-center mb-6">
-            <p className="text-slate-500 text-sm mb-1">Total Tagihan (DP)</p>
-            <h2 className="text-4xl font-bold text-slate-800">Rp {dp.toLocaleString('id-ID')}</h2>
+            <p className="text-slate-400 text-sm mb-1">Total Tagihan (DP)</p>
+            <h2 className="text-4xl font-bold text-white">Rp {dp.toLocaleString('id-ID')}</h2>
           </div>
 
-          <div className="bg-slate-50 rounded-xl p-4 mb-6 border border-slate-100 text-sm">
-             <div className="flex justify-between mb-2 pb-2 border-b border-slate-200">
-               <span className="text-slate-500">Merchant</span>
-               <span className="font-semibold text-slate-800">SM Sport Center</span>
+          <div className="bg-slate-950 rounded-xl p-4 mb-6 border border-slate-800 text-sm">
+             <div className="flex justify-between mb-3 pb-3 border-b border-slate-800">
+               <span className="text-slate-400">Merchant</span>
+               <span className="font-semibold text-white">SM Sport Center</span>
              </div>
-             <div className="flex justify-between mb-2 pb-2 border-b border-slate-200">
-               <span className="text-slate-500">Nama Pelanggan</span>
-               <span className="font-semibold text-slate-800">{data.pelanggan_nama}</span>
+             <div className="flex justify-between mb-3 pb-3 border-b border-slate-800">
+               <span className="text-slate-400">Nama Pelanggan</span>
+               <span className="font-semibold text-white">{data.pelanggan_nama}</span>
              </div>
              <div className="flex justify-between">
-               <span className="text-slate-500">ID Referensi</span>
-               <span className="font-semibold text-slate-800">INV-SMS-{data.id}</span>
+               <span className="text-slate-400">ID Referensi</span>
+               <span className="font-semibold text-white">INV-SMS-{data.id}</span>
              </div>
           </div>
 
