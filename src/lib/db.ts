@@ -271,6 +271,25 @@ export async function getLaporanPendapatan() {
     ORDER BY total_pendapatan DESC
   `;
   
-  return { harian, bulanan, lapangan };
+  const statusDist = await sql`
+    SELECT status, COUNT(id) as jumlah
+    FROM bookings
+    GROUP BY status
+    ORDER BY jumlah DESC
+  `;
+
+  const topPelanggan = await sql`
+    SELECT u.name as nama, COUNT(b.id) as total_booking, 
+           COALESCE(SUM(c.price_per_hour * (EXTRACT(EPOCH FROM (b.end_time - b.start_time)) / 3600)), 0) as total_spent
+    FROM users u
+    JOIN bookings b ON u.id = b.user_id
+    JOIN court c ON b.court_id = c.id
+    WHERE b.status != 'Dibatalkan'
+    GROUP BY u.id, u.name
+    ORDER BY total_spent DESC
+    LIMIT 5
+  `;
+  
+  return { harian, bulanan, lapangan, statusDist, topPelanggan };
 }
 

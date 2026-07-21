@@ -10,6 +10,7 @@ export default function ReservationsView() {
   const [filterStatus, setFilterStatus] = useState('Semua Status');
   const [filterDate, setFilterDate] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [pelunasanData, setPelunasanData] = useState<any>(null);
 
   // Modal State
   const [showModal, setShowModal] = useState(false);
@@ -227,8 +228,9 @@ export default function ReservationsView() {
                         onBlur={() => setEditingId(null)}
                         className="bg-white border border-emerald-500 text-emerald-600 rounded px-2 py-1 text-xs font-bold outline-none"
                       >
-                        <option value="Menunggu">Menunggu</option>
-                        <option value="Selesai">Selesai</option>
+                        <option value="Menunggu Pembayaran">Menunggu</option>
+                        <option value="Sudah DP 50%">Sudah DP 50%</option>
+                        <option value="Selesai">Selesai (Lunas)</option>
                         <option value="Dibatalkan">Dibatalkan</option>
                       </select>
                     ) : (
@@ -242,6 +244,9 @@ export default function ReservationsView() {
                     )}
                   </td>
                   <td className="p-4 text-center print:hidden">
+                    {row.status === 'Sudah DP 50%' && (
+                      <button onClick={() => setPelunasanData(row)} className="text-emerald-600 hover:text-emerald-400 mx-2 transition-colors font-bold">Pelunasan</button>
+                    )}
                     <button onClick={() => setEditingId(row.id)} className="text-blue-600 hover:text-blue-300 mx-2 transition-colors font-medium">Edit</button>
                     <button onClick={() => handleDelete(row.id)} className="text-red-600 hover:text-red-300 mx-2 transition-colors font-medium">Hapus</button>
                   </td>
@@ -357,6 +362,72 @@ export default function ReservationsView() {
                   </button>
                </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Popup Konfirmasi Pelunasan */}
+      {pelunasanData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white border border-slate-300 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl relative">
+            <div className="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+               <h3 className="text-xl font-bold text-slate-900">Konfirmasi Pelunasan</h3>
+               <button onClick={() => setPelunasanData(null)} className="text-slate-500 hover:text-slate-900 transition-colors">
+                 <X size={24} />
+               </button>
+            </div>
+            
+            <div className="p-6 space-y-4 text-slate-700">
+               <div className="flex justify-between border-b border-slate-100 pb-2">
+                 <span className="font-medium">Pelanggan</span>
+                 <span className="font-bold text-slate-900">{pelunasanData.pelanggan_nama}</span>
+               </div>
+               <div className="flex justify-between border-b border-slate-100 pb-2">
+                 <span className="font-medium">Lapangan</span>
+                 <span className="font-bold text-slate-900">{pelunasanData.lapangan_nama}</span>
+               </div>
+               <div className="flex justify-between border-b border-slate-100 pb-2">
+                 <span className="font-medium">Jadwal</span>
+                 <span className="font-bold text-slate-900">{formatTanggal(pelunasanData.tanggal)} ({pelunasanData.jam_mulai.substring(0,5)} - {pelunasanData.jam_selesai.substring(0,5)})</span>
+               </div>
+               
+               <div className="pt-2">
+                 <div className="flex justify-between mb-1">
+                   <span className="text-sm text-slate-500">Total Harga Sewa</span>
+                   <span className="text-sm font-medium">{formatUang(hitungTotalHarga(pelunasanData.jam_mulai, pelunasanData.jam_selesai, pelunasanData.harga_per_jam))}</span>
+                 </div>
+                 <div className="flex justify-between mb-1">
+                   <span className="text-sm text-slate-500">Uang Muka (DP) Dibayar</span>
+                   <span className="text-sm font-medium text-emerald-600">- {formatUang(hitungTotalHarga(pelunasanData.jam_mulai, pelunasanData.jam_selesai, pelunasanData.harga_per_jam) / 2)}</span>
+                 </div>
+                 <div className="flex justify-between mt-3 pt-3 border-t border-slate-200 bg-red-50 p-3 rounded-lg border border-red-100">
+                   <span className="font-bold text-slate-900">Sisa Harus Dilunasi</span>
+                   <span className="font-bold text-2xl text-red-600">
+                     {formatUang(
+                       hitungTotalHarga(pelunasanData.jam_mulai, pelunasanData.jam_selesai, pelunasanData.harga_per_jam) / 2
+                     )}
+                   </span>
+                 </div>
+               </div>
+
+               <div className="pt-6 flex justify-end gap-3">
+                  <button 
+                    onClick={() => setPelunasanData(null)}
+                    className="px-4 py-2 rounded-lg text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors font-medium"
+                  >
+                    Batal
+                  </button>
+                  <button 
+                    onClick={() => {
+                      handleUpdateStatus(pelunasanData.id, 'Selesai');
+                      setPelunasanData(null);
+                    }}
+                    className="bg-emerald-500 text-slate-950 font-bold px-6 py-2 rounded-lg hover:bg-emerald-400 transition-colors shadow-lg shadow-emerald-500/30"
+                  >
+                    Konfirmasi Lunas
+                  </button>
+               </div>
+            </div>
           </div>
         </div>
       )}
