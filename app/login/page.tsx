@@ -15,7 +15,8 @@ export default function AuthPage() {
     nama: '',
     email: '',
     no_hp: '',
-    password: ''
+    password: '',
+    konfirmasi_password: ''
   });
   
   const [status, setStatus] = useState<{ type: 'idle' | 'loading' | 'error' | 'success', message: string }>({ type: 'idle', message: '' });
@@ -31,25 +32,37 @@ export default function AuthPage() {
     
     try {
       if (isLogin) {
-        const user = await loginUser(formData.email, formData.password);
+        const res = await loginUser(formData.email, formData.password);
+        if (!res.success) {
+          setStatus({ type: 'error', message: res.error || 'Terjadi kesalahan.' });
+          return;
+        }
         // Simpan session
-        localStorage.setItem('sm_session', JSON.stringify(user));
+        localStorage.setItem('sm_session', JSON.stringify(res.user));
         
         // Redirect
-        if (user.role === 'admin') {
+        if (res.user?.role === 'admin') {
           router.push('/admin');
         } else {
           router.push('/');
         }
       } else {
-        await registerUser(formData.nama, formData.email, formData.password, formData.no_hp);
+        if (formData.password !== formData.konfirmasi_password) {
+          setStatus({ type: 'error', message: 'Password dan Konfirmasi Password tidak cocok.' });
+          return;
+        }
+        const res = await registerUser(formData.nama, formData.email, formData.password, formData.no_hp);
+        if (!res.success) {
+          setStatus({ type: 'error', message: res.error || 'Terjadi kesalahan.' });
+          return;
+        }
         // Jangan auto-login. Ubah ke form login dan tampilkan pesan sukses.
         setStatus({ type: 'success', message: 'Registrasi berhasil! Silakan login.' });
         setIsLogin(true);
-        setFormData(prev => ({ ...prev, password: '' })); // Kosongkan password demi keamanan
+        setFormData(prev => ({ ...prev, password: '', konfirmasi_password: '' })); // Kosongkan password demi keamanan
       }
     } catch (err: any) {
-      setStatus({ type: 'error', message: err.message || 'Terjadi kesalahan.' });
+      setStatus({ type: 'error', message: err.message || 'Terjadi kesalahan internal.' });
     }
   };
 
@@ -202,6 +215,24 @@ export default function AuthPage() {
                     />
                   </div>
                 </div>
+
+                {!isLogin && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-300">Ulangi Password</label>
+                    <div className="relative">
+                      <Lock className="absolute left-4 top-3.5 text-slate-500" size={20} />
+                      <input 
+                        type="password" 
+                        name="konfirmasi_password"
+                        value={formData.konfirmasi_password}
+                        onChange={handleChange}
+                        required={!isLogin}
+                        placeholder="••••••••"
+                        className="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors placeholder-slate-600"
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <button 
                   type="submit"

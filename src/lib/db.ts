@@ -185,14 +185,14 @@ export async function loginUser(email: string, password: string) {
   if (result.length > 0) {
     const user = result[0];
     const isAdmin = user.email === 'admin@smsport.com' || user.email === 'admin@futsal.com';
-    return { ...user, role: isAdmin ? 'admin' : 'user' };
+    return { success: true, user: { ...user, role: isAdmin ? 'admin' : 'user' } };
   }
-  throw new Error("Email atau password salah.");
+  return { success: false, error: "Email atau password salah." };
 }
 
 export async function registerUser(nama: string, email: string, password: string, noHp: string = '') {
   const check = await sql`SELECT id FROM users WHERE email = ${email}`;
-  if (check.length > 0) throw new Error("Email sudah terdaftar.");
+  if (check.length > 0) return { success: false, error: "Email sudah terdaftar." };
   
   const result = await sql`
     INSERT INTO users (name, email, password, phone) 
@@ -201,7 +201,7 @@ export async function registerUser(nama: string, email: string, password: string
   `;
   const user = result[0];
   const isAdmin = user.email === 'admin@smsport.com' || user.email === 'admin@futsal.com';
-  return { ...user, role: isAdmin ? 'admin' : 'user' };
+  return { success: true, user: { ...user, role: isAdmin ? 'admin' : 'user' } };
 }
 
 export async function getRiwayatBooking(pelangganId: number) {
