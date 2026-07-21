@@ -206,7 +206,7 @@ export default function ReservationsView() {
             </thead>
             <tbody className="text-sm">
               {loading ? (
-                <tr><td colSpan={7} className="p-8 text-center text-slate-500">Memuat data dari Neon DB...</td></tr>
+                <tr><td colSpan={7} className="p-8 text-center text-slate-500">Memuat data...</td></tr>
               ) : filtered.length === 0 ? (
                 <tr><td colSpan={7} className="p-8 text-center text-slate-500">Tidak ada data yang sesuai filter</td></tr>
               ) : filtered.map((row) => (
