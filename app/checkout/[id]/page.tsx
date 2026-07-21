@@ -32,10 +32,25 @@ export default function CheckoutPage() {
   }, [id]);
 
   useEffect(() => {
-    if (data && data.status !== 'Menunggu Pembayaran') {
-      router.replace('/my-bookings');
-    }
-  }, [data, router]);
+    if (!id || payStatus !== 'idle') return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await getReservasiById(parseInt(id as string));
+        if (res && res.status !== 'Menunggu Pembayaran') {
+           setPayStatus('success');
+           clearInterval(interval);
+           setTimeout(() => {
+             router.push('/my-bookings');
+           }, 2000);
+        }
+      } catch (err) {
+        console.error("Polling error", err);
+      }
+    }, 3000); // Polling setiap 3 detik
+
+    return () => clearInterval(interval);
+  }, [id, payStatus, router]);
 
   const hitungTotalHarga = (jamMulai: string, jamSelesai: string, hargaPerJam: number) => {
     if (!jamMulai || !jamSelesai) return hargaPerJam;
@@ -130,7 +145,7 @@ export default function CheckoutPage() {
           <div className="flex flex-col items-center mb-6">
             <div className="bg-white p-4 rounded-2xl mb-4 flex flex-col items-center justify-center shadow-lg relative">
               <QRCodeSVG
-                value={window.location.href}
+                value={`${typeof window !== 'undefined' ? window.location.origin : ''}/mock-qris/${id}`}
                 size={200}
                 level="H"
                 includeMargin={true}
