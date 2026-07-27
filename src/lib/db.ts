@@ -74,7 +74,7 @@ export async function cekKetersediaanDB(lapanganId: number, tanggal: string, jam
       (start_time < ${jamSelesai}::time AND end_time > ${jamMulai}::time)
     )
   `;
-  
+
   return bentrok.length > 0;
 }
 
@@ -83,16 +83,16 @@ export async function buatReservasiDB(pelangganNama: string, lapanganId: number,
   if (bentrok) {
     return { success: false, error: 'Jadwal bentrok dengan reservasi lain!' };
   }
-  
+
   // Cari apakah user dengan nama tersebut sudah ada
   const existingUser = await sql`SELECT id FROM users WHERE name = ${pelangganNama} LIMIT 1`;
   let pelangganId;
-  
+
   if (existingUser.length > 0) {
     pelangganId = existingUser[0].id;
   } else {
     // Buat akun guest secara on-the-fly
-    const emailGuest = pelangganNama.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random()*10000) + '@guest.com';
+    const emailGuest = pelangganNama.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 10000) + '@guest.com';
     const newUser = await sql`
       INSERT INTO users (name, email, password) 
       VALUES (${pelangganNama}, ${emailGuest}, 'guestpass')
@@ -100,10 +100,10 @@ export async function buatReservasiDB(pelangganNama: string, lapanganId: number,
     `;
     pelangganId = newUser[0].id;
   }
-  
+
   const courtInfo = await sql`SELECT price_per_hour FROM court WHERE id = ${lapanganId}`;
   const pricePerHour = courtInfo[0].price_per_hour;
-  
+
   const result = await sql`
     INSERT INTO bookings (user_id, court_id, date, start_time, end_time, status, total_price)
     VALUES (
@@ -117,7 +117,7 @@ export async function buatReservasiDB(pelangganNama: string, lapanganId: number,
     )
     RETURNING id, user_id as pelanggan_id, court_id as lapangan_id, date as tanggal, start_time as jam_mulai, end_time as jam_selesai, status, dp_amount as nominal_dp, created_at
   `;
-  
+
   return { success: true, data: result[0] };
 }
 
@@ -130,7 +130,7 @@ export async function getStatistikDashboard() {
     WHERE b.status != 'Dibatalkan' AND EXTRACT(MONTH FROM b.date) = EXTRACT(MONTH FROM CURRENT_DATE)
   `;
   const rsUsers = await sql`SELECT count(*) as total FROM users`;
-  
+
   return {
     reservasiHariIni: rsToday[0].total,
     pendapatanBulanan: rsRevenue[0].total,
@@ -147,6 +147,7 @@ export async function updateStatusReservasi(id: number, status: string) {
 }
 
 export async function getReservasiById(id: number) {
+  await autoCancelExpiredBookings();
   const result = await sql`
     SELECT b.id, b.date as tanggal, b.start_time as jam_mulai, b.end_time as jam_selesai, b.status, b.dp_amount as nominal_dp,
            c.name as lapangan_nama, c.price_per_hour as harga_per_jam, 
@@ -193,7 +194,7 @@ export async function loginUser(email: string, password: string) {
 export async function registerUser(nama: string, email: string, password: string, noHp: string = '') {
   const check = await sql`SELECT id FROM users WHERE email = ${email}`;
   if (check.length > 0) return { success: false, error: "Email sudah terdaftar." };
-  
+
   const result = await sql`
     INSERT INTO users (name, email, password, phone) 
     VALUES (${nama}, ${email}, ${password}, ${noHp})
@@ -219,7 +220,7 @@ export async function getRiwayatBooking(pelangganId: number) {
 export async function tambahPelangganAdmin(nama: string, email: string, noHp: string = '') {
   const check = await sql`SELECT id FROM users WHERE email = ${email}`;
   if (check.length > 0) throw new Error("Email sudah terdaftar.");
-  
+
   return await sql`
     INSERT INTO users (name, email, password, phone) 
     VALUES (${nama}, ${email}, 'default123', ${noHp})
@@ -247,7 +248,7 @@ export async function getLaporanPendapatan() {
     ORDER BY date DESC
     LIMIT 14
   `;
-  
+
   const bulanan = await sql`
     SELECT TO_CHAR(date, 'YYYY-MM') as bln, 
            COUNT(b.id) as total_booking,
@@ -259,7 +260,7 @@ export async function getLaporanPendapatan() {
     ORDER BY bln DESC
     LIMIT 12
   `;
-  
+
   const lapangan = await sql`
     SELECT c.name as nama_lapangan, 
            COUNT(b.id) as total_booking,
@@ -270,7 +271,7 @@ export async function getLaporanPendapatan() {
     GROUP BY c.name
     ORDER BY total_pendapatan DESC
   `;
-  
+
   const statusDist = await sql`
     SELECT status, COUNT(id) as jumlah
     FROM bookings
@@ -289,7 +290,7 @@ export async function getLaporanPendapatan() {
     ORDER BY total_spent DESC
     LIMIT 5
   `;
-  
+
   return { harian, bulanan, lapangan, statusDist, topPelanggan };
 }
 

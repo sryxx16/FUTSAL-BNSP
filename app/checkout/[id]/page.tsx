@@ -12,7 +12,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [payStatus, setPayStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+  const [payStatus, setPayStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -37,7 +37,12 @@ export default function CheckoutPage() {
     const interval = setInterval(async () => {
       try {
         const res = await getReservasiById(parseInt(id as string));
-        if (res && res.status !== 'Menunggu Pembayaran') {
+        if (res && res.status === 'Dibatalkan') {
+           setPayStatus('error'); // Bikin state sementara atau biarin redirect
+           clearInterval(interval);
+           alert("Waktu pembayaran habis. Pesanan otomatis dibatalkan.");
+           router.push('/my-bookings');
+        } else if (res && res.status !== 'Menunggu Pembayaran') {
            setPayStatus('success');
            clearInterval(interval);
            setTimeout(() => {
