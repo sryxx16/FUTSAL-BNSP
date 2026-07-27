@@ -8,6 +8,10 @@ import { useRouter } from 'next/navigation';
 
 export default function ReservationPage() {
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   const [lapanganList, setLapanganList] = useState<any[]>([]);
   const sessionStr = typeof window !== 'undefined' ? localStorage.getItem('sm_session') : null;
   const user = sessionStr ? JSON.parse(sessionStr) : null;
@@ -95,6 +99,8 @@ export default function ReservationPage() {
       });
     }
   };
+
+  if (!isMounted) return null; // Mencegah hydration mismatch error karena localStorage
 
   return (
     <main className="pt-24 pb-12 min-h-screen relative overflow-hidden flex justify-center items-center">

@@ -101,6 +101,12 @@ export async function buatReservasiDB(pelangganNama: string, lapanganId: number,
     pelangganId = newUser[0].id;
   }
 
+  // Mencegah Spam: Cek jumlah pesanan yang belum dibayar
+  const unpaidBookings = await sql`SELECT count(*) as total FROM bookings WHERE user_id = ${pelangganId} AND status = 'Menunggu Pembayaran'`;
+  if (unpaidBookings[0].total >= 2) {
+    return { success: false, error: 'Batas maksimal! Harap lunasi DP pesanan Anda sebelumnya terlebih dahulu.' };
+  }
+
   const courtInfo = await sql`SELECT price_per_hour FROM court WHERE id = ${lapanganId}`;
   const pricePerHour = courtInfo[0].price_per_hour;
 
