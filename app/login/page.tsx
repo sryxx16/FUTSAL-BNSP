@@ -108,20 +108,20 @@ export default function AuthPage() {
         <div className="w-full max-w-md">
           <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 shadow-[0_0_40px_rgba(0,0,0,0.3)]">
             
-            <div className="flex bg-slate-950 p-1 rounded-xl mb-8 border border-slate-800">
+            <div className="flex bg-slate-950 p-1.5 rounded-xl mb-8 border border-slate-800">
               <button 
                 type="button"
                 onClick={() => { setIsLogin(true); setStatus({type:'idle', message:''}); }}
-                className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all duration-300 ${isLogin ? 'bg-emerald-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}`}
+                className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${isLogin ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}
               >
-                Login
+                Masuk
               </button>
               <button 
                 type="button"
                 onClick={() => { setIsLogin(false); setStatus({type:'idle', message:''}); }}
-                className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all duration-300 ${!isLogin ? 'bg-emerald-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}`}
+                className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${!isLogin ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}
               >
-                Register
+                Daftar Akun
               </button>
             </div>
 
@@ -237,10 +237,10 @@ export default function AuthPage() {
                 <button 
                   type="submit"
                   disabled={status.type === 'loading'}
-                  className="w-full mt-6 flex items-center justify-center gap-2 bg-emerald-500 text-slate-950 text-lg font-bold py-4 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] hover:bg-emerald-400 transition-all duration-300 disabled:opacity-50"
+                  className="w-full mt-6 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white text-base font-semibold py-3.5 rounded-xl shadow-sm shadow-emerald-600/30 transition-all duration-200 disabled:opacity-50"
                 >
-                  {status.type === 'loading' ? <Loader2 className="animate-spin" size={20} /> : (isLogin ? 'Masuk Sekarang' : 'Daftar Akun')} 
-                  {status.type !== 'loading' && <ArrowRight size={20} />}
+                  {status.type === 'loading' ? <Loader2 className="animate-spin" size={20} /> : (isLogin ? 'Masuk ke Akun' : 'Daftar Sekarang')} 
+                  {status.type !== 'loading' && <ArrowRight size={18} />}
                 </button>
               </motion.form>
             </AnimatePresence>

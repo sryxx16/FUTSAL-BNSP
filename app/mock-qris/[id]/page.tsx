@@ -77,10 +77,13 @@ export default function MockQrisPage() {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden relative z-10"
       >
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-center text-white relative">
-          <div className="absolute top-4 right-4"><ShieldCheck size={24} className="text-blue-200" /></div>
-          <h1 className="text-xl font-bold mb-1">SM Sport Pay</h1>
-          <p className="text-blue-200 text-sm">Pembayaran Aman via QRIS</p>
+        <div className="bg-slate-800/80 border-b border-slate-700/80 p-5 text-center text-white relative">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-[11px] font-bold tracking-wider mb-2">
+            <span>QRIS</span>
+            <span className="text-slate-400 font-normal">| Standar Nasional</span>
+          </div>
+          <h1 className="text-lg font-bold text-white">SM Sport QRIS Pay</h1>
+          <p className="text-slate-400 text-xs">Simulasi Pembayaran Uang Muka (DP 50%)</p>
         </div>
 
         <div className="p-6">

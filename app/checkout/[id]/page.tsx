@@ -164,11 +164,11 @@ export default function CheckoutPage() {
           <button
             onClick={handleBayar}
             disabled={payStatus !== 'idle'}
-            className={`w-full py-4 rounded-xl font-bold text-lg flex justify-center items-center gap-2 transition-all duration-300 ${payStatus === 'success'
-              ? 'bg-emerald-500 text-slate-950'
+            className={`w-full py-3.5 rounded-xl font-semibold text-base flex justify-center items-center gap-2 transition-all duration-200 ${payStatus === 'success'
+              ? 'bg-emerald-600 text-white'
               : payStatus === 'loading'
-                ? 'bg-emerald-500/50 text-slate-950 cursor-wait'
-                : 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]'
+                ? 'bg-emerald-700 text-white cursor-wait'
+                : 'bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white shadow-sm shadow-emerald-600/30'
               }`}
           >
             {payStatus === 'idle' && (

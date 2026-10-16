@@ -40,22 +40,26 @@ export default function Navbar() {
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-slate-950/80 backdrop-blur-md border-b border-slate-800' : 'bg-transparent'
+        isScrolled ? 'bg-slate-950/85 backdrop-blur-md border-b border-slate-800/60 shadow-lg' : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-600">
+            <Link href="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-400">
               SM Sport
             </Link>
           </div>
-          <div className="hidden md:flex space-x-8 items-center">
+          <div className="hidden md:flex space-x-7 items-center text-sm font-medium">
             <Link href="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-slate-300 hover:text-emerald-400 transition-colors">Home</Link>
+            <a href="/#jadwal" className="text-slate-300 hover:text-emerald-400 transition-colors">Jadwal Live</a>
+            <a href="/#lapangan" className="text-slate-300 hover:text-emerald-400 transition-colors">Lapangan</a>
             <a href="/#fasilitas" className="text-slate-300 hover:text-emerald-400 transition-colors">Fasilitas</a>
             <a href="/#kontak" className="text-slate-300 hover:text-emerald-400 transition-colors">Kontak</a>
             <div className="flex items-center space-x-4 pl-4 border-l border-slate-800">
-              <Link href="/book" className="text-emerald-400 font-bold hover:text-emerald-300 transition-colors">Booking Lapangan</Link>
+              <Link href="/book" className="px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
+                Booking Lapangan
+              </Link>
               
               {user ? (
                 <>
@@ -107,10 +111,12 @@ export default function Navbar() {
           >
             <div className="px-4 pt-2 pb-6 space-y-2">
               <Link href="/" onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="block px-3 py-2 text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-md">Home</Link>
+              <a href="/#jadwal" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-md">Jadwal Live</a>
+              <a href="/#lapangan" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-md">Lapangan</a>
               <a href="/#fasilitas" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-md">Fasilitas</a>
               <a href="/#kontak" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-md">Kontak</a>
               <div className="mt-6 pt-6 border-t border-slate-800 space-y-3">
-                <Link href="/book" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950 font-bold transition-colors">
+                <Link href="/book" onClick={() => setIsMobileMenuOpen(false)} className="block w-full px-5 py-3 text-center rounded-full bg-emerald-600 text-white hover:bg-emerald-500 font-semibold transition-colors shadow-sm">
                   Booking Lapangan
                 </Link>
                 

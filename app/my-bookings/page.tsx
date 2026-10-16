@@ -71,8 +71,8 @@ export default function MyBookingsPage() {
               <History className="text-emerald-500" /> Riwayat Pemesanan Saya
             </h1>
           </div>
-          <Link href="/book" className="hidden sm:inline-block px-5 py-2 rounded-lg bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 transition-colors shadow-lg shadow-emerald-500/20">
-            Booking Baru
+          <Link href="/book" className="hidden sm:inline-block px-4 py-2 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-500 transition-colors shadow-sm shadow-emerald-600/30 text-sm">
+            + Booking Baru
           </Link>
         </div>
 
@@ -86,7 +86,7 @@ export default function MyBookingsPage() {
             <div className="p-12 text-center text-slate-400 flex flex-col items-center">
               <History size={48} className="mb-4 opacity-50" />
               <p className="text-lg mb-6">Anda belum pernah melakukan pemesanan lapangan.</p>
-              <Link href="/book" className="px-6 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 font-bold hover:bg-emerald-500 hover:text-slate-950 border border-emerald-500/50 transition-colors">
+              <Link href="/book" className="px-5 py-2 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-500 transition-colors text-sm shadow-sm shadow-emerald-600/30">
                 Mulai Booking Sekarang
               </Link>
             </div>
@@ -124,9 +124,10 @@ export default function MyBookingsPage() {
                     {booking.status === 'Menunggu Pembayaran' && (
                       <button 
                         onClick={() => router.push(`/checkout/${booking.id}`)}
-                        className="bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded-lg text-sm hover:bg-emerald-400 transition-colors flex items-center gap-2 justify-center w-full"
+                        className="bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-semibold px-4 py-2 rounded-xl text-xs transition-colors flex items-center gap-1.5 justify-center w-full shadow-sm shadow-emerald-600/30"
                       >
-                        Bayar DP <ArrowRight size={16} />
+                        <span>Bayar DP Sekarang</span>
+                        <ArrowRight size={14} />
                       </button>
                     )}
                   </div>
